@@ -1,0 +1,7 @@
+language	sample	compile	run_output_head
+ASM	HindiASM.uhin	OK	सारे जहां से अच्छा हिं�
+C	HindiC.uhin	OK	आपका नाम क्या है? नमस्त�
+C++	HindiC++.uhin	OK	यह एक जानवर है। शेर एक ज
+LEX	HindiLEX.uhin	OK	ab*a
+BASIC	HindiBASIC.uhin	OK	ऊँचाई:  4     &   &&  &&& &&&&  &&&   &&    &
+YACC	HindiYACC.uhin	FAIL	-
