@@ -1,0 +1,27 @@
+# marchen localized C keywords — projected from Devanagari hub (ILM Layer-1 inverse)
+# Copyright (C) 1993-2026 Abhishek Choudhary. GPL. FLAGGED-NOT-FAKED: PARTIAL rows need native review.
+𑲁𑲲𑱳्𑲉	main	मुख्य	PARTIAL
+𑱾ू𑲊्ण𑲰𑲵𑱲	int	पूर्णांक	PARTIAL
+𑲏𑱲्ष𑲊	char	अक्षर	PARTIAL
+𑱼्व𑲱𑱴𑲲𑱽	double	द्विगुन	PARTIAL
+व्𑲉𑲴𑲁	void	व्योम	PARTIAL
+व𑲰𑱾𑲍	return	वापस	PARTIAL
+𑱲्𑲊𑲁	for	क्रम	PARTIAL
+𑲏𑱴𑲊	if	अगर	FULL
+𑲏𑱽्𑲉𑱻𑲰	else	अन्यथा	PARTIAL
+𑱸𑲀𑱺𑱲	while	जबतक	FULL
+𑱲𑲊𑲴	do	करो	FULL
+𑱺𑲴ड़𑲴	break	तोड़ो	PARTIAL
+𑱸𑲰𑲊ी	continue	जारी	PARTIAL
+𑱶𑲲𑱽𑲴	switch	चुनो	FULL
+𑲎𑲰𑲋𑱺	case	हालत	FULL
+𑲌्𑲊𑲳णी	class	श्रेणी	PARTIAL
+𑱳𑲲𑲋𑲰	public	खुला	FULL
+𑲀𑲵𑱼	private	बंद	FULL
+भव	virtual	भव	PARTIAL
+𑲍𑲁𑲰व𑲳𑲌	include	समावेश	PARTIAL
+घ𑲴षण𑲰	define	घोषणा	PARTIAL
+𑲏ण𑲲	{	अणु	PARTIAL
+𑱾ू𑲊्ण	}	पूर्ण	PARTIAL
+𑲁_𑲋𑲱𑱳𑲴	printf	म_लिखो	FULL
+𑲁_𑱾ू𑱷𑲴	scanf	म_पूछो	PARTIAL

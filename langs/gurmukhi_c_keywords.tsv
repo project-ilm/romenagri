@@ -1,0 +1,27 @@
+# gurmukhi localized C keywords — projected from Devanagari hub (ILM Layer-1 inverse)
+# Copyright (C) 1993-2026 Abhishek Choudhary. GPL. FLAGGED-NOT-FAKED: PARTIAL rows need native review.
+ਮੁਖ੍ਯ	main	मुख्य	FULL
+ਪੂਰ੍ਣਾंਕ	int	पूर्णांक	PARTIAL
+ਅਕ੍षਰ	char	अक्षर	PARTIAL
+ਦ੍ਵਿਗੁਨ	double	द्विगुन	FULL
+ਵ੍ਯोਮ	void	व्योम	PARTIAL
+ਵਾਪਸ	return	वापस	FULL
+ਕ੍ਰਮ	for	क्रम	FULL
+ਅਗਰ	if	अगर	FULL
+ਅਨ੍ਯਥਾ	else	अन्यथा	FULL
+ਜਬਤਕ	while	जबतक	FULL
+ਕਰो	do	करो	PARTIAL
+ਤोਡ़ो	break	तोड़ो	PARTIAL
+ਜਾਰੀ	continue	जारी	FULL
+ਚੁਨो	switch	चुनो	PARTIAL
+ਹਾਲਤ	case	हालत	FULL
+ਸ਼੍ਰेਣੀ	class	श्रेणी	PARTIAL
+ਖੁਲਾ	public	खुला	FULL
+ਬंਦ	private	बंद	PARTIAL
+ਭਵ	virtual	भव	FULL
+ਸਮਾਵेਸ਼	include	समावेश	PARTIAL
+ਘोषਣਾ	define	घोषणा	PARTIAL
+ਅਣੁ	{	अणु	FULL
+ਪੂਰ੍ਣ	}	पूर्ण	FULL
+ਮ_ਲਿਖो	printf	म_लिखो	PARTIAL
+ਮ_ਪੂਛो	scanf	म_पूछो	PARTIAL

@@ -1,0 +1,27 @@
+# dives_akuru localized C keywords — projected from Devanagari hub (ILM Layer-1 inverse)
+# Copyright (C) 1993-2026 Abhishek Choudhary. GPL. FLAGGED-NOT-FAKED: PARTIAL rows need native review.
+𑤤𑤳𑤍्𑤥	main	मुख्य	PARTIAL
+𑤠𑤴𑤧्𑤚𑤰𑤻𑤌	int	पूर्णांक	PARTIAL
+𑤀𑤌्𑤫𑤧	char	अक्षर	PARTIAL
+𑤝्𑤩𑤱𑤎𑤳𑤟	double	द्विगुन	PARTIAL
+𑤩्𑤥𑤸𑤤	void	व्योम	PARTIAL
+𑤩𑤰𑤠𑤬	return	वापस	FULL
+𑤌्𑤧𑤤	for	क्रम	PARTIAL
+𑤀𑤎𑤧	if	अगर	FULL
+𑤀𑤟्𑤥𑤜𑤰	else	अन्यथा	PARTIAL
+𑤓𑤢𑤛𑤌	while	जबतक	FULL
+𑤌𑤧𑤸	do	करो	FULL
+𑤛𑤸𑤘़𑤸	break	तोड़ो	PARTIAL
+𑤓𑤰𑤧𑤲	continue	जारी	FULL
+𑤑𑤳𑤟𑤸	switch	चुनो	FULL
+𑤭𑤰𑤨𑤛	case	हालत	FULL
+𑤪्𑤧𑤵𑤚𑤲	class	श्रेणी	PARTIAL
+𑤍𑤳𑤨𑤰	public	खुला	FULL
+𑤢𑤻𑤝	private	बंद	FULL
+𑤣𑤩	virtual	भव	FULL
+𑤬𑤤𑤰𑤩𑤵𑤪	include	समावेश	FULL
+𑤏𑤸𑤫𑤚𑤰	define	घोषणा	FULL
+𑤀𑤚𑤳	{	अणु	FULL
+𑤠𑤴𑤧्𑤚	}	पूर्ण	PARTIAL
+𑤤_𑤨𑤱𑤍𑤸	printf	म_लिखो	FULL
+𑤤_𑤠𑤴𑤒𑤸	scanf	म_पूछो	FULL

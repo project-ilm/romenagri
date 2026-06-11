@@ -1,0 +1,27 @@
+# newa localized C keywords — projected from Devanagari hub (ILM Layer-1 inverse)
+# Copyright (C) 1993-2026 Abhishek Choudhary. GPL. FLAGGED-NOT-FAKED: PARTIAL rows need native review.
+𑐩𑐸𑐏𑑂𑐫	main	मुख्य	FULL
+𑐥𑐹𑐬𑑂𑐞𑐵𑑄𑐎	int	पूर्णांक	FULL
+𑐀𑐎𑑂𑐲𑐬	char	अक्षर	FULL
+𑐡𑑂व𑐶𑐐𑐸𑐣	double	द्विगुन	PARTIAL
+व𑑂𑐫𑑀𑐩	void	व्योम	PARTIAL
+व𑐵𑐥𑐳	return	वापस	PARTIAL
+𑐎𑑂𑐬𑐩	for	क्रम	FULL
+𑐀𑐐𑐬	if	अगर	FULL
+𑐀𑐣𑑂𑐫𑐠𑐵	else	अन्यथा	FULL
+𑐖𑐧𑐟𑐎	while	जबतक	FULL
+𑐎𑐬𑑀	do	करो	FULL
+𑐟𑑀𑐜़𑑀	break	तोड़ो	PARTIAL
+𑐖𑐵𑐬𑐷	continue	जारी	FULL
+𑐔𑐸𑐣𑑀	switch	चुनो	FULL
+𑐴𑐵𑐮𑐟	case	हालत	FULL
+𑐱𑑂𑐬𑐾𑐞𑐷	class	श्रेणी	FULL
+𑐏𑐸𑐮𑐵	public	खुला	FULL
+𑐧𑑄𑐡	private	बंद	FULL
+𑐨व	virtual	भव	PARTIAL
+𑐳𑐩𑐵व𑐾𑐱	include	समावेश	PARTIAL
+𑐑𑑀𑐲𑐞𑐵	define	घोषणा	FULL
+𑐀𑐞𑐸	{	अणु	FULL
+𑐥𑐹𑐬𑑂𑐞	}	पूर्ण	FULL
+𑐩_𑐮𑐶𑐏𑑀	printf	म_लिखो	FULL
+𑐩_𑐥𑐹𑐕𑑀	scanf	म_पूछो	FULL

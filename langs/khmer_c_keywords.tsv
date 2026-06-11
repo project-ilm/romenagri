@@ -1,0 +1,27 @@
+# khmer localized C keywords — projected from Devanagari hub (ILM Layer-1 inverse)
+# Copyright (C) 1993-2026 Abhishek Choudhary. GPL. FLAGGED-NOT-FAKED: PARTIAL rows need native review.
+मុខ्य	main	मुख्य	PARTIAL
+पូर्णាंក	int	पूर्णांक	PARTIAL
+अក्षर	char	अक्षर	PARTIAL
+ដ्वិगុन	double	द्विगुन	PARTIAL
+व्योम	void	व्योम	PARTIAL
+वាपស	return	वापस	PARTIAL
+ក्रम	for	क्रम	PARTIAL
+अगर	if	अगर	PARTIAL
+अन्यថា	else	अन्यथा	PARTIAL
+जបតក	while	जबतक	PARTIAL
+កरो	do	करो	PARTIAL
+តोड़ो	break	तोड़ो	PARTIAL
+जាरី	continue	जारी	PARTIAL
+ចុनो	switch	चुनो	PARTIAL
+ហាឡត	case	हालत	FULL
+ឝ्रេणី	class	श्रेणी	PARTIAL
+ខុឡា	public	खुला	FULL
+បंដ	private	बंद	PARTIAL
+भव	virtual	भव	PARTIAL
+សमាवេឝ	include	समावेश	PARTIAL
+घोषणា	define	घोषणा	PARTIAL
+अणុ	{	अणु	PARTIAL
+पូर्ण	}	पूर्ण	PARTIAL
+म_ឡិខो	printf	म_लिखो	PARTIAL
+म_पូឆो	scanf	म_पूछो	PARTIAL

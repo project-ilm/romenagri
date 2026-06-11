@@ -1,0 +1,27 @@
+# khudawadi localized C keywords — projected from Devanagari hub (ILM Layer-1 inverse)
+# Copyright (C) 1993-2026 Abhishek Choudhary. GPL. FLAGGED-NOT-FAKED: PARTIAL rows need native review.
+𑋗𑋣𑊻𑋪𑋘	main	मुख्य	FULL
+𑋒𑋤𑋙𑋪𑋌𑋠𑋟𑊺	int	पूर्णांक	FULL
+𑊰𑊺𑋪ष𑋙	char	अक्षर	PARTIAL
+𑋏𑋪𑋛𑋡𑊼𑋣𑋑	double	द्विगुन	FULL
+𑋛𑋪𑋘𑋧𑋗	void	व्योम	FULL
+𑋛𑋠𑋒𑋝	return	वापस	FULL
+𑊺𑋪𑋙𑋗	for	क्रम	FULL
+𑊰𑊼𑋙	if	अगर	FULL
+𑊰𑋑𑋪𑋘𑋎𑋠	else	अन्यथा	FULL
+𑋂𑋔𑋍𑊺	while	जबतक	FULL
+𑊺𑋙𑋧	do	करो	FULL
+𑋍𑋧𑋈़𑋧	break	तोड़ो	PARTIAL
+𑋂𑋠𑋙𑋢	continue	जारी	FULL
+𑋀𑋣𑋑𑋧	switch	चुनो	FULL
+𑋞𑋠𑋚𑋍	case	हालत	FULL
+𑋜𑋪𑋙𑋥𑋌𑋢	class	श्रेणी	FULL
+𑊻𑋣𑋚𑋠	public	खुला	FULL
+𑋔𑋟𑋏	private	बंद	FULL
+𑋖𑋛	virtual	भव	FULL
+𑋝𑋗𑋠𑋛𑋥𑋜	include	समावेश	FULL
+𑊾𑋧ष𑋌𑋠	define	घोषणा	PARTIAL
+𑊰𑋌𑋣	{	अणु	FULL
+𑋒𑋤𑋙𑋪𑋌	}	पूर्ण	FULL
+𑋗_𑋚𑋡𑊻𑋧	printf	म_लिखो	FULL
+𑋗_𑋒𑋤𑋁𑋧	scanf	म_पूछो	FULL

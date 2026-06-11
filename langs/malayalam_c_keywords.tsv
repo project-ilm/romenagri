@@ -1,0 +1,27 @@
+# malayalam localized C keywords — projected from Devanagari hub (ILM Layer-1 inverse)
+# Copyright (C) 1993-2026 Abhishek Choudhary. GPL. FLAGGED-NOT-FAKED: PARTIAL rows need native review.
+മുഖ്യ	main	मुख्य	FULL
+പൂര്ണാംക	int	पूर्णांक	FULL
+അക്ഷര	char	अक्षर	FULL
+ദ്വിഗുന	double	द्विगुन	FULL
+വ്യൊമ	void	व्योम	FULL
+വാപസ	return	वापस	FULL
+ക്രമ	for	क्रम	FULL
+അഗര	if	अगर	FULL
+അന്യഥാ	else	अन्यथा	FULL
+ജബതക	while	जबतक	FULL
+കരൊ	do	करो	FULL
+തൊഡ़ൊ	break	तोड़ो	PARTIAL
+ജാരീ	continue	जारी	FULL
+ചുനൊ	switch	चुनो	FULL
+ഹാലത	case	हालत	FULL
+ശ്രെണീ	class	श्रेणी	FULL
+ഖുലാ	public	खुला	FULL
+ബംദ	private	बंद	FULL
+ഭവ	virtual	भव	FULL
+സമാവെശ	include	समावेश	FULL
+ഘൊഷണാ	define	घोषणा	FULL
+അണു	{	अणु	FULL
+പൂര്ണ	}	पूर्ण	FULL
+മ_ലിഖൊ	printf	म_लिखो	FULL
+മ_പൂഛൊ	scanf	म_पूछो	FULL

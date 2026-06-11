@@ -1,0 +1,27 @@
+# thai localized C keywords — projected from Devanagari hub (ILM Layer-1 inverse)
+# Copyright (C) 1993-2026 Abhishek Choudhary. GPL. FLAGGED-NOT-FAKED: PARTIAL rows need native review.
+मुख्य	main	मुख्य	PARTIAL
+पूर्णांक	int	पूर्णांक	PARTIAL
+अक्षर	char	अक्षर	PARTIAL
+द्विगुन	double	द्विगुन	PARTIAL
+व्योम	void	व्योम	PARTIAL
+वापस	return	वापस	PARTIAL
+क्रम	for	क्रम	PARTIAL
+अगर	if	अगर	PARTIAL
+अन्यथा	else	अन्यथा	PARTIAL
+जबतक	while	जबतक	PARTIAL
+करो	do	करो	PARTIAL
+तोड़ो	break	तोड़ो	PARTIAL
+जारी	continue	जारी	PARTIAL
+चुनो	switch	चुनो	PARTIAL
+हालत	case	हालत	PARTIAL
+श्रेणी	class	श्रेणी	PARTIAL
+खुला	public	खुला	PARTIAL
+बंद	private	बंद	PARTIAL
+भव	virtual	भव	PARTIAL
+समावेश	include	समावेश	PARTIAL
+घोषणा	define	घोषणा	PARTIAL
+अणु	{	अणु	PARTIAL
+पूर्ण	}	पूर्ण	PARTIAL
+म_लिखो	printf	म_लिखो	PARTIAL
+म_पूछो	scanf	म_पूछो	PARTIAL

@@ -1,0 +1,27 @@
+# zanabazar_square localized C keywords — projected from Devanagari hub (ILM Layer-1 inverse)
+# Copyright (C) 1993-2026 Abhishek Choudhary. GPL. FLAGGED-NOT-FAKED: PARTIAL rows need native review.
+𑨢𑨃𑨌𑨴𑨪	main	मुख्य	FULL
+𑨞ू𑨫𑨴𑨘ा𑨸𑨋	int	पूर्णांक	PARTIAL
+𑨀𑨋𑨴𑨯𑨫	char	अक्षर	FULL
+𑨛𑨴𑨭𑨁𑨍𑨃𑨝	double	द्विगुन	FULL
+𑨭𑨴𑨪𑨆𑨢	void	व्योम	FULL
+𑨭ा𑨞𑨰	return	वापस	PARTIAL
+𑨋𑨴𑨫𑨢	for	क्रम	FULL
+𑨀𑨍𑨫	if	अगर	FULL
+𑨀𑨝𑨴𑨪𑨚ा	else	अन्यथा	PARTIAL
+𑨒𑨠𑨙𑨋	while	जबतक	FULL
+𑨋𑨫𑨆	do	करो	FULL
+𑨙𑨆𑨖़𑨆	break	तोड़ो	PARTIAL
+𑨒ा𑨫ी	continue	जारी	PARTIAL
+𑨐𑨃𑨝𑨆	switch	चुनो	FULL
+𑨱ा𑨬𑨙	case	हालत	PARTIAL
+𑨮𑨴𑨫𑨄𑨘ी	class	श्रेणी	PARTIAL
+𑨌𑨃𑨬ा	public	खुला	PARTIAL
+𑨠𑨸𑨛	private	बंद	FULL
+𑨡𑨭	virtual	भव	FULL
+𑨰𑨢ा𑨭𑨄𑨮	include	समावेश	PARTIAL
+𑨎𑨆𑨯𑨘ा	define	घोषणा	PARTIAL
+𑨀𑨘𑨃	{	अणु	FULL
+𑨞ू𑨫𑨴𑨘	}	पूर्ण	PARTIAL
+𑨢_𑨬𑨁𑨌𑨆	printf	म_लिखो	FULL
+𑨢_𑨞ू𑨑𑨆	scanf	म_पूछो	PARTIAL

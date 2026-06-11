@@ -1,0 +1,27 @@
+# khojki localized C keywords — projected from Devanagari hub (ILM Layer-1 inverse)
+# Copyright (C) 1993-2026 Abhishek Choudhary. GPL. FLAGGED-NOT-FAKED: PARTIAL rows need native review.
+𑈤𑈯𑈉𑈵𑈥	main	मुख्य	FULL
+𑈟ू𑈦𑈵𑈘𑈬𑈴𑈈	int	पूर्णांक	PARTIAL
+𑈀𑈈𑈵ष𑈦	char	अक्षर	PARTIAL
+𑈛𑈵𑈨𑈭𑈊𑈯𑈞	double	द्विगुन	FULL
+𑈨𑈵𑈥𑈲𑈤	void	व्योम	FULL
+𑈨𑈬𑈟𑈩	return	वापस	FULL
+𑈈𑈵𑈦𑈤	for	क्रम	FULL
+𑈀𑈊𑈦	if	अगर	FULL
+𑈀𑈞𑈵𑈥𑈚𑈬	else	अन्यथा	FULL
+𑈐𑈡𑈙𑈈	while	जबतक	FULL
+𑈈𑈦𑈲	do	करो	FULL
+𑈙𑈲𑈖़𑈲	break	तोड़ो	PARTIAL
+𑈐𑈬𑈦𑈮	continue	जारी	FULL
+𑈎𑈯𑈞𑈲	switch	चुनो	FULL
+𑈪𑈬𑈧𑈙	case	हालत	FULL
+श𑈵𑈦𑈰𑈘𑈮	class	श्रेणी	PARTIAL
+𑈉𑈯𑈧𑈬	public	खुला	FULL
+𑈡𑈴𑈛	private	बंद	FULL
+𑈣𑈨	virtual	भव	FULL
+𑈩𑈤𑈬𑈨𑈰श	include	समावेश	PARTIAL
+𑈌𑈲ष𑈘𑈬	define	घोषणा	PARTIAL
+𑈀𑈘𑈯	{	अणु	FULL
+𑈟ू𑈦𑈵𑈘	}	पूर्ण	PARTIAL
+𑈤_𑈧𑈭𑈉𑈲	printf	म_लिखो	FULL
+𑈤_𑈟ू𑈏𑈲	scanf	म_पूछो	PARTIAL

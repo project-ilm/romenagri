@@ -1,0 +1,27 @@
+# limbu localized C keywords — projected from Devanagari hub (ILM Layer-1 inverse)
+# Copyright (C) 1993-2026 Abhishek Choudhary. GPL. FLAGGED-NOT-FAKED: PARTIAL rows need native review.
+ᤔᤢᤂ्ᤕ	main	मुख्य	PARTIAL
+ᤐूᤖ्णांᤁ	int	पूर्णांक	PARTIAL
+अᤁ्ᤚᤖ	char	अक्षर	PARTIAL
+ᤍ्वᤡᤃᤢᤏ	double	द्विगुन	PARTIAL
+व्ᤕᤨᤔ	void	व्योम	PARTIAL
+वाᤐᤛ	return	वापस	PARTIAL
+ᤁ्ᤖᤔ	for	क्रम	PARTIAL
+अᤃᤖ	if	अगर	PARTIAL
+अᤏ्ᤕᤌा	else	अन्यथा	PARTIAL
+ᤈᤒᤋᤁ	while	जबतक	FULL
+ᤁᤖᤨ	do	करो	FULL
+ᤋᤨड़ᤨ	break	तोड़ो	PARTIAL
+ᤈाᤖी	continue	जारी	PARTIAL
+ᤆᤢᤏᤨ	switch	चुनो	FULL
+ᤜाᤗᤋ	case	हालत	PARTIAL
+ᤙ्ᤖᤧणी	class	श्रेणी	PARTIAL
+ᤂᤢᤗा	public	खुला	PARTIAL
+ᤒंᤍ	private	बंद	PARTIAL
+ᤓव	virtual	भव	PARTIAL
+ᤛᤔावᤧᤙ	include	समावेश	PARTIAL
+ᤄᤨᤚणा	define	घोषणा	PARTIAL
+अणᤢ	{	अणु	PARTIAL
+ᤐूᤖ्ण	}	पूर्ण	PARTIAL
+ᤔ_ᤗᤡᤂᤨ	printf	म_लिखो	FULL
+ᤔ_ᤐूᤇᤨ	scanf	म_पूछो	PARTIAL

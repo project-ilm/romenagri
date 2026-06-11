@@ -1,0 +1,27 @@
+# balinese localized C keywords — projected from Devanagari hub (ILM Layer-1 inverse)
+# Copyright (C) 1993-2026 Abhishek Choudhary. GPL. FLAGGED-NOT-FAKED: PARTIAL rows need native review.
+ᬫुख्ᬬ	main	मुख्य	PARTIAL
+ᬧूᬭ्णांᬓ	int	पूर्णांक	PARTIAL
+अᬓ्षᬭ	char	अक्षर	PARTIAL
+ᬤ्विᬕुᬦ	double	द्विगुन	PARTIAL
+व्ᬬोᬫ	void	व्योम	PARTIAL
+वाᬧᬲ	return	वापस	PARTIAL
+ᬓ्ᬭᬫ	for	क्रम	PARTIAL
+अᬕᬭ	if	अगर	PARTIAL
+अᬦ्ᬬथा	else	अन्यथा	PARTIAL
+ᬚᬩᬢᬓ	while	जबतक	FULL
+ᬓᬭो	do	करो	PARTIAL
+ᬢोड़ो	break	तोड़ो	PARTIAL
+ᬚाᬭी	continue	जारी	PARTIAL
+ᬘुᬦो	switch	चुनो	PARTIAL
+ᬳाᬮᬢ	case	हालत	PARTIAL
+श्ᬭेणी	class	श्रेणी	PARTIAL
+खुᬮा	public	खुला	PARTIAL
+ᬩंᬤ	private	बंद	PARTIAL
+भव	virtual	भव	PARTIAL
+ᬲᬫावेश	include	समावेश	PARTIAL
+घोषणा	define	घोषणा	PARTIAL
+अणु	{	अणु	PARTIAL
+ᬧूᬭ्ण	}	पूर्ण	PARTIAL
+ᬫ_ᬮिखो	printf	म_लिखो	PARTIAL
+ᬫ_ᬧूछो	scanf	म_पूछो	PARTIAL
