@@ -1,6 +1,5 @@
-# Malayalam — C/C++ keywords in the LANGUAGE (not transliteration)
-# script: Malayalam | iso639: mal | (C) 1993-2026 Abhishek Choudhary, GPL
-native	romenagri_ascii7	c_construct
+# Malayalam C/C++ keywords (real translations) | script Malayalam | (C) 1993-2026 Abhishek Choudhary GPL
+native	romenagri	c
 എങ്കിൽ	e_nkila	if
 അല്ലെങ്കിൽ	alle_nkila	else
 വരെ	vare	while
@@ -12,23 +11,18 @@ native	romenagri_ascii7	c_construct
 അവസ്ഥ	avastha	case
 സ്ഥിരസ്ഥിതി	sthirasthiti	default
 മടക്കുക	madakkuka	return
-പോകുക	paukuka	goto
 സ്ഥിരം	sthira_m	const
 പൂർണ്ണസംഖ്യ	puur_n_nasa_mkhya	int
 ദശാംശം	dashaa_msha_m	float
 ഇരട്ട	iratta	double
 അക്ഷരം	ak_sara_m	char
 ശൂന്യം	shuunya_m	void
+ധർമ്മം	dharmma_m	void
 വർഗ്ഗം	varggsa_m	class
 പുതിയ	putiya	new
 പൊതു	potu	public
 സ്വകാര്യ	svakaarya	private
-സംരക്ഷിത	sa_mrak_sita	protected
 സ്ഥിതം	sthita_m	static
 മായാ	maayaa	virtual
-വലുപ്പം	valuppa_m	sizeof
+എപ്പോൾ	eppaula	case
 ഘടന	ghatana	struct
-സംഘം	sa_mgha_m	union
-എണ്ണൽ	e_n_nala	enum
-തരനിർവചനം	taranirvacana_m	typedef
-ബാഹ്യ	baahya	extern

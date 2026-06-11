@@ -1,6 +1,5 @@
-# Hindi — C/C++ keywords in the LANGUAGE (not transliteration)
-# script: Devanagari | iso639: hin | (C) 1993-2026 Abhishek Choudhary, GPL
-native	romenagri_ascii7	c_construct
+# Hindi C/C++ keywords (real translations) | script Devanagari | (C) 1993-2026 Abhishek Choudhary GPL
+native	romenagri	c
 यदि	yadi	if
 अन्यथा	anyathaa	else
 जबतक	jabataka	while
@@ -12,24 +11,21 @@ native	romenagri_ascii7	c_construct
 स्थिति	sthiti	case
 मूल	muula	default
 लौटाओ	lautaaau	return
-जाओ	jaaau	goto
 अचर	acara	const
 पूर्णांक	puur_naa_nka	int
 दशमलव	dashamalava	float
 द्विगुण	dviguu_na	double
 अक्षर	ak_sara	char
 शून्य	shuunya	void
+कृत्य	kr_tya	void
 वर्ग	varga	class
 नवीन	naviina	new
 सार्वजनिक	saarvajanika	public
 निजी	nijii	private
-संरक्षित	sa_nrak_sita	protected
 स्थिर	sthira	static
 आभासी	aabhaasii	virtual
-आकार	aakaara	sizeof
+जब	jaba	case
 संरचना	sa_nracanaa	struct
-संघ	sa_ngha	union
-गणना	ga_nanaa	enum
-प्रकारलेख	prakaaraleekha	typedef
-बाह्य	baahya	extern
 सम्मिलित	sammilita	include
+पढ़ो	pa_dau	scanf
+लिखो	likhau	printf

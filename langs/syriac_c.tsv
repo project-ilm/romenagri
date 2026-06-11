@@ -1,6 +1,5 @@
-# Syriac — C/C++ keywords in the LANGUAGE (not transliteration)
-# script: Syriac (Estrangela) | iso639: syr | (C) 1993-2026 Abhishek Choudhary, GPL
-native	romenagri_ascii7	c_construct
+# Syriac C/C++ keywords (real translations) | script Syriac (Estrangela) | (C) 1993-2026 Abhishek Choudhary GPL
+native	romenagri	c
 ܐܢ	ana	if
 ܐܚܪܢܐ	aharanaa	else
 ܟܡܐ	kamaa	while

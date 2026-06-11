@@ -1,10 +1,10 @@
-# Assamese — C/C++ keywords in the LANGUAGE (not transliteration)
-# script: Assamese (Bengali-Assamese) | iso639: asm | (C) 1993-2026 Abhishek Choudhary, GPL
-native	romenagri_ascii7	c_construct
+# Assamese C/C++ keywords (real translations) | script Assamese (Bengali-Assamese) | (C) 1993-2026 Abhishek Choudhary GPL
+native	romenagri	c
 যদি	yadi	if
 অন্যথা	anyathaa	else
 যেতিয়ালৈ	yeetiyaalai	while
 কৰা	karaa	do
 বাবে	baabee	for
 ঘূৰাই	ghuuraai	return
+কাৰ্য	kaarya	void
 শ্ৰেণী	shree_nii	class

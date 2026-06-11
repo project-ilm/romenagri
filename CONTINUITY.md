@@ -20,7 +20,7 @@ Measured state (Jun 2026, machine ilm01-lin, ~/work/11jun):
 Known bugs fixed: msg pointer/array extern mismatch; tok[i-1] underflow; unguarded
 *pop(1) derefs (both kernels). Remaining: chintamani reverse-parser divergence (analyze
 vs 2004 rmn2acii); fltr_ur_hi consumer format unknown (not sed) — read before use.
-Next: (1) hardened v1 from 2004 kernel + conformance suite; (2) Zenodo DOI (token
+Next: YACC yyerror(const char*) one-liner; Zenodo DOI; full [a-z]^4 post-guard sweep; real-corpora compression; NW-Semitic full tables; OTS anchor.
 needed); (3) full [a-z]^4 post-guard sweep; (4) real-corpora compression sweep
 (IndicCorp/Leipzig); (5) NW-Semitic full tables (in ilm-holy-grail package); (6) OTS anchor.
 Constraints: GPL lineage; (c) 1993-2026 Abhishek Choudhary; no employer references;

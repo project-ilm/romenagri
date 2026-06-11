@@ -1,6 +1,5 @@
-# Sanskrit — C/C++ keywords in the LANGUAGE (not transliteration)
-# script: Devanagari | iso639: san | (C) 1993-2026 Abhishek Choudhary, GPL
-native	romenagri_ascii7	c_construct
+# Sanskrit C/C++ keywords (real translations) | script Devanagari | (C) 1993-2026 Abhishek Choudhary GPL
+native	romenagri	c
 यदि	yadi	if
 अन्यथा	anyathaa	else
 यावत्	yaavat	while
@@ -12,24 +11,21 @@ native	romenagri_ascii7	c_construct
 पक्ष	pak_sa	case
 स्वभाव	svabhaava	default
 प्रत्यागम	pratyaagama	return
-गच्छ	gaccha	goto
 ध्रुव	dhruva	const
 पूर्णाङ्क	puur_naa_nka	int
 भिन्न	bhinna	float
 द्विगुण	dviguu_na	double
 वर्ण	var_na	char
 शून्य	shuunya	void
+क्रिया	kriyaa	void
 वर्ग	varga	class
 नूतन	nuutana	new
 सार्वजनिक	saarvajanika	public
 गुप्त	gupta	private
-रक्षित	rak_sita	protected
 स्थिर	sthira	static
 आभास	aabhaasa	virtual
-परिमाण	parimaa_na	sizeof
+यदा	yadaa	case
 संरचना	sa_nracanaa	struct
-सङ्घ	sa_ngha	union
-गणना	ga_nanaa	enum
-प्रकारनिर्देश	prakaaranirdeesha	typedef
-बाह्य	baahya	extern
 अन्तर्भाव	antarbhaava	include
+पठ	patha	scanf
+लिख	likha	printf

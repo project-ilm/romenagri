@@ -1,6 +1,5 @@
-# Arabic — C/C++ keywords in the LANGUAGE (not transliteration)
-# script: Arabic | iso639: ara | (C) 1993-2026 Abhishek Choudhary, GPL
-native	romenagri_ascii7	c_construct
+# Arabic C/C++ keywords (real translations) | script Arabic | (C) 1993-2026 Abhishek Choudhary GPL
+native	romenagri	c
 إذا	izaa	if
 وإلا	vaillaa	else
 طالما	taalamaa	while
@@ -12,24 +11,21 @@ native	romenagri_ascii7	c_construct
 حالة	haalah	case
 افتراضي	iftiraadii	default
 أرجع	arjie	return
-اذهب	izhaba	goto
 ثابت	saabita	const
 صحيح	sahiiha	int
 عائم	aaima	float
 مزدوج	muzdavija	double
 حرف	harfa	char
 فراغ	faraagha	void
+دالة	daalah	void
 صنف	sanfa	class
 جديد	jadiida	new
 عام	aamma	public
 خاص	khaassa	private
-محمي	mahmii	protected
 ساكن	saakina	static
 افتراضي	iftiraadii	virtual
-حجم	hajma	sizeof
+عندما	indamaa	case
 بنية	binyah	struct
-اتحاد	ittihaada	union
-تعداد	taedaada	enum
-تعريفنوع	taeriifanava	typedef
-خارجي	khaarijii	extern
 ضمن	dammina	include
+اقرأ	iqraa	scanf
+اكتب	uktuba	printf

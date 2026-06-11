@@ -1,6 +1,5 @@
-# Nepali — C/C++ keywords in the LANGUAGE (not transliteration)
-# script: Devanagari | iso639: nep | (C) 1993-2026 Abhishek Choudhary, GPL
-native	romenagri_ascii7	c_construct
+# Nepali C/C++ keywords (real translations) | script Devanagari | (C) 1993-2026 Abhishek Choudhary GPL
+native	romenagri	c
 यदि	yadi	if
 अन्यथा	anyathaa	else
 जबसम्म	jabasamma	while
@@ -10,4 +9,5 @@ native	romenagri_ascii7	c_construct
 जारी	jaarii	continue
 फर्काऊ	pharakaauu	return
 अचर	acara	const
+कार्य	kaarya	void
 वर्ग	varga	class

@@ -1,6 +1,5 @@
-# Urdu — C/C++ keywords in the LANGUAGE (not transliteration)
-# script: Perso-Arabic (Nastaliq) | iso639: urd | (C) 1993-2026 Abhishek Choudhary, GPL
-native	romenagri_ascii7	c_construct
+# Urdu C/C++ keywords (real translations) | script Perso-Arabic (Nastaliq) | (C) 1993-2026 Abhishek Choudhary GPL
+native	romenagri	c
 اگر	agara	if
 ورنہ	varnah	else
 جبتک	jabataka	while
@@ -12,24 +11,19 @@ native	romenagri_ascii7	c_construct
 حالت	haalata	case
 طےشدہ	taeshudah	default
 واپس	vaapasa	return
-جاؤ	jaao	goto
 ثابت	saabita	const
 صحیح	sahiiha	int
 اعشاری	aeshaarii	float
 دوہرا	dauharaa	double
 حرف	harfa	char
 خالی	khaalii	void
+تابع	taabe	void
 جماعت	jamaaata	class
 نیا	nayaa	new
 عوامی	avaamii	public
 نجی	nijii	private
-محفوظ	mahafuuza	protected
 ساکن	saakina	static
 مجازی	majaazii	virtual
-حجم	hajma	sizeof
+جب	jaba	case
 ساخت	saakhta	struct
-اتحاد	itihaada	union
-شمار	shumaara	enum
-قسمتعریف	qismataeriifa	typedef
-خارجی	khaarijii	extern
 شامل	shaamila	include

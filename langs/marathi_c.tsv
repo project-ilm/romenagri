@@ -1,6 +1,5 @@
-# Marathi — C/C++ keywords in the LANGUAGE (not transliteration)
-# script: Devanagari | iso639: mar | (C) 1993-2026 Abhishek Choudhary, GPL
-native	romenagri_ascii7	c_construct
+# Marathi C/C++ keywords (real translations) | script Devanagari | (C) 1993-2026 Abhishek Choudhary GPL
+native	romenagri	c
 जर	jara	if
 अन्यथा	anyathaa	else
 पर्यंत	parya_nta	while
@@ -12,23 +11,18 @@ native	romenagri_ascii7	c_construct
 स्थिती	sthitii	case
 पूर्वनिर्धारित	puurvanirdhaarita	default
 परत	parata	return
-जा	jaa	goto
 स्थिरांक	sthiraa_nka	const
 पूर्णांक	puur_naa_nka	int
 दशांश	dashaa_nsha	float
 द्विगुण	dvigu_na	double
 अक्षर	ak_sara	char
 शून्य	shuunya	void
+कार्य	kaarya	void
 वर्ग	varga	class
 नवीन	naviina	new
 सार्वजनिक	saarvajanika	public
 खाजगी	khaajagii	private
-संरक्षित	sa_nrak_sita	protected
 स्थिर	sthira	static
 आभासी	aabhaasii	virtual
-आकार	aakaara	sizeof
+जेव्हा	jeevhaa	case
 संरचना	sa_nracanaa	struct
-संघ	sa_ngha	union
-गणना	ga_nanaa	enum
-प्रकारव्याख्या	prakaaravyaakhyaa	typedef
-बाह्य	baahya	extern

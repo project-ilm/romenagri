@@ -1,5 +1,4 @@
-# Imperial Aramaic — C/C++ keywords in the LANGUAGE (not transliteration)
-# script: Imperial Aramaic | iso639: arc | (C) 1993-2026 Abhishek Choudhary, GPL
-native	romenagri_ascii7	c_construct
+# Imperial Aramaic C/C++ keywords (real translations) | script Imperial Aramaic | (C) 1993-2026 Abhishek Choudhary GPL
+native	romenagri	c
 𐡄𐡍	hana	if
 𐡏𐡁𐡃	aebada	do

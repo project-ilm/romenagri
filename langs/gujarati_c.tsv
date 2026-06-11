@@ -1,6 +1,5 @@
-# Gujarati — C/C++ keywords in the LANGUAGE (not transliteration)
-# script: Gujarati | iso639: guj | (C) 1993-2026 Abhishek Choudhary, GPL
-native	romenagri_ascii7	c_construct
+# Gujarati C/C++ keywords (real translations) | script Gujarati | (C) 1993-2026 Abhishek Choudhary GPL
+native	romenagri	c
 જો	jau	if
 નહીંતર	nahii_ntara	else
 જ્યાંસુધી	jyaa_nsudhii	while
@@ -12,23 +11,18 @@ native	romenagri_ascii7	c_construct
 સ્થિતિ	sthiti	case
 મૂળભૂત	muulabhuuta	default
 પાછા	paachaa	return
-જાઓ	jaaau	goto
 અચલ	acala	const
 પૂર્ણાંક	puur_naa_nka	int
 દશાંશ	dashaa_nsha	float
 દ્વિગુણ	dvigu_na	double
 અક્ષર	ak_sara	char
 શૂન્ય	shuunya	void
+વિધેય	vidheeya	void
 વર્ગ	varga	class
 નવું	navu_n	new
 જાહેર	jaaheera	public
 ખાનગી	khaanagii	private
-સુરક્ષિત	surak_sita	protected
 સ્થિર	sthira	static
 આભાસી	aabhaasii	virtual
-કદ	kada	sizeof
+જ્યારે	jyaaree	case
 સંરચના	sa_nracanaa	struct
-સંઘ	sa_ngha	union
-ગણના	ga_nanaa	enum
-પ્રકારવ્યાખ્યા	prakaaravyaakhyaa	typedef
-બાહ્ય	baahya	extern
