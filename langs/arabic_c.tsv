@@ -1,0 +1,35 @@
+# Arabic — C/C++ keywords in the LANGUAGE (not transliteration)
+# script: Arabic | iso639: ara | (C) 1993-2026 Abhishek Choudhary, GPL
+native	romenagri_ascii7	c_construct
+إذا	izaa	if
+وإلا	vaillaa	else
+طالما	taalamaa	while
+افعل	ifaela	do
+لكل	likulli	for
+اكسر	iksira	break
+استمر	istamirra	continue
+بدل	baddila	switch
+حالة	haalah	case
+افتراضي	iftiraadii	default
+أرجع	arjie	return
+اذهب	izhaba	goto
+ثابت	saabita	const
+صحيح	sahiiha	int
+عائم	aaima	float
+مزدوج	muzdavija	double
+حرف	harfa	char
+فراغ	faraagha	void
+صنف	sanfa	class
+جديد	jadiida	new
+عام	aamma	public
+خاص	khaassa	private
+محمي	mahmii	protected
+ساكن	saakina	static
+افتراضي	iftiraadii	virtual
+حجم	hajma	sizeof
+بنية	binyah	struct
+اتحاد	ittihaada	union
+تعداد	taedaada	enum
+تعريفنوع	taeriifanava	typedef
+خارجي	khaarijii	extern
+ضمن	dammina	include

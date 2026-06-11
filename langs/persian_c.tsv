@@ -1,0 +1,35 @@
+# Persian — C/C++ keywords in the LANGUAGE (not transliteration)
+# script: Perso-Arabic | iso639: fas | (C) 1993-2026 Abhishek Choudhary, GPL
+native	romenagri_ascii7	c_construct
+اگر	agar	if
+وگرنه	vagarnah	else
+تازمانیکه	taazamaaniikah	while
+انجامبده	anjaamabdah	do
+برای	baraaya	for
+بشکن	bishkan	break
+ادامه	adaamah	continue
+انتخاب	intikhaaba	switch
+حالت	haalata	case
+پیشفرض	piishfarza	default
+بازگرد	baazgard	return
+برو	birav	goto
+ثابت	saabita	const
+صحیح	sahiiha	int
+اعشاری	aeshaarii	float
+دوگانه	daugaanah	double
+نویسه	naviisah	char
+تهی	tahii	void
+رده	radah	class
+جدید	jadiida	new
+عمومی	umuumii	public
+خصوصی	khusuusii	private
+محافظتشده	muhaafazatshudah	protected
+ایستا	iistaa	static
+مجازی	majaazii	virtual
+اندازه	andaazah	sizeof
+ساختار	saakhtaara	struct
+اجتماع	ijtimaae	union
+شمارش	shumaarisha	enum
+تعریفنوع	taeriifnava	typedef
+بیرونی	biiruunii	extern
+شامل	shaamila	include

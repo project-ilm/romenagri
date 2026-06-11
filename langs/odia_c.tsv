@@ -1,0 +1,34 @@
+# Odia — C/C++ keywords in the LANGUAGE (not transliteration)
+# script: Odia | iso639: ori | (C) 1993-2026 Abhishek Choudhary, GPL
+native	romenagri_ascii7	c_construct
+ଯଦି	yadi	if
+ଅନ୍ୟଥା	anyathaa	else
+ଯେପର୍ଯ୍ୟନ୍ତ	yeeparyyanta	while
+କର	kara	do
+ପାଇଁ	paaii_n	for
+ଭାଙ୍ଗ	bhaa_nga	break
+ଜାରି	jaari	continue
+ବାଛ	baacha	switch
+ସ୍ଥିତି	sthiti	case
+ପୂର୍ବନିର୍ଦ୍ଧାରିତ	puurbanirddhaarita	default
+ଫେରାଅ	pheeraaa	return
+ଯାଅ	yaaa	goto
+ଅଚଳ	acala	const
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା	puur_n_nasa_mkhyaa	int
+ଦଶମିକ	dashamika	float
+ଦ୍ୱିଗୁଣ	dvigu_na	double
+ଅକ୍ଷର	ak_sara	char
+ଶୂନ୍ୟ	shuunya	void
+ଶ୍ରେଣୀ	shree_nii	class
+ନୂତନ	nuutana	new
+ସର୍ବସାଧାରଣ	sarbasaadhaara_na	public
+ବ୍ୟକ୍ତିଗତ	byaktigata	private
+ସୁରକ୍ଷିତ	surak_sita	protected
+ସ୍ଥିର	sthira	static
+ଆଭାସୀ	aabhaasii	virtual
+ଆକାର	aakaara	sizeof
+ସଂରଚନା	sa_nracanaa	struct
+ସଂଘ	sa_ngha	union
+ଗଣନା	ga_nanaa	enum
+ପ୍ରକାରବ୍ୟାଖ୍ୟା	prakaarabyaakhyaa	typedef
+ବାହ୍ୟ	baahya	extern

@@ -1,0 +1,90 @@
+# language_registry.csv
+# Every language that can be written in a target-family script and thus
+# served by ILM. Columns:
+#   code, language_name, iso639, script, target_script_for_dev_offset, source_lang, speakers
+#
+# source_lang = which language's keyword set this borrows technical vocab from
+#   (sanskrit for Brahmi/Indic, arabic for Perso-Arabic & NW Semitic).
+# target_script_for_dev_offset = the script key the derivation engine uses to
+#   transliterate Devanagari tatsama into the native script (or 'arabic'/'self').
+#
+# Copyright (c) 1993-2026 Abhishek Choudhary
+#
+code,language_name,iso639,script,xlit_script,source,speakers
+# ============ BRAHMI FAMILY — INDO-ARYAN ============
+hindi,Hindi,hin,Devanagari,devanagari,sanskrit,600M
+bengali,Bengali,ben,Bengali,bengali,sanskrit,270M
+marathi,Marathi,mar,Devanagari,devanagari,sanskrit,83M
+gujarati,Gujarati,guj,Gujarati,gujarati,sanskrit,55M
+punjabi,Punjabi,pan,Gurmukhi,gurmukhi,sanskrit,125M
+odia,Odia,ori,Odia,odia,sanskrit,38M
+assamese,Assamese,asm,Bengali-Assamese,bengali,sanskrit,23M
+nepali,Nepali,nep,Devanagari,devanagari,sanskrit,32M
+sinhala,Sinhala,sin,Sinhala,sinhala,sanskrit,17M
+maithili,Maithili,mai,Devanagari,devanagari,sanskrit,34M
+bhojpuri,Bhojpuri,bho,Devanagari,devanagari,sanskrit,52M
+magahi,Magahi,mag,Devanagari,devanagari,sanskrit,21M
+awadhi,Awadhi,awa,Devanagari,devanagari,sanskrit,38M
+chhattisgarhi,Chhattisgarhi,hne,Devanagari,devanagari,sanskrit,18M
+rajasthani,Rajasthani,raj,Devanagari,devanagari,sanskrit,50M
+marwari,Marwari,mwr,Devanagari,devanagari,sanskrit,30M
+konkani,Konkani,kok,Devanagari,devanagari,sanskrit,2.5M
+dogri,Dogri,doi,Devanagari,devanagari,sanskrit,2.6M
+kashmiri_dev,Kashmiri (Devanagari),kas,Devanagari,devanagari,sanskrit,7M
+sindhi_dev,Sindhi (Devanagari),snd,Devanagari,devanagari,sanskrit,30M
+santali,Santali,sat,Ol Chiki,olchiki,sanskrit,7M
+bodo,Bodo,brx,Devanagari,devanagari,sanskrit,1.5M
+manipuri_beng,Manipuri (Bengali),mni,Bengali,bengali,sanskrit,1.8M
+# ============ BRAHMI FAMILY — DRAVIDIAN ============
+tamil,Tamil,tam,Tamil,tamil,sanskrit,80M
+telugu,Telugu,tel,Telugu,telugu,sanskrit,95M
+kannada,Kannada,kan,Kannada,kannada,sanskrit,60M
+malayalam,Malayalam,mal,Malayalam,malayalam,sanskrit,38M
+tulu,Tulu,tcy,Kannada,kannada,sanskrit,2M
+# ============ BRAHMI FAMILY — CLASSICAL/LITURGICAL ============
+sanskrit,Sanskrit,san,Devanagari,devanagari,self,classical
+pali,Pali,pli,Devanagari,devanagari,sanskrit,liturgical
+prakrit,Prakrit,pra,Devanagari,devanagari,sanskrit,classical
+# ============ BRAHMI FAMILY — TIBETO-BURMAN / HIMALAYAN ============
+tibetan,Tibetan,bod,Tibetan,tibetan,sanskrit,6M
+dzongkha,Dzongkha,dzo,Tibetan,tibetan,sanskrit,650K
+newari,Newari,new,Devanagari,devanagari,sanskrit,860K
+limbu,Limbu,lif,Limbu,limbu,sanskrit,340K
+lepcha,Lepcha,lep,Lepcha,lepcha,sanskrit,66K
+# ============ BRAHMI FAMILY — SOUTHEAST ASIAN ============
+thai,Thai,tha,Thai,thai,sanskrit,60M
+lao,Lao,lao,Lao,lao,sanskrit,30M
+khmer,Khmer,khm,Khmer,khmer,sanskrit,16M
+burmese,Burmese,mya,Myanmar,myanmar,sanskrit,33M
+shan,Shan,shn,Myanmar,myanmar,sanskrit,3.3M
+# ============ BRAHMI FAMILY — INSULAR SE ASIAN ============
+balinese,Balinese,ban,Balinese,balinese,sanskrit,3.3M
+javanese,Javanese,jav,Javanese,javanese,sanskrit,82M
+sundanese,Sundanese,sun,Sundanese,sundanese,sanskrit,32M
+buginese,Buginese,bug,Lontara,buginese,sanskrit,5M
+batak,Batak,btk,Batak,batak,sanskrit,2M
+# ============ BRAHMI FAMILY — PHILIPPINE ============
+tagalog,Tagalog,tgl,Baybayin,tagalog,sanskrit,28M
+# ============ PERSO-ARABIC FAMILY ============
+arabic,Arabic,ara,Arabic,arabic,self,400M
+urdu,Urdu,urd,Perso-Arabic,arabic,arabic,230M
+persian,Persian,fas,Perso-Arabic,arabic,arabic,130M
+pashto,Pashto,pus,Perso-Arabic,arabic,arabic,60M
+sindhi,Sindhi,snd,Perso-Arabic,arabic,arabic,30M
+saraiki,Saraiki,skr,Perso-Arabic,arabic,arabic,26M
+kashmiri,Kashmiri,kas,Perso-Arabic,arabic,arabic,7M
+uyghur,Uyghur,uig,Perso-Arabic,arabic,arabic,10M
+kurdish_sorani,Kurdish (Sorani),ckb,Perso-Arabic,arabic,arabic,8M
+balochi,Balochi,bal,Perso-Arabic,arabic,arabic,8M
+punjabi_shahmukhi,Punjabi (Shahmukhi),pnb,Perso-Arabic,arabic,arabic,80M
+malay_jawi,Malay (Jawi),msa,Jawi,arabic,arabic,20M
+hausa_ajami,Hausa (Ajami),hau,Ajami,arabic,arabic,80M
+dari,Dari,prs,Perso-Arabic,arabic,arabic,12M
+# ============ NORTHWEST SEMITIC FAMILY ============
+hebrew,Hebrew,heb,Hebrew,arabic,arabic,9M
+syriac,Syriac,syr,Syriac,arabic,arabic,liturgical
+aramaic,Imperial Aramaic,arc,Imperial Aramaic,arabic,arabic,historical
+phoenician,Phoenician,phn,Phoenician,arabic,arabic,historical
+samaritan,Samaritan,smp,Samaritan,arabic,arabic,liturgical
+mandaic,Mandaic,mid,Mandaic,arabic,arabic,liturgical
+nabataean,Nabataean,arc,Nabataean,arabic,arabic,historical

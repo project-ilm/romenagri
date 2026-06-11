@@ -1,0 +1,54 @@
+# institutional_standards.csv
+# The institutional specifications each AGI-stack layer maps INTO.
+# ILM does NOT author or modify any of these. This registry records, per layer,
+# the governing standard and its HONEST governance class.
+#
+# governance: de-jure   = ISO/IEC, IEEE, IETF, W3C (formal standards body)
+#             de-facto  = community-stabilized, widely-implemented (Rust, ONNX)
+#             proprietary = single-vendor (CUDA)
+#             academic  = research spec, no standards body (Raft, Paxos)
+#             unstandardized = no governing specification (cognitive architectures)
+#
+# spec numbers marked (verify) should be confirmed against the current published
+# catalogue before use in a normative document; they are cited from general
+# engineering knowledge, not re-verified here.
+#
+# Copyright (c) 1993-2026 Abhishek Choudhary. CC BY-SA 3.0
+#
+layer,layer_name,paradigm,standard,governance,note
+1,Hardware Definition,hdl,IEEE 1800,de-jure,SystemVerilog
+1,Hardware Definition,hdl,IEEE 1076,de-jure,VHDL
+1,Hardware Definition,hdl,IEEE 1666,de-jure,SystemC
+2,Firmware/Embedded,iot,ISO/IEC 9899,de-jure,C
+2,Firmware/Embedded,iot,MISRA C,de-facto,safety-critical C subset (MISRA consortium)
+2,Firmware/Embedded,iot,ISO 26262,de-jure,automotive functional safety
+2,Firmware/Embedded,iot,IEC 61508,de-jure,industrial functional safety
+3,Systems/Memory,systems,ISO/IEC 9899,de-jure,C
+3,Systems/Memory,systems,ISO/IEC 14882,de-jure,C++
+3,Systems/Memory,memory,Rust Reference,de-facto,community-stabilized; no ISO standard
+3,Systems/Memory,systems,IEEE 1003.1,de-jure,POSIX (also ISO/IEC 9945)
+4,Parallel/GPU,gpu,Khronos OpenCL,de-jure,open compute standard
+4,Parallel/GPU,gpu,Khronos SPIR-V,de-jure,intermediate representation
+4,Parallel/GPU,gpu,Khronos SYCL,de-jure,single-source heterogeneous C++
+4,Parallel/GPU,gpu,CUDA,proprietary,NVIDIA single-vendor; not a standards-body spec
+4,Parallel/GPU,concurrent,OpenMP,de-facto,OpenMP ARB directive standard
+5,Dataflow/Reactive,dataflow,Reactive Streams,de-facto,JDK Flow API java.util.concurrent.Flow
+5,Dataflow/Reactive,dataflow,OMG DDS,de-jure,data-centric pub/sub (OMG)
+6,Distributed,distributed,IETF RFC 7540,de-jure,HTTP/2 (gRPC transport)
+6,Distributed,distributed,IETF RFC 9000,de-jure,QUIC
+6,Distributed,distributed,ISO/IEC 19464,de-jure,AMQP
+6,Distributed,distributed,MPI,de-facto,Message Passing Interface Forum
+6,Distributed,distributed,Raft,academic,consensus protocol; no standards body
+6,Distributed,distributed,Paxos,academic,consensus protocol; no standards body
+7,AI/ML,ai,ONNX,de-facto,Open Neural Network Exchange (LF AI)
+7,AI/ML,ai,IEEE 754,de-jure,floating-point arithmetic
+7,AI/ML,ai,ISO/IEC 22989,de-jure,AI concepts and terminology (verify)
+7,AI/ML,ai,ISO/IEC 23053,de-jure,framework for AI using ML (verify)
+8,Robotics,robotics,OMG DDS,de-jure,robotics middleware backbone (ROS 2)
+8,Robotics,robotics,IEEE 1872,de-jure,ontologies for robotics and automation
+8,Robotics,robotics,ISO 10218,de-jure,industrial robot safety
+8,Robotics,robotics,ISO/TS 15066,de-jure,collaborative robot safety
+9,Cognitive/Verification,verification,ISO/IEC 13568,de-jure,Z notation
+9,Cognitive/Verification,verification,SMT-LIB,de-facto,SMT solver interchange standard
+9,Cognitive/Verification,verification,TPTP,de-facto,theorem-prover interchange
+9,Cognitive/Verification,verification,cognitive-architecture,unstandardized,SOAR/ACT-R/agent reasoning are research; no governing spec

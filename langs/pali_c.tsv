@@ -1,0 +1,10 @@
+# Pali — C/C++ keywords in the LANGUAGE (not transliteration)
+# script: Devanagari (also Sinhala, Thai, Burmese, Khmer historically) | iso639: pli | (C) 1993-2026 Abhishek Choudhary, GPL
+native	romenagri_ascii7	c_construct
+सचे	sacee	if
+अञ्ञथा	anyanyathaa	else
+याव	yaava	while
+करोहि	karauhi	do
+अत्थाय	atthaaya	for
+पटिनिवत्त	patinivatta	return
+वग्ग	vaggsa	class

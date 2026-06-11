@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ilm.codes/schema/living-standard-entry.schema.json",
+  "title": "ILM Living-Standard Entry",
+  "description": "One construct, in one language, bound to one institutional standard. The base seed layer is generator-produced; the review layer is community-governed. Generator output is a CORRECT REVERSIBLE DEFAULT, never a final idiomatic claim.",
+  "type": "object",
+  "required": ["construct_id", "language", "layer", "native", "romenagri_ed", "maps_into", "provenance", "review_state"],
+  "properties": {
+    "construct_id": {
+      "type": "string",
+      "description": "Stable id of the universal construct, e.g. KW_STRUCT, KW_KERNEL.",
+      "pattern": "^KW_[A-Z0-9_]+$"
+    },
+    "language": {
+      "type": "string",
+      "description": "ISO 639 code of the target language, e.g. hin, ben, ara."
+    },
+    "layer": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9,
+      "description": "9-Layer AGI stack layer this construct authors at."
+    },
+    "paradigms": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Computational paradigms this construct manifests in. A construct may appear in several; paradigm lists are NON-SUMMABLE (orthogonal primitives recur across paradigms)."
+    },
+    "native": {
+      "type": "string",
+      "description": "Native-script keyword. May be 'romenagri_pending_<script>' placeholder for non-parallel scripts whose glyph rendering is not yet filled."
+    },
+    "romenagri_ed": {
+      "type": "string",
+      "description": "Romenagri-ED ASCII-7 identifier. Reversible. MUST be C-identifier-legal.",
+      "pattern": "^[a-z_][a-z0-9_]*$"
+    },
+    "maps_into": {
+      "type": "object",
+      "required": ["standard", "governance"],
+      "description": "The institutional specification this identifier maps INTO. ILM does NOT author or modify these.",
+      "properties": {
+        "standard": {"type": "string", "description": "e.g. 'ISO/IEC 9899', 'IEEE 1800', 'Khronos OpenCL'."},
+        "clause": {"type": "string", "description": "Optional clause/section reference within the standard."},
+        "governance": {
+          "type": "string",
+          "enum": ["de-jure", "de-facto", "proprietary", "academic", "unstandardized"],
+          "description": "Honest governance class. de-jure = ISO/IEEE/IETF/W3C; de-facto = community-stabilized (e.g. Rust, ONNX); proprietary = single-vendor (e.g. CUDA); academic = research spec (e.g. Raft); unstandardized = no governing spec (e.g. cognitive architectures)."
+        }
+      }
+    },
+    "pedagogy": {
+      "type": "object",
+      "description": "The 'Informed Pedagogy' layer: explains what the underlying spec construct DOES, in localizable terms. Every statement here must be factual about the named standard; no invented mechanics.",
+      "properties": {
+        "operational_mechanic": {"type": "string", "description": "What the construct does at the target layer (e.g. 'allocates a contiguous aggregate with members at defined offsets')."},
+        "safety_constraints": {"type": "string", "description": "Memory boundaries, thread-safety, verification constraints the spec imposes."},
+        "localized_explanation": {"type": "string", "description": "The mechanic re-expressed in the target language's idiom. Native-speaker-authored; generator leaves this empty by default."},
+        "pedagogy_source": {"type": "string", "description": "Citation to the standard clause the mechanic is drawn from. Required if operational_mechanic is non-empty."}
+      }
+    },
+    "provenance": {
+      "type": "string",
+      "enum": ["hand-authored", "tatsama<sanskrit", "borrowed<arabic", "romenagri_pending", "community-revised"],
+      "description": "How this native form was produced. Generator defaults are tatsama/borrowed/pending; community review elevates to community-revised."
+    },
+    "review_state": {
+      "type": "object",
+      "required": ["status"],
+      "description": "Community governance state. The generator seeds 'default'; native speakers move it forward.",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["default", "proposed", "under-review", "endorsed", "contested", "forked"],
+          "description": "default = generator seed, unreviewed. endorsed = native-speaker peer-approved. contested = competing idiomatic proposals exist."
+        },
+        "endorsements": {"type": "integer", "minimum": 0, "default": 0},
+        "reviewers": {"type": "array", "items": {"type": "string"}, "description": "Reviewer handles/credentials. No personal data beyond a chosen handle."},
+        "alternatives": {
+          "type": "array",
+          "description": "Competing idiomatic proposals for the same construct in the same language.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "native": {"type": "string"},
+              "romenagri_ed": {"type": "string", "pattern": "^[a-z_][a-z0-9_]*$"},
+              "rationale": {"type": "string"},
+              "votes": {"type": "integer", "minimum": 0}
+            }
+          }
+        }
+      }
+    }
+  }
+}

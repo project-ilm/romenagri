@@ -1,0 +1,10 @@
+# Hebrew — C/C++ keywords in the LANGUAGE (not transliteration)
+# script: Hebrew | iso639: heb | (C) 1993-2026 Abhishek Choudhary, GPL
+native	romenagri_ascii7	c_construct
+אם	ama	if
+אחרת	aharata	else
+כלעוד	kalaeauda	while
+עשה	aeshah	do
+עבור	aebuura	for
+החזר	hahazara	return
+מחלקה	mahalaqah	class

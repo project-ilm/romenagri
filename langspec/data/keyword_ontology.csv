@@ -1,0 +1,230 @@
+# keyword_ontology.csv
+# The canonical programming-construct ontology.
+# Each row = one universal programming construct, grouped by paradigm.
+# Columns: construct_id, paradigm, english_keyword, category, semantic_note
+# Copyright (c) 1993-2026 Abhishek Choudhary
+#
+# This is the LANGUAGE-INDEPENDENT layer. Per-human-language keyword
+# tables (data/lang_*.csv) supply the localized keyword for each construct_id.
+#
+construct_id,paradigm,english_keyword,category,semantic_note
+# ---- IMPERATIVE / STRUCTURED ----
+KW_IF,imperative,if,control_flow,conditional branch
+KW_ELSE,imperative,else,control_flow,alternative branch
+KW_ELIF,imperative,elif,control_flow,else-if chain
+KW_WHILE,imperative,while,control_flow,pre-test loop
+KW_DO,imperative,do,control_flow,post-test loop body
+KW_FOR,imperative,for,control_flow,counted/iterator loop
+KW_BREAK,imperative,break,control_flow,exit loop
+KW_CONTINUE,imperative,continue,control_flow,skip to next iteration
+KW_SWITCH,imperative,switch,control_flow,multi-way branch
+KW_CASE,imperative,case,control_flow,branch label
+KW_DEFAULT,imperative,default,control_flow,fallthrough label
+KW_RETURN,imperative,return,control_flow,return from subroutine
+KW_GOTO,imperative,goto,control_flow,unconditional jump
+# ---- DECLARATIONS / TYPES ----
+KW_VAR,imperative,var,declaration,mutable variable
+KW_CONST,imperative,const,declaration,immutable binding
+KW_LET,imperative,let,declaration,scoped binding
+KW_INT,imperative,int,type,integer type
+KW_FLOAT,imperative,float,type,floating-point type
+KW_DOUBLE,imperative,double,type,double-precision type
+KW_CHAR,imperative,char,type,character type
+KW_BOOL,imperative,bool,type,boolean type
+KW_STRING,imperative,string,type,string type
+KW_VOID,imperative,void,type,no-value type
+KW_TRUE,imperative,true,literal,boolean true
+KW_FALSE,imperative,false,literal,boolean false
+KW_NULL,imperative,null,literal,null/none value
+# ---- FUNCTIONS / PROCEDURAL ----
+KW_FUNC,procedural,function,subroutine,function definition
+KW_PROC,procedural,procedure,subroutine,procedure definition
+KW_CALL,procedural,call,subroutine,invoke subroutine
+KW_PARAM,procedural,param,subroutine,parameter declaration
+KW_LAMBDA,functional,lambda,function,anonymous function
+KW_YIELD,procedural,yield,coroutine,generator yield
+KW_AWAIT,procedural,await,async,await async result
+KW_ASYNC,procedural,async,async,async marker
+# ---- OBJECT-ORIENTED ----
+KW_CLASS,oop,class,type_def,class definition
+KW_OBJECT,oop,object,type_def,object/singleton
+KW_INTERFACE,oop,interface,type_def,interface/protocol
+KW_EXTENDS,oop,extends,inheritance,subclass relation
+KW_IMPLEMENTS,oop,implements,inheritance,interface realisation
+KW_NEW,oop,new,instantiation,object construction
+KW_THIS,oop,this,reference,self reference
+KW_SUPER,oop,super,reference,parent reference
+KW_PUBLIC,oop,public,access,public visibility
+KW_PRIVATE,oop,private,access,private visibility
+KW_PROTECTED,oop,protected,access,protected visibility
+KW_STATIC,oop,static,storage,class-level member
+KW_ABSTRACT,oop,abstract,modifier,abstract member
+KW_VIRTUAL,oop,virtual,modifier,overridable member
+KW_OVERRIDE,oop,override,modifier,override parent
+# ---- FUNCTIONAL ----
+KW_MATCH,functional,match,pattern,pattern match
+KW_WHEN,functional,when,pattern,guard clause
+KW_FUN,functional,fun,function,functional def
+KW_REC,functional,rec,recursion,recursive binding
+KW_IN,functional,in,binding,let-in scope
+KW_WHERE,functional,where,binding,where clause
+KW_DATA,functional,data,type_def,algebraic data type
+KW_TYPE,functional,type,type_def,type alias
+KW_MODULE,functional,module,namespace,module definition
+# ---- LOGIC / DECLARATIVE ----
+KW_RULE,logic,rule,clause,inference rule
+KW_FACT,logic,fact,clause,asserted fact
+KW_QUERY,logic,query,clause,goal query
+KW_NOT,logic,not,operator,negation
+KW_AND,logic,and,operator,conjunction
+KW_OR,logic,or,operator,disjunction
+# ---- CONCURRENT ----
+KW_THREAD,concurrent,thread,concurrency,thread of execution
+KW_SPAWN,concurrent,spawn,concurrency,spawn process
+KW_LOCK,concurrent,lock,concurrency,mutual exclusion
+KW_SYNC,concurrent,synchronized,concurrency,synchronized block
+KW_CHANNEL,concurrent,channel,concurrency,message channel
+KW_SELECT,concurrent,select,concurrency,channel select
+# ---- MEMORY / SYSTEMS ----
+KW_PTR,systems,pointer,memory,pointer type
+KW_REF,systems,ref,memory,reference
+KW_ALLOC,systems,alloc,memory,allocate
+KW_FREE,systems,free,memory,deallocate
+KW_SIZEOF,systems,sizeof,memory,size operator
+KW_STRUCT,systems,struct,type_def,record type
+KW_UNION,systems,union,type_def,union type
+KW_ENUM,systems,enum,type_def,enumeration
+KW_TYPEDEF,systems,typedef,type_def,type definition
+KW_VOLATILE,systems,volatile,modifier,volatile storage
+KW_REGISTER,systems,register,storage,register hint
+KW_EXTERN,systems,extern,linkage,external linkage
+KW_INLINE,systems,inline,modifier,inline hint
+# ---- HARDWARE / HDL (VHDL/Verilog paradigm) ----
+KW_ENTITY,hdl,entity,hardware,hardware entity
+KW_ARCH,hdl,architecture,hardware,architecture body
+KW_SIGNAL,hdl,signal,hardware,hardware signal
+KW_PORT,hdl,port,hardware,port declaration
+KW_WIRE,hdl,wire,hardware,combinational net
+KW_REG,hdl,reg,hardware,register net
+KW_MODULE_HW,hdl,module,hardware,hardware module
+KW_ALWAYS,hdl,always,hardware,always block
+KW_ASSIGN,hdl,assign,hardware,continuous assignment
+KW_BEGIN,hdl,begin,block,block start
+KW_END,hdl,end,block,block end
+# ---- EXCEPTIONS / ERROR ----
+KW_TRY,imperative,try,exception,try block
+KW_CATCH,imperative,catch,exception,catch handler
+KW_FINALLY,imperative,finally,exception,finally block
+KW_THROW,imperative,throw,exception,raise exception
+KW_RAISE,imperative,raise,exception,raise exception
+KW_EXCEPT,imperative,except,exception,exception handler
+# ---- MODULE / IMPORT ----
+KW_IMPORT,common,import,namespace,import module
+KW_EXPORT,common,export,namespace,export symbol
+KW_PACKAGE,common,package,namespace,package declaration
+KW_NAMESPACE,common,namespace,namespace,namespace block
+KW_USE,common,use,namespace,use/include
+KW_INCLUDE,common,include,preprocessor,textual include
+KW_FROM,common,from,namespace,import source
+KW_AS,common,as,namespace,alias binding
+# ---- GPU / PARALLEL COMPUTE (CUDA/OpenCL/compute-shader paradigm) ----
+KW_KERNEL,gpu,kernel,compute,gpu kernel function
+KW_DEVICE,gpu,device,compute,device-side code
+KW_HOST,gpu,host,compute,host-side code
+KW_GLOBAL,gpu,global,compute,global memory space
+KW_SHARED,gpu,shared,compute,shared memory space
+KW_THREADIDX,gpu,threadidx,compute,thread index
+KW_BLOCKIDX,gpu,blockidx,compute,block index
+KW_GRID,gpu,grid,compute,grid of blocks
+KW_BARRIER,gpu,barrier,compute,sync barrier
+KW_ATOMIC,gpu,atomic,compute,atomic operation
+KW_WARP,gpu,warp,compute,warp/wavefront
+# ---- TENSOR / ML / AI (autodiff, neural, training paradigm) ----
+KW_TENSOR,ai,tensor,ml,tensor type
+KW_MATRIX,ai,matrix,ml,matrix type
+KW_VECTOR,ai,vector,ml,vector type
+KW_GRAD,ai,gradient,ml,gradient
+KW_BACKPROP,ai,backprop,ml,backpropagation
+KW_FORWARD,ai,forward,ml,forward pass
+KW_LAYER,ai,layer,ml,neural layer
+KW_MODEL,ai,model,ml,model definition
+KW_TRAIN,ai,train,ml,training loop
+KW_INFER,ai,infer,ml,inference
+KW_LOSS,ai,loss,ml,loss function
+KW_OPTIMIZE,ai,optimize,ml,optimizer step
+KW_ACTIVATION,ai,activation,ml,activation function
+KW_WEIGHT,ai,weight,ml,weight parameter
+KW_BIAS,ai,bias,ml,bias parameter
+KW_EPOCH,ai,epoch,ml,training epoch
+KW_BATCH,ai,batch,ml,mini-batch
+KW_DATASET,ai,dataset,ml,dataset
+KW_EMBED,ai,embed,ml,embedding
+KW_ATTENTION,ai,attention,ml,attention mechanism
+# ---- IOT / EMBEDDED I/O (firmware/microcontroller paradigm) ----
+KW_PIN,iot,pin,io,gpio pin
+KW_READ,iot,read,io,read input
+KW_WRITE,iot,write,io,write output
+KW_ANALOG,iot,analog,io,analog signal
+KW_DIGITAL,iot,digital,io,digital signal
+KW_PWM,iot,pwm,io,pulse-width modulation
+KW_INTERRUPT,iot,interrupt,io,interrupt handler
+KW_TIMER,iot,timer,io,hardware timer
+KW_SENSOR,iot,sensor,io,sensor input
+KW_ACTUATOR,iot,actuator,io,actuator output
+KW_BUS,iot,bus,io,communication bus
+KW_PROTOCOL,iot,protocol,io,comms protocol
+KW_SLEEP,iot,sleep,power,low-power sleep
+KW_WAKE,iot,wake,power,wake from sleep
+# ---- ROBOTICS / REAL-TIME CONTROL ----
+KW_MOTOR,robotics,motor,control,motor control
+KW_SERVO,robotics,servo,control,servo positioning
+KW_JOINT,robotics,joint,control,robot joint
+KW_POSE,robotics,pose,control,position+orientation
+KW_TRAJECTORY,robotics,trajectory,control,motion path
+KW_FEEDBACK,robotics,feedback,control,feedback loop
+KW_PID,robotics,pid,control,PID controller
+KW_DEADLINE,robotics,deadline,realtime,real-time deadline
+KW_PERIODIC,robotics,periodic,realtime,periodic task
+KW_PRIORITY,robotics,priority,realtime,task priority
+KW_ACTUATE,robotics,actuate,control,actuation command
+KW_PERCEIVE,robotics,perceive,control,perception input
+KW_PLAN,robotics,plan,control,motion/task planning
+# ---- DATAFLOW / REACTIVE / STREAM ----
+KW_STREAM,dataflow,stream,reactive,data stream
+KW_PIPE,dataflow,pipe,reactive,pipeline operator
+KW_MAP,dataflow,map,reactive,map transform
+KW_FILTER,dataflow,filter,reactive,filter transform
+KW_REDUCE,dataflow,reduce,reactive,reduce/fold
+KW_FOLD,dataflow,fold,reactive,fold accumulate
+KW_OBSERVE,dataflow,observe,reactive,observable subscribe
+KW_EMIT,dataflow,emit,reactive,emit value
+KW_SUBSCRIBE,dataflow,subscribe,reactive,subscribe to stream
+KW_DEBOUNCE,dataflow,debounce,reactive,debounce stream
+# ---- MEMORY MODEL / OWNERSHIP (Rust-like systems safety) ----
+KW_OWN,memory,own,ownership,ownership transfer
+KW_BORROW,memory,borrow,ownership,borrow reference
+KW_MOVE,memory,move,ownership,move semantics
+KW_MUT,memory,mut,ownership,mutable borrow
+KW_LIFETIME,memory,lifetime,ownership,lifetime annotation
+KW_ARENA,memory,arena,allocation,arena allocator
+KW_GC,memory,gc,allocation,garbage collection hint
+KW_PIN_MEM,memory,pin,allocation,pinned memory
+# ---- CONTRACTS / VERIFICATION (formal-methods paradigm) ----
+KW_REQUIRES,verification,requires,contract,precondition
+KW_ENSURES,verification,ensures,contract,postcondition
+KW_INVARIANT,verification,invariant,contract,loop/class invariant
+KW_ASSERT,verification,assert,contract,runtime assertion
+KW_ASSUME,verification,assume,contract,assumption
+KW_PROVE,verification,prove,contract,proof obligation
+KW_REFINES,verification,refines,contract,refinement
+KW_MODEL_CHECK,verification,modelcheck,contract,model checking directive
+# ---- DISTRIBUTED / CONSENSUS ----
+KW_NODE,distributed,node,cluster,cluster node
+KW_REPLICA,distributed,replica,cluster,replica
+KW_CONSENSUS,distributed,consensus,cluster,consensus protocol
+KW_SHARD,distributed,shard,cluster,data shard
+KW_GOSSIP,distributed,gossip,cluster,gossip protocol
+KW_LEADER,distributed,leader,cluster,leader election
+KW_RPC,distributed,rpc,cluster,remote procedure call
+KW_ACTOR,distributed,actor,cluster,actor model
+KW_MESSAGE,distributed,message,cluster,message passing

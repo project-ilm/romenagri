@@ -1,0 +1,34 @@
+# Tamil — C/C++ keywords in the LANGUAGE (not transliteration)
+# script: Tamil | iso639: tam | (C) 1993-2026 Abhishek Choudhary, GPL
+native	romenagri_ascii7	c_construct
+எனில்	enila	if
+இல்லையெனில்	illaiyenila	else
+வரை	varai	while
+செய்	sey	do
+க்கு	kku	for
+நிறுத்து	niruttu	break
+தொடர்	todara	continue
+தேர்வு	teervu	switch
+நிலை	nilai	case
+இயல்பு	iyalpu	default
+திரும்பு	tirumpu	return
+செல்	sela	goto
+மாறிலி	maarili	const
+முழு	muzu	int
+தசம	tasama	float
+இரட்டை	irattai	double
+எழுத்து	ezuttu	char
+வெறுமை	verumai	void
+வகுப்பு	vakuppu	class
+புதிய	putiya	new
+பொது	potu	public
+தனிப்பட்ட	tanippatta	private
+பாதுகாக்கப்பட்ட	paatukaakkappatta	protected
+நிலையான	nilaiyaana	static
+மெய்நிகர்	meynikara	virtual
+அளவு	alavu	sizeof
+கட்டமைப்பு	kattamaippu	struct
+ஒன்றிப்பு	onrippu	union
+எண்ணிக்கை	ennikkai	enum
+வகைவரை	vakaivarai	typedef
+வெளி	veli	extern
