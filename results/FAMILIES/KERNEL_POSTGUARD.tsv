@@ -1,0 +1,7 @@
+domain	[a-z]^1..3
+total	18278
+exact	6.07%
+normalized	61.54%
+rev_or_canon	67.62%
+irreducible	29.68%
+crash	2.703%

@@ -1,0 +1,8 @@
+script	source	chars	aligned	coverage%	hub_rt_exact%	sample
+malayalam	/tmp/fam_malayalam.txt	16384	16384	100.0	0.0	rakxaa
+gujarati	/tmp/fam_gujarati.txt	16384	16384	100.0	0.0	rakxaa
+gurmukhi	/tmp/fam_gurmukhi.txt	16384	16384	100.0	0.0	rakxaa
+oriya	/tmp/fam_oriya.txt	16384	16384	100.0	0.0	rakxaa
+kannada	/tmp/fam_kannada.txt	16384	16384	100.0	0.0	rakxaa
+tamil	/tmp/fam_tamil.txt	16384	16384	100.0	0.0	rakxaa
+telugu	/tmp/fam_telugu.txt	16163	16163	100.0	2.8	ru_drama

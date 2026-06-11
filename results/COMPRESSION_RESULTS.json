@@ -1,0 +1,49 @@
+{
+  "bytes_native": 52743,
+  "bytes_romenagri": 30016,
+  "byte_factor": 1.757,
+  "alpha_native": 51,
+  "alpha_romenagri": 24,
+  "sweep": [
+    {
+      "merges": 0,
+      "nat_tokens": 16384,
+      "nat_fert": 4.563,
+      "rmn_tokens": 26424,
+      "rmn_fert": 7.358,
+      "k": 0.62
+    },
+    {
+      "merges": 50,
+      "nat_tokens": 9092,
+      "nat_fert": 2.532,
+      "rmn_tokens": 11640,
+      "rmn_fert": 3.241,
+      "k": 0.781
+    },
+    {
+      "merges": 100,
+      "nat_tokens": 7005,
+      "nat_fert": 1.951,
+      "rmn_tokens": 8693,
+      "rmn_fert": 2.421,
+      "k": 0.806
+    },
+    {
+      "merges": 200,
+      "nat_tokens": 4287,
+      "nat_fert": 1.194,
+      "rmn_tokens": 5542,
+      "rmn_fert": 1.543,
+      "k": 0.774
+    },
+    {
+      "merges": 400,
+      "nat_tokens": 3591,
+      "nat_fert": 1.0,
+      "rmn_tokens": 3591,
+      "rmn_fert": 1.0,
+      "k": 1.0
+    }
+  ]
+}

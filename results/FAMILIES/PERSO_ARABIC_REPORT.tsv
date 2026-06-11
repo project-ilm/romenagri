@@ -1,0 +1,4 @@
+corpus	mode	in_chars	deva_chars	rmn_sample	note
+corp_ur.txt	unknown	4453	4453	(tha'1* "2'/ /'&1_tha 'DE9'1A Hma_ooma~m	manual-review
+corp_ur_2.txt	unknown	8067	8067	(tha_ow* 3F_owtha "2'/ /'&1_tha 'DE9'1A 	manual-review
+test_ar.txt	unknown	21	21	! # $ % & ) C G I J 	manual-review

@@ -1,0 +1,6 @@
+total	475254
+exact	11110	2.338%
+normalized	253145	53.265%
+reversible_or_canonical	264255	55.603%
+irreducible	191746	40.346%
+crash	19253	4.0511%
