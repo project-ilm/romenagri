@@ -1,0 +1,18 @@
+# Sanskrit — C/C++ keyword localization
+# Script: Devanagari | Speakers: liturgical + scholarly (classical)
+# © 1993-2026 Abhishek Choudhary, GPL
+native	c_construct
+भङ्ग	break
+यदा	case
+वर्ण	char
+वर्ग	class
+अनुवर्त	continue
+अन्यथा	else
+प्रति	for
+यदि	if
+पूर्णाङ्क	int
+लिख	printf
+प्रत्यागम	return
+पठ	scanf
+क्रिया	void
+यावत्	while

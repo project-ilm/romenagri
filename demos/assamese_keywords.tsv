@@ -1,0 +1,11 @@
+# Assamese — C/C++ keyword localization
+# Script: Assamese (Bengali-Assamese) | Speakers: 23 million
+# © 1993-2026 Abhishek Choudhary, GPL
+native	c_construct
+শ্ৰেণী	class
+অন্যথা	else
+বাবে	for
+যদি	if
+ঘূৰাই	return
+কাৰ্য	void
+যেতিয়ালৈ	while

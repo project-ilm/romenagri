@@ -1,0 +1,18 @@
+# Hindi — C/C++ keyword localization
+# Script: Devanagari | Speakers: 600 million
+# © 1993-2026 Abhishek Choudhary, GPL
+native	c_construct
+विराम	break
+जब	case
+अक्षर	char
+वर्ग	class
+जारी	continue
+अन्यथा	else
+हेतु	for
+यदि	if
+पूर्णांक	int
+लिखो	printf
+लौटाओ	return
+पढ़ो	scanf
+कृत्य	void
+जबतक	while

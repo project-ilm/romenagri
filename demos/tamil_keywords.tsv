@@ -1,0 +1,16 @@
+# Tamil — C/C++ keyword localization
+# Script: Tamil | Speakers: 80 million
+# © 1993-2026 Abhishek Choudhary, GPL
+native	c_construct
+நிறுத்து	break
+போது	case
+எழுத்து	char
+வகுப்பு	class
+தொடர்	continue
+இல்லையெனில்	else
+க்கு	for
+எனில்	if
+முழு	int
+திரும்பு	return
+செயல்	void
+வரை	while

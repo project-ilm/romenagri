@@ -1,0 +1,11 @@
+# Pali — C/C++ keyword localization
+# Script: Devanagari (also Sinhala, Thai, Burmese, Khmer historically) | Speakers: liturgical (Theravada Buddhist canon)
+# © 1993-2026 Abhishek Choudhary, GPL
+native	c_construct
+वग्ग	class
+अञ्ञथा	else
+अत्थाय	for
+सचे	if
+पटिनिवत्त	return
+किच्च	void
+याव	while

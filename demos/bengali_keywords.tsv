@@ -1,0 +1,16 @@
+# Bengali — C/C++ keyword localization
+# Script: Bengali | Speakers: 270 million
+# © 1993-2026 Abhishek Choudhary, GPL
+native	c_construct
+বিরতি	break
+যখন	case
+অক্ষর	char
+শ্রেণী	class
+চালু	continue
+অন্যথা	else
+জন্য	for
+যদি	if
+পূর্ণসংখ্যা	int
+ফেরত	return
+কাজ	void
+যতক্ষণ	while

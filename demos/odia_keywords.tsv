@@ -1,0 +1,16 @@
+# Odia — C/C++ keyword localization
+# Script: Odia | Speakers: 38 million
+# © 1993-2026 Abhishek Choudhary, GPL
+native	c_construct
+ଭାଙ୍ଗ	break
+ଯେତେବେଳେ	case
+ଅକ୍ଷର	char
+ଶ୍ରେଣୀ	class
+ଜାରି	continue
+ଅନ୍ୟଥା	else
+ପାଇଁ	for
+ଯଦି	if
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା	int
+ଫେରାଅ	return
+କାର୍ଯ୍ୟ	void
+ଯେପର୍ଯ୍ୟନ୍ତ	while

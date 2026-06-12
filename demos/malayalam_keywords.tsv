@@ -1,0 +1,16 @@
+# Malayalam — C/C++ keyword localization
+# Script: Malayalam | Speakers: 38 million
+# © 1993-2026 Abhishek Choudhary, GPL
+native	c_construct
+നിർത്തുക	break
+എപ്പോൾ	case
+അക്ഷരം	char
+വർഗ്ഗം	class
+തുടരുക	continue
+അല്ലെങ്കിൽ	else
+വേണ്ടി	for
+എങ്കിൽ	if
+പൂർണ്ണസംഖ്യ	int
+മടക്കുക	return
+ധർമ്മം	void
+വരെ	while

@@ -1,0 +1,16 @@
+# Gujarati — C/C++ keyword localization
+# Script: Gujarati | Speakers: 55 million
+# © 1993-2026 Abhishek Choudhary, GPL
+native	c_construct
+તોડો	break
+જ્યારે	case
+અક્ષર	char
+વર્ગ	class
+ચાલુ	continue
+નહીંતર	else
+માટે	for
+જો	if
+પૂર્ણાંક	int
+પાછા	return
+વિધેય	void
+જ્યાંસુધી	while

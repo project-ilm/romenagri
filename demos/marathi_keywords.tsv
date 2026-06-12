@@ -1,0 +1,16 @@
+# Marathi — C/C++ keyword localization
+# Script: Devanagari | Speakers: 83 million
+# © 1993-2026 Abhishek Choudhary, GPL
+native	c_construct
+थांबा	break
+जेव्हा	case
+अक्षर	char
+वर्ग	class
+सुरूठेवा	continue
+अन्यथा	else
+साठी	for
+जर	if
+पूर्णांक	int
+परत	return
+कार्य	void
+पर्यंत	while

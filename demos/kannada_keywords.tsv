@@ -1,0 +1,16 @@
+# Kannada — C/C++ keyword localization
+# Script: Kannada | Speakers: 60 million
+# © 1993-2026 Abhishek Choudhary, GPL
+native	c_construct
+ನಿಲ್ಲಿಸು	break
+ಯಾವಾಗ	case
+ಅಕ್ಷರ	char
+ವರ್ಗ	class
+ಮುಂದುವರಿ	continue
+ಇಲ್ಲದಿದ್ದರೆ	else
+ಗಾಗಿ	for
+ಆದರೆ	if
+ಪೂರ್ಣಾಂಕ	int
+ಹಿಂತಿರುಗಿಸು	return
+ಕಾರ್ಯ	void
+ತನಕ	while

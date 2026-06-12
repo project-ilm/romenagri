@@ -1,0 +1,16 @@
+# Telugu — C/C++ keyword localization
+# Script: Telugu | Speakers: 95 million
+# © 1993-2026 Abhishek Choudhary, GPL
+native	c_construct
+ఆపు	break
+ఎప్పుడు	case
+అక్షరం	char
+తరగతి	class
+కొనసాగు	continue
+లేకపోతే	else
+కొరకు	for
+ఒకవేళ	if
+పూర్ణాంకం	int
+తిరిగి	return
+ప్రమేయం	void
+వరకు	while
