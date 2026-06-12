@@ -1,27 +1,68 @@
 # CONTINUITY — resume context for any new session
-Architecture (canonical, DO NOT FLATTEN): AyeCNSe=Nervous System, AyeAI=Cognition,
-AyeAM=Embodiment. System first; software is one medium. ILM = reversible multiscript
-substrate: Layer-1 per-script projection tables (generated, flagged-not-faked) ->
-Layer-2 fixed kernel (Romenagri GPL 2003; 84-entry IPA-anchored basis; ASCII-7,
-case-free, diacritic-free, C-identifier-legal). HPS (15 Aug 2004) = first realization.
-Full AGI stack: RTL->firmware->systems->AI/ML->WASM, one canonical identity.
+# Copyright (C) 1993-2026 Abhishek Choudhary.
 
-Measured state (Jun 2026, machine ilm01-lin, ~/work/11jun):
-- 2003-04 kernel: 98.68% reversible-or-canonical, 1.31% irreducible ([a-z]^1..4 exhaustive).
-- chintamani kernel: 55.6% pre-guard (4.05% crash) -> 67.62% post-guard (2.70% crash).
-  FINDING: chintamani reverse parser is a regression; hardened v1 cuts from 2004 kernel.
-- Compression (lossless): bytes 1.76x, alphabet 51->24, byte-positions 3x;
-  BPE token k<1 at matched merges (report honestly; gain is byte/alphabet level).
-- Brahmi: ALL Unicode Brahmi-derived scripts via generated name-projection tables
-  (tables/, per-script coverage + RT in results/FAMILIES/BRAHMI_ALL_REPORT.tsv).
-- Bindings: bindings/{c,js,java,wasm} all driven by tables/canonical_basis.json.
-- Demos: demos/ — Urdu/Gurmukhi/Farsi/Hebrew localized C through unmodified GCC.
-- Site: ilm.codes/research/ = status + stakeholder pages (map demo untouched).
-Known bugs fixed: msg pointer/array extern mismatch; tok[i-1] underflow; unguarded
-*pop(1) derefs (both kernels). Remaining: chintamani reverse-parser divergence (analyze
-vs 2004 rmn2acii); fltr_ur_hi consumer format unknown (not sed) — read before use.
-Next: YACC yyerror(const char*) one-liner; Zenodo DOI; full [a-z]^4 post-guard sweep; real-corpora compression; NW-Semitic full tables; OTS anchor.
-needed); (3) full [a-z]^4 post-guard sweep; (4) real-corpora compression sweep
-(IndicCorp/Leipzig); (5) NW-Semitic full tables (in ilm-holy-grail package); (6) OTS anchor.
-Constraints: GPL lineage; (c) 1993-2026 Abhishek Choudhary; no employer references;
-honest figures only, always name the kernel variant; flagged-not-faked coverage.
+## THE ARCHITECTURE (canonical, do not flatten)
+
+THREE distinct axes — always keep separate:
+
+AXIS 1 SCRIPT (Layer-1 projection tables):
+  Any script → Devanagari hub → Romenagri ASCII-7
+  Writing system, not language. tables/*.tsv
+
+AXIS 2 LANGUAGE (langspec keyword registry):
+  Bengali যদি = if, Tamil எனில் = if, Urdu اگر = if
+  Each language's own vocabulary. langspec/data/lang_*.csv (68 langs × 201 constructs)
+
+AXIS 3 STANDARD (construct ontology, full AGI stack):
+  KW_IF → C 'if', Python 'if', VHDL 'elsif', CUDA '__if__'...
+  L0 RTL/VHDL/Verilog → L1 Verification → L2 Synthesis → L3 Firmware →
+  L4 Systems C/C++ → L5 Parallel CUDA/OpenCL → L6 Distributed →
+  L7 AI → L8 Robotics → L9 AGI/ASI
+  langspec/output/STANDARD_*.md are the per-language realizations.
+
+WHAT IS ALREADY BUILT (in chintamani/Hindawi):
+  hincc = localized C compiler (Hindi, fully working on GCC-15)
+  h2c/c2h h2cpp/cpp2h h2yacc/yacc2h h2j/j2h h2b/b2h h2l/l2h = translators
+  fltr_ur_hi / fltr_hi_ur = Urdu↔Hindi filters (real executables, not sed)
+  HPS CONFORMANCE (Jun 2026): ASM OK, C OK, C++ OK, LEX OK, BASIC OK, YACC OK
+
+AyeCNSe=Nervous System | AyeAI=Cognition | AyeAM=Embodiment (Sense/Think/Act)
+System first. Software is one medium.
+
+## MEASURED STATE (ilm01-lin, ~/work/11jun, Jun 2026)
+- 2003-04 kernel: 98.68% rev-or-canonical, 1.31% irreducible ([a-z]^4 exhaustive)
+- chintamani post-guard: 67.62% rev-or-canonical, 2.70% crash (regression documented)
+- Compression: bytes 1.76x, alphabet 51→24, byte-positions 3x (lossless)
+  BPE token k<1 at matched merges — honest, not hidden
+- 44 Brahmi scripts: projection tables + compile-run conformance
+- 68-language langspec: real translations (not transliterations), per-language standards
+- Urdu round trip: 62 residue lines (abjad candra forms — characterized, not a failure)
+- PA round trip scripted + md5-tracked
+
+## PARETO OPTIMALITY THEOREM (WhatsApp analysis, Jun 12 2026)
+Any architecture satisfying: Identity(1), Reversibility(1), Ecosystem(100%), T_independence(1)
+must contain a canonical reversible identity layer → is structurally isomorphic to ILM →
+belongs to the same equivalence class. No competitor can improve any axis without
+violating a constraint. QED. Full theorem in langspec/output/ and on site.
+
+## REMAINING
+1. Zenodo DOI (your token, web UI)
+2. OTS anchor (ots stamp after pip install --user --break-system-packages opentimestamps-client)
+3. Full [a-z]^4 post-guard sweep (~45 min)
+4. Real-corpora compression (IndicCorp/Leipzig/PIB news, Hindi/Urdu/Bengali/Telugu)
+5. NW-Semitic full tables (in ilm-holy-grail package — extract into tables/)
+6. RTIs (rtionline.gov.in, 7 drafts file-ready in outputs/)
+7. Court bundle 4 Jul 2026 (capture_evidence.sh)
+8. arXiv papers (Paper1 theorem, Paper4 efficiency — drafts in papers/)
+
+## KNOWN BUGS FIXED
+- msg pointer/array extern mismatch (root segfault, both kernels)
+- tok[i-1] underflow at i=0
+- *pop(1) unguarded derefs (matra path)
+- qb2c Makefile: -std=gnu89 (GCC-15 C23 implicit-decl fix)
+- APCISR make stubs (all/clean_all)
+- YACC yyerror prototype: (char*) not ()
+
+## CONSTRAINTS
+GPL; © 1993-2026 Abhishek Choudhary; no employer refs; honest figures;
+always name kernel variant; flagged-not-faked; systems-first framing.
