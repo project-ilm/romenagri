@@ -1,0 +1,14 @@
+# WASM build of Romenagri kernel
+# Requires: emscripten (emcc). Run: source emsdk_env.sh && make -f Makefile.wasm
+SRCS = acii2rmn.c rmn2acii.c stack.c
+OUT  = romenagri.js
+
+wasm:
+	emcc -O2 $(SRCS) -o $(OUT) \
+	  -sEXPORTED_FUNCTIONS='["_acii2rmn","_rmn2acii"]' \
+	  -sEXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' \
+	  -sALLOW_MEMORY_GROWTH=1 \
+	  -sENVIRONMENT='web,node'
+	@echo "Built $(OUT) + romenagri.wasm"
+clean:
+	rm -f $(OUT) romenagri.wasm

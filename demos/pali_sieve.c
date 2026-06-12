@@ -1,0 +1,16 @@
+/* Pali (Devanagari (also Sinhala, Thai, Burmese, Khmer historically)) — Sieve of Eratosthenes (HPS/ILM)
+   © 1993-2026 Abhishek Choudhary, GPL */
+#include <stdio.h>
+#define सचे if
+#define याव while
+#define अत्थाय for
+#define पटिनिवत्त return
+#define किच्च void
+int main(void) {
+  int n=50, i, j, p[51];
+  for(i=2; i<=n; i++) p[i]=1;
+  for(i=2; i*i<=n; i++) if(p[i]) for(j=i*i;j<=n;j+=i) p[j]=0;
+  printf("Pali primes to %d: ", n);
+  for(i=2; i<=n; i++) if(p[i]) printf("%d ", i);
+  printf("\n"); return 0;
+}
