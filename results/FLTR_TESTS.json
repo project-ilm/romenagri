@@ -1,0 +1,89 @@
+{
+ "filter": "fltr_ur_hi / fltr_hi_ur (Urdu<->Devanagari spoke)",
+ "T1_urdu_deva_urdu": {
+  "desc": "abjad->abugida->abjad; lossy by orthography (short-vowel underspecification)",
+  "by_class": {
+   "arabic": {
+    "orig": 3018,
+    "kept": 0,
+    "pct": 0.0
+   },
+   "ascii": {
+    "orig": 432,
+    "kept": 0,
+    "pct": 0.0
+   },
+   "other": {
+    "orig": 45,
+    "kept": 0,
+    "pct": 0.0
+   },
+   "devanagari": {
+    "orig": 4,
+    "kept": 0,
+    "pct": 0.0
+   },
+   "telugu": {
+    "orig": 5,
+    "kept": 0,
+    "pct": 0.0
+   }
+  }
+ },
+ "T2_note": "hub (Deva->kernel->Deva) faithfulness is measured by 120 corpus test on the Devanagari side",
+ "T3_full_chain": {
+  "desc": "Urdu->Deva->[kernel]->Deva->Urdu; kernel should add ~0 loss over T1",
+  "by_class": {
+   "arabic": {
+    "orig": 3018,
+    "kept": 0,
+    "pct": 0.0
+   },
+   "ascii": {
+    "orig": 432,
+    "kept": 0,
+    "pct": 0.0
+   },
+   "other": {
+    "orig": 45,
+    "kept": 0,
+    "pct": 0.0
+   },
+   "devanagari": {
+    "orig": 4,
+    "kept": 0,
+    "pct": 0.0
+   },
+   "telugu": {
+    "orig": 5,
+    "kept": 0,
+    "pct": 0.0
+   }
+  }
+ },
+ "deva_hub_kernel_fidelity": {
+  "desc": "Deva vs Deva-after-kernel (isolates kernel's own loss)",
+  "by_class": {
+   "devanagari": {
+    "orig": 3129,
+    "kept": 3129,
+    "pct": 100.0
+   },
+   "ascii": {
+    "orig": 480,
+    "kept": 480,
+    "pct": 100.0
+   },
+   "other": {
+    "orig": 43,
+    "kept": 43,
+    "pct": 100.0
+   },
+   "telugu": {
+    "orig": 5,
+    "kept": 5,
+    "pct": 100.0
+   }
+  }
+ }
+}
