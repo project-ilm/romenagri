@@ -1,0 +1,10 @@
+  [iscii-derived] karma      ->(4B)-> karma      EXACT
+  [iscii-derived] namastee   ->(6B)-> namastee   EXACT
+  [iscii-derived] ki         ->(2B)-> ki         EXACT
+  [iscii-derived] kxa        ->(3B)-> kxa        EXACT
+  [iscii-derived] shra       ->(3B)-> shra       EXACT
+  [iscii-derived] _tra       ->(3B)-> _tra       EXACT
+  [iscii-derived] raama      ->(3B)-> raama      EXACT
+  [iscii-derived] wi_dyaa    ->(6B)-> wi_dyaa    EXACT
+substrate=iscii-derived roundtrip 8/8
+PASS rt_iscii (exit status: 0)

@@ -1,0 +1,10 @@
+  [unicode-utf8-devanagari] karma      ->(12B)-> karma      EXACT
+  [unicode-utf8-devanagari] namastee   ->(18B)-> namastee   EXACT
+  [unicode-utf8-devanagari] ki         ->(6B)-> ki         EXACT
+  [unicode-utf8-devanagari] kxa        ->(9B)-> kxa        EXACT
+  [unicode-utf8-devanagari] shra       ->(9B)-> shra       EXACT
+  [unicode-utf8-devanagari] _tra       ->(9B)-> _tra       EXACT
+  [unicode-utf8-devanagari] raama      ->(9B)-> raama      EXACT
+  [unicode-utf8-devanagari] wi_dyaa    ->(18B)-> wi_dyaa    EXACT
+substrate=unicode-utf8-devanagari roundtrip 8/8
+PASS rt_unicode (exit status: 0)

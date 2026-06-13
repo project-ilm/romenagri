@@ -34,7 +34,6 @@ Modifications: (Please maintain reverse chronological order)
 End of modifications.
 */
 
-#include "substrate.h"
 #include "rmn2acii.h"
 char tst2[2];
 char *tst = tst2;
@@ -351,9 +350,9 @@ int level2c (char *tok)
       switch (tok[0])
 	{
 	case 'i':/*_ri*/
-	  if (strlen (msg) > 0 && (strlen (msg) >= strlen (lookup ("^")) && strcmp (msg + strlen (msg) - strlen (lookup ("^")), lookup ("^")) == 0))	/*push-pop */
+	  if (strlen (msg) > 0 && msg[strlen (msg) - 1] == *lookup ("^"))	/*push-pop */
 	    {
-	      msg[strlen (msg) - strlen (lookup ("^"))] = '\0';
+	      msg[strlen (msg) - 1] = '\0';
 	      strcat (msg, lookup ("^_ri"));
 	    }
 	  else

@@ -1,0 +1,3 @@
+binding	substrate	roundtrip	forward_diff_vs_2003	note
+libromenagri_iscii.a	iscii-derived	8/8	2077/2077 identical	generic longest-prefix == 2003 byte-matcher
+libromenagri_unicode.a	unicode-utf8-devanagari	8/8	n/a	zero ISCII; reverse grammar unchanged, one suffix-compare generalization

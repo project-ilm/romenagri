@@ -66,3 +66,4 @@ violating a constraint. QED. Full theorem in langspec/output/ and on site.
 ## CONSTRAINTS
 GPL; © 1993-2026 Abhishek Choudhary; no employer refs; honest figures;
 always name kernel variant; flagged-not-faked; systems-first framing.
+Substrate independence (Jun 2026): bindings/c autoconf'd — ./configure --with-substrate=iscii|unicode|both builds libromenagri_iscii.a / libromenagri_unicode.a from ONE source set via substrate.h. acii_unicode.h is generated from acii.h. Generic forward differentially verified vs the 2003 byte matcher; Unicode binding roundtrips with zero ISCII. Canonical layer = Romenagri grammar; ISCII is one binding. 2004 sources preserved in bindings/c/lineage-2004/.
