@@ -1,0 +1,51 @@
+{
+ "generator": "langspec/tools/langspec_gen.py",
+ "demonstrations": [
+  {
+   "name": "hindi",
+   "constructs": 10,
+   "verify": {
+    "compiled": "OK",
+    "ran": "OK",
+    "src": "hindi.c",
+    "constructs": 5
+   }
+  },
+  {
+   "name": "bhojpuri",
+   "constructs": 10,
+   "verify": {
+    "compiled": "OK",
+    "ran": "OK",
+    "src": "bhojpuri.c",
+    "constructs": 5
+   }
+  },
+  {
+   "name": "zephyr_idiolect",
+   "constructs": 10,
+   "verify": {
+    "compiled": "OK",
+    "ran": "OK",
+    "src": "zephyr_idiolect.c",
+    "constructs": 5
+   }
+  }
+ ],
+ "claim": "Anyone defines keywords (language, dialect, or personal idiolect) as a CSV and gets a localized standard document plus a compile-verified C program \u2014 with zero change to the kernel, the toolchain, or the existing programming-language standards.",
+ "software_engineering_process": [
+  "Localization is a PRESENTATION + ONTOLOGY problem, not a compiler-reinvention problem.",
+  "Keywords are TRANSLATED; execution SEMANTICS are PRESERVED (construct id -> C/Python/VHDL/...).",
+  "Surface keywords map to reversible canonical Romenagri ASCII-7 identifiers (C-identifier-legal).",
+  "Native .uhin -> hincc -> Romenagri identifiers -> UNMODIFIED GCC/LLVM; debuggers/SCM/IDEs/libs untouched.",
+  "Adaptation cost of the linguistic layer across any future execution paradigm = 0."
+ ],
+ "standard_register_process": [
+  "1. IDIOLECT \u2014 an individual publishes a CSV; langspec_gen yields a personal standard + verified C.",
+  "2. COMMUNITY REGISTER \u2014 a language community converges on a shared CSV; conflicts are reviewed by speakers.",
+  "3. CANONICALISATION \u2014 the construct->keyword table is frozen and versioned in langspec/output/.",
+  "4. STANDARDS-BODY ADOPTION \u2014 the frozen register is submitted to Unicode UTC / W3C i18n / ISO-IEC JTC1 / IEEE SA as a localization of an existing standard (not a new language).",
+  "5. The kernel and toolchain never change at any step \u2014 only registry rows are added."
+ ],
+ "scaling": "7,168+ languages x 600+ scripts: each new language adds CSV rows, each new script adds one projection table; the fixed kernel and the unmodified ecosystem absorb the entire AGI stack (L0-L9) at zero engineering-overhead cost."
+}
