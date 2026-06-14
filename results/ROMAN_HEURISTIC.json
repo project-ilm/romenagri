@@ -1,0 +1,12 @@
+{
+ "domain": "[a-z]^1..3",
+ "total": 18278,
+ "raw_kernel_rev_or_canonical_pct": 67.617,
+ "raw_kernel_crash_pct": 2.703,
+ "heuristic_coverage": 18278,
+ "heuristic_coverage_pct": 100.0,
+ "heuristic_kernel_stable": 16735,
+ "heuristic_kernel_stable_pct": 91.56,
+ "max_phoneme_len": 5,
+ "token_inventory": 83
+}
