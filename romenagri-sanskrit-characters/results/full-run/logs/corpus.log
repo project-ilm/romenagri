@@ -1,0 +1,13 @@
+Romenagri/corp_hi.txt
+    lines 102 | restored exactly: old 71, new 72 | crashed lines: old 0, new 0 | old != new: 2  {'line contains a new character': 2, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 1 that the old did not, and fails on 0 that the old restored
+      e.g. '    मेरा रँग दे बसन्ती चोला। माय रँग दे बसन्ती चोला॥'
+           old -> '    मेरा रँग दे बसन्ती चोला| माय रँग दे बसन्ती चोलाe'
+           new -> '    मेरा रँग दे बसन्ती चोला| माय रँग दे बसन्ती चोला॥'
+      e.g. '    सारा जहाँ अदू सही, आओ! मुक़ाबला करें॥'
+           old -> '    सारा जहाँ अदू सही, आओ! मुक़ाबला करेंe'
+           new -> '    सारा जहाँ अदू सही, आओ! मुक़ाबला करें॥'
+Romenagri/test_hi.txt
+    lines 102 | restored exactly: old 1, new 1 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+RESULT: PASS

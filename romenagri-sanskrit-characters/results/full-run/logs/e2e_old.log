@@ -1,0 +1,36 @@
+C    : hin.exe MISSING
+C0   : hin.exe built
+Java : 
+   C A differs
+      want U+0905 U+0952 U+0917 U+094D U+0928 U+093F U+092E U+0940 U+0951 U+0933 U+0947   U+092A U+0941 U+0952 U+0930 U+094B U+0939 U+093F U+0951 U+0924 U+0902   U+092F U+0952 U+091C U+094D U+091E U+0938 U+094D U+092F U+0951   U+0926 U+0947 U+0952 U+0935 U+092E U+0943 U+0952 U+0924 U+094D U+0935 U+093F U+091C U+0951 U+092E U+094D U+0964
+      got  < m i s s i n g >
+   C B differs
+      want U+0915 U+0943   U+0915 U+0944   U+0915 U+0962   U+0915 U+0963   U+090B   U+0960   U+090C   U+0961
+      got  < m i s s i n g >
+   C C differs
+      want U+0950   U+092D U+0942 U+0930 U+094D U+092D U+0941 U+0935 U+0903   U+0938 U+094D U+0935 U+0903   U+0965   U+0939 U+0932 U+094B U+093D U+0928 U+094D U+0924 U+0930 U+093E U+0903   U+0965
+      got  < m i s s i n g >
+   C D differs
+      want U+0915 U+0951 U+0941   U+0915 U+0952 U+093F   U+0915 U+0951 U+093C U+093E
+      got  < m i s s i n g >
+   C E differs
+      want U+090C   U+0950   U+0965   U+0951   U+0961   U+0960   U+0962   U+0963   U+0944
+      got  < m i s s i n g >
+   C F differs
+      want i d e n t i f i e r s   4 2   7
+      got  < m i s s i n g >
+C            : 0 of 6 lines identical to the Devanagari source  xxxxxx
+   C (control) A differs
+      want U+0905 U+0952 U+0917 U+094D U+0928 U+093F U+092E U+0940 U+0951 U+0933 U+0947   U+092A U+0941 U+0952 U+0930 U+094B U+0939 U+093F U+0951 U+0924 U+0902   U+092F U+0952 U+091C U+094D U+091E U+0938 U+094D U+092F U+0951   U+0926 U+0947 U+0952 U+0935 U+092E U+0943 U+0952 U+0924 U+094D U+0935 U+093F U+091C U+0951 U+092E U+094D U+0964
+      got  U+0905 R U+0917 U+094D U+0928 U+093F U+092E U+0940 Q U+0933 U+0947   U+092A U+0941 R U+0930 U+094B U+0939 U+093F Q U+0924 U+0902   U+092F R U+091C U+094D U+091E U+0938 U+094D U+092F Q   U+0926 U+0947 R U+0935 U+092E U+0943 R U+0924 U+094D U+0935 U+093F U+091C Q U+092E U+094D U+0964
+   C (control) B differs
+      want U+0915 U+0943   U+0915 U+0944   U+0915 U+0962   U+0915 U+0963   U+090B   U+0960   U+090C   U+0961
+      got  U+0915 U+0943   U+0915 D   U+0915 b   U+0915 c   U+090B   `  
+   C (control) C differs
+      want U+0950   U+092D U+0942 U+0930 U+094D U+092D U+0941 U+0935 U+0903   U+0938 U+094D U+0935 U+0903   U+0965   U+0939 U+0932 U+094B U+093D U+0928 U+094D U+0924 U+0930 U+093E U+0903   U+0965
+      got  P   U+092D U+0942 U+0930 U+094D U+092D U+0941 U+0935 U+0903   U+0938 U+094D U+0935 U+0903   e   U+0939 U+0932 U+094B U+093D U+0928 U+094D U+0924 U+0930 U+093E U+0903   e
+   C (control) D differs
+      want U+0915 U+0951 U+0941   U+0915 U+0952 U+093F   U+0915 U+0951 U+093C U+093E
+      got  U+0915 Q U+0941   U+0915 R U+093F   U+0915 Q U+093C U+093E
+C (control)  : 1 of 5 lines identical to the Devanagari source  xxxx.
+Java          no output

@@ -1,0 +1,271 @@
+(a) nukta.h against Python's unicodedata (Unicode 15.1.0)
+    11 rows (NUKTA_LEN 11); the code points of U+0900-U+097F whose NFD is a consonant and U+093C: 11                 ok
+    the rows are exactly those code points                                                                           ok
+    every row is the NFD pair of its letter: base + U+093C                                                           ok
+    NUKTA_BYTE is 0xE9, the byte of U+093C in unicode.h                                                              ok
+    every base letter has a byte in unicode.h                                                                        ok
+    the nfc mark of a row is 1 if and only if NFC composes the pair (U+0929, U+0931, U+0934)                         ok
+    the other eight (U+0958-U+095F) are the composition exclusions: NFC leaves their pair decomposed                 ok
+    only U+0929 and U+0931 have a row in unicode.h; the other nine have none                                         ok
+    the default NUKTA_FORM is 0, asis: the converters write what they always wrote                                   ok
+    D3, the byte that ISCII gives ZHA (U+0934), is not a byte of unicode.h: the layer does not take it (section 15.7, C7) ok
+(b) uni2acii in the three forms
+    form asis: the single code point is written as 11 of 11 expected, consonant + nukta as 11 of 11                  ok
+    form nfc : the single code point is written as 11 of 11 expected, consonant + nukta as 11 of 11                  ok
+    form nfd : the single code point is written as 11 of 11 expected, consonant + nukta as 11 of 11                  ok
+    asis: the nine have one spelling in ACII (single code point = pair); U+0929 and U+0931 have two (C7 and C6 E9, D0 and CF E9): 9 of 11 ok
+    nfd: all eleven have one spelling, the consonant and E9: 11 of 11                                                ok
+    nfc: all eleven have one spelling (C7 and D0 for U+0929 and U+0931, the consonant and E9 for the other nine): 11 of 11 ok
+    patch 0001 alone wrote the low byte of the nine and the table byte of the two: 11 of 11                          ok
+(c) how the form is chosen
+    both converters compile with -DNUKTA_FORM=NUKTA_ASIS and -Wall -Wextra without a warning                         ok
+    both converters compile with -DNUKTA_FORM=NUKTA_NFC and -Wall -Wextra without a warning                          ok
+    both converters compile with -DNUKTA_FORM=NUKTA_NFD and -Wall -Wextra without a warning                          ok
+    both converters compile with -DNUKTA_FORM=1 and -Wall -Wextra without a warning                                  ok
+    both converters compile with no macro, and the default build is asis (see (a))                                   ok
+    the old macro NUKTA_REBUILD stops the compiler (#error "NUKTA_REBUILD is gone: choose the form with NUKTA_FORM (NUKTA_) ok
+    a NUKTA_FORM that is not 0, 1 or 2 stops the compiler (#error "NUKTA_FORM is NUKTA_ASIS (0), NUKTA_NFC (1) or NUKTA_NFD (2)") ok
+    asis: the build compiled with the macro writes the same by default as the flag -f asis, for both converters      ok
+    asis: the environment variable writes the same as the flag, for both converters                                  ok
+    nfc : the build compiled with the macro writes the same by default as the flag -f nfc, for both converters       ok
+    nfc : the environment variable writes the same as the flag, for both converters                                  ok
+    nfd : the build compiled with the macro writes the same by default as the flag -f nfd, for both converters       ok
+    nfd : the environment variable writes the same as the flag, for both converters                                  ok
+    --form=NFC (upper case) is the form nfc; -f needs a separate argument                                            ok
+    an empty ROMENAGRI_NUKTA_FORM is not set                                                                         ok
+    precedence, the last winning: macro nfd < environment nfc < flag asis                                            ok
+    a program that includes nukta.h: nukta_set_form("NFD") returns 0 and sets nukta_form to 2; "bogus" returns -1 and changes nothing: '0 2 -1 2' ok
+    uni2acii -f xyz                                         exit status 1, the usage line on stdout, nothing converted, a message on stderr ok
+    uni2acii -f without a form                              exit status 1, the usage line on stdout, nothing converted, a message on stderr ok
+    uni2acii --form=                                        exit status 1, the usage line on stdout, nothing converted, a message on stderr ok
+    uni2acii an unknown option                              exit status 1, the usage line on stdout, nothing converted, a message on stderr ok
+    uni2acii one file name (the converters need two or none) exit status 1, the usage line on stdout, nothing converted ok
+    uni2acii -- and one file name                           exit status 1, the usage line on stdout, nothing converted ok
+    uni2acii ROMENAGRI_NUKTA_FORM=bad                       exit status 1, the usage line on stdout, nothing converted, a message on stderr ok
+    acii2uni -f xyz                                         exit status 1, the usage line on stdout, nothing converted, a message on stderr ok
+    acii2uni -f without a form                              exit status 1, the usage line on stdout, nothing converted, a message on stderr ok
+    acii2uni --form=                                        exit status 1, the usage line on stdout, nothing converted, a message on stderr ok
+    acii2uni an unknown option                              exit status 1, the usage line on stdout, nothing converted, a message on stderr ok
+    acii2uni one file name (the converters need two or none) exit status 1, the usage line on stdout, nothing converted ok
+    acii2uni -- and one file name                           exit status 1, the usage line on stdout, nothing converted ok
+    acii2uni ROMENAGRI_NUKTA_FORM=bad                       exit status 1, the usage line on stdout, nothing converted, a message on stderr ok
+    acii2uni has no -w (the warning layer is in uni2acii): exit status 1                                             ok
+    file names after the options (-f nfd): exit status 0, the output file holds what stdout would                    ok
+    file names after the options (--form=nfd): exit status 0, the output file holds what stdout would                ok
+    file names after the options (-f nfd --): exit status 0, the output file holds what stdout would                 ok
+    file names after the options (--): exit status 0, the output file holds what stdout would                        ok
+(d) acii2uni in the three forms: a model of the rule
+    the build without the layer writes one code point for each of the 254 bytes (the model's building block)         ok
+    random streams: 200000 lines; asis: model disagrees on 0 lines, differs from the build without the layer on 0; nfc: model disagrees on 0 lines, differs from the build without the layer on 18621; nfd: model disagrees on 0 lines, differs from the build without the layer on 91652 ok
+    exhaustive  x y: 64516 lines; asis: model disagrees on 0 lines, differs from the build without the layer on 0; nfc: model disagrees on 0 lines, differs from the build without the layer on 3; nfd: model disagrees on 0 lines, differs from the build without the layer on 1012 ok
+    exhaustive  x E9 y: 64516 lines; asis: model disagrees on 0 lines, differs from the build without the layer on 0; nfc: model disagrees on 0 lines, differs from the build without the layer on 762; nfd: model disagrees on 0 lines, differs from the build without the layer on 1012 ok
+    exhaustive  x y E9: 64516 lines; asis: model disagrees on 0 lines, differs from the build without the layer on 0; nfc: model disagrees on 0 lines, differs from the build without the layer on 765; nfd: model disagrees on 0 lines, differs from the build without the layer on 1012 ok
+    (nfc differs on x y in the 3 lines C6 E9, CF E9, D2 E9; nfd on the 1,012 lines that hold C7 or D0; asis on none: it is the build without the layer)
+(e) uni2acii in the three forms: a model of the rule
+    random streams: 1400000 code units; asis: model agrees; nfc: model agrees; nfd: model agrees                     ok
+    exhaustive pairs: 4332 code units; asis: model agrees; nfc: model agrees; nfd: model agrees                      ok
+    exhaustive triples of 12 code units: 6912 code units; asis: model agrees; nfc: model agrees; nfd: model agrees   ok
+    a low-byte character is not a consonant: Æ (U+00C6, low byte C6) followed by U+093C is C6 E9 in every form, never C7 ok
+(f) independent oracles: Python's NFC and NFD
+    combining classes among the bytes: 7: E9, 9: E8, 220: 89, 230: 88 8A 8B
+    acii2uni -f nfc writes NFC of what the build without the layer writes, on 193147 of 200000 random streams (the others have marks out of canonical order); disagreements: 0 ok
+    negative control: the build without the layer is not in NFC on 18103 of those streams, so this oracle can fail   ok
+    acii2uni -f nfd writes NFD of what the build without the layer writes, on 193147 of 200000 random streams (the others have marks out of canonical order); disagreements: 0 ok
+    negative control: the build without the layer is not in NFD on 88683 of those streams, so this oracle can fail   ok
+    acii2uni's default (asis) is neither: it equals the build without the layer on all of them, in NFC on 175044 and in NFD on 104464 of them ok
+    the limit, nfc: on the 6853 streams with marks out of canonical order (6747 of them a nukta after a halant or an accent) the form is the model's; NFC would reorder, and differs on 6853 ok
+    the limit, nfd: on the 6853 streams with marks out of canonical order (6747 of them a nukta after a halant or an accent) the form is the model's; NFD would reorder, and differs on 6853 ok
+    uni2acii -f nfc writes the bytes that asis writes for the NFC of the input, on 196123 random strings in canonical order; blocks that disagree: 0 ok
+    uni2acii -f nfd writes the bytes that asis writes for the NFD of the input, on 196123 random strings in canonical order; blocks that disagree: 0 ok
+    negative control: uni2acii's asis is not that on the same strings (the pair and the single code point differ)    ok
+(g) uni2acii on the BMP
+    form asis: all 65525 code units of U+0000-U+FFFF but the eleven letters: the new build writes exactly the bytes of the build with patch 0001 alone (65523 bytes) ok
+    form nfc : all 65525 code units of U+0000-U+FFFF but the eleven letters: the new build writes exactly the bytes of the build with patch 0001 alone (65523 bytes) ok
+    form nfd : all 65525 code units of U+0000-U+FFFF but the eleven letters: the new build writes exactly the bytes of the build with patch 0001 alone (65523 bytes) ok
+    ... and of the eleven letters, asis changes the nine (two bytes now, the low byte before); the two with a row keep their byte ok
+    ... nfd changes all eleven: each is the consonant and E9                                                         ok
+    D3 is never written for one of the eleven letters, in any form, single or as a pair                              ok
+(h) the edge cases
+    a consonant at the end of the stream, no newline                         C6                       -> asis U+0928 ok
+    a consonant before a newline                                             C6 LF                    -> asis U+0928 LF ok
+    a consonant before another consonant                                     C6 B3                    -> asis U+0928 U+0915 ok
+    NA NA E9: only the second has a nukta                                    C6 C6 E9                 -> asis U+0928 U+0928 U+093C | nfc U+0928 U+0929 ok
+    NA E9 E9: the second E9 stands alone                                     C6 E9 E9                 -> asis U+0928 U+093C U+093C | nfc U+0929 U+093C ok
+    E9 alone, and E9 after a newline                                         E9 LF E9                 -> asis U+093C LF U+093C ok
+    NNNA (the byte C7) + E9: the byte with its own row is not a consonant    C7 E9                    -> asis U+0929 U+093C | nfd U+0928 U+093C U+093C ok
+    NA, newline, E9: the newline ends the held byte                          C6 LF E9                 -> asis U+0928 LF U+093C ok
+    NA, halant, E9: ISCII's E8 E9, not a nukta of NA                         C6 E8 E9                 -> asis U+0928 U+094D U+093C ok
+    NA, vowel sign AA, E9: a vowel sign between                              C6 DA E9                 -> asis U+0928 U+093E U+093C ok
+    RA E9 and LLA E9                                                         CF E9 D2 E9              -> asis U+0930 U+093C U+0933 U+093C | nfc U+0931 U+0934 ok
+    KA E9: a composition exclusion, a pair in every form                     B3 E9                    -> asis U+0915 U+093C ok
+    C7 and D0 alone: the two letters that have a byte                        C7 D0                    -> asis U+0929 U+0931 | nfd U+0928 U+093C U+0930 U+093C ok
+    an empty input gives the byte order mark and nothing else                                                        ok
+    both converters print their usage line when called with one file name                                            ok
+    NA at the end of the stream: the consonant that waited is written            -> asis C6                          ok
+    NA + nukta at the end of the stream                                          -> asis C6 E9 | nfc C7              ok
+    NA, newline, nukta: the newline ends the wait                                -> asis C6 0A E9                    ok
+    NA NA nukta: only the second has a nukta                                     -> asis C6 C6 E9 | nfc C6 C7        ok
+    NA + nukta + nukta: the second nukta stands alone                            -> asis C6 E9 E9 | nfc C7 E9        ok
+    RA + nukta, LLA + nukta                                                      -> asis CF E9 D2 E9 | nfc D0 D2 E9  ok
+    NA + halant + nukta: not composed in any form                                -> asis C6 E8 E9                    ok
+    NA + vowel sign AA + nukta                                                   -> asis C6 DA E9                    ok
+    KA + nukta: a composition exclusion                                          -> asis B3 E9                       ok
+    U+0929 and U+0931                                                            -> asis C7 D0 | nfd C6 E9 CF E9     ok
+    U+0934 and U+095C: written as the consonant and E9 in every form             -> asis D2 E9 BF E9                 ok
+    a consonant, then a low-byte character (U+00E9), then a nukta: the é is not the nukta -> asis C6 E9 E9           ok
+(i) the warning layer of uni2acii
+    by default nothing is reported: stderr is empty, exit status 0                                                   ok
+    -w                      : exit status 0, the bytes are those of the run without it: True; 2 warnings, one for U+00E9 (the nukta byte) and one for U+2019; a note and a count ok
+    --warn                  : exit status 0, the bytes are those of the run without it: True; 2 warnings, one for U+00E9 (the nukta byte) and one for U+2019; a note and a count ok
+    ROMENAGRI_NUKTA_WARN=1  : exit status 0, the bytes are those of the run without it: True; 2 warnings, one for U+00E9 (the nukta byte) and one for U+2019; a note and a count ok
+    -w and -f nfd           : exit status 0, the bytes are those of the run without it: True; 2 warnings, one for U+00E9 (the nukta byte) and one for U+2019; a note and a count ok
+    ROMENAGRI_NUKTA_WARN=0 reports nothing                                                                           ok
+    -w on Devanagari, ASCII and a newline (everything unicode.h maps or ASCII): no warning                           ok
+    the same code point three times is reported once, and the count says so: uni2acii: 1 code point with no ACII byte was written as its low byte (2 further occurrences not listed) ok
+(j) the whole chain, every form
+    form asis: the eleven letters, each as the single code point and as consonant + nukta, alone, with a consonant before and an aa sign after, and with a halant before: 66 of 66 come out as the input, but the nine as consonant + nukta ok
+    form nfc : the eleven letters, each as the single code point and as consonant + nukta, alone, with a consonant before and an aa sign after, and with a halant before: 66 of 66 come out as NFC of the input ok
+    form nfd : the eleven letters, each as the single code point and as consonant + nukta, alone, with a consonant before and an aa sign after, and with a halant before: 66 of 66 come out as NFD of the input ok
+    negative control: with patch 0001 alone, 0 of the nine single code points come out as consonant + nukta          ok
+    form asis: the 15 clusters of section 11.3 (13 with व, 2 with ह; DDA + nukta in both spellings, so 16 strings): 16 of 16 come out as the input (the single code point U+095C as consonant + nukta) ok
+    form nfc : the 15 clusters of section 11.3 (13 with व, 2 with ह; DDA + nukta in both spellings, so 16 strings): 16 of 16 come out as NFC of the input ok
+    form nfd : the 15 clusters of section 11.3 (13 with व, 2 with ह; DDA + nukta in both spellings, so 16 strings): 16 of 16 come out as NFD of the input ok
+    negative control: on the unpatched build they fail for ड़्व (U+095C), ऱ्व, ऱ्ह                                   ok
+    negative control: with patch 0001 alone they fail for ड़्व (U+095C), ऱ्व, ऱ्ह                                    ok
+(k) the cases of section 15.7  (input -> ACII -> Romenagri -> output, in each form; the same form on both converters)
+    C1  one letter in two spellings, and the eight composition exclusions: the rule is Level 1, a consonant and a nukta; no form writes the eight as single code points
+    C1  the single code point ड़ (U+095C)
+        in: ड़   U+095C
+        asis ACII BF E9                      Romenagri `_rda`                 -> ड़   U+0921 U+093C
+          asis expected: U+0921 U+093C                                                                               ok
+        nfc  ACII BF E9                      Romenagri `_rda`                 -> ड़   U+0921 U+093C
+          nfc expected: U+0921 U+093C                                                                                ok
+        nfd  ACII BF E9                      Romenagri `_rda`                 -> ड़   U+0921 U+093C
+          nfd expected: U+0921 U+093C                                                                                ok
+    C1  ड + nukta, the sequence a keyboard produces
+        in: ड़   U+0921 U+093C
+        asis ACII BF E9                      Romenagri `_rda`                 -> ड़   U+0921 U+093C
+          asis expected: U+0921 U+093C                                                                               ok
+        nfc  ACII BF E9                      Romenagri `_rda`                 -> ड़   U+0921 U+093C
+          nfc expected: U+0921 U+093C                                                                                ok
+        nfd  ACII BF E9                      Romenagri `_rda`                 -> ड़   U+0921 U+093C
+          nfd expected: U+0921 U+093C                                                                                ok
+    C1  all eight: क़ ख़ ग़ ज़ ड़ ढ़ फ़ य़ (U+0958-U+095F)
+        in: क़ख़ग़ज़ड़ढ़फ़य़   U+0958 U+0959 U+095A U+095B U+095C U+095D U+095E U+095F
+        asis ACII B3 E9 B4 E9 B5 E9 BA E9 BF E9 C0 E9 C9 E9 CD E9 Romenagri `kzakhzagzajza_rda_rdhaphzayza` -> क़ख़ग़ज़ड़ढ़फ़य़   U+0915 U+093C U+0916 U+093C U+0917 U+093C U+091C U+093C U+0921 U+093C U+0922 U+093C U+092B U+093C U+092F U+093C
+          asis expected: U+0915 U+093C U+0916 U+093C U+0917 U+093C U+091C U+093C U+0921 U+093C U+0922 U+093C U+092B U+093C U+092F U+093C ok
+        nfc  ACII B3 E9 B4 E9 B5 E9 BA E9 BF E9 C0 E9 C9 E9 CD E9 Romenagri `kzakhzagzajza_rda_rdhaphzayza` -> क़ख़ग़ज़ड़ढ़फ़य़   U+0915 U+093C U+0916 U+093C U+0917 U+093C U+091C U+093C U+0921 U+093C U+0922 U+093C U+092B U+093C U+092F U+093C
+          nfc expected: U+0915 U+093C U+0916 U+093C U+0917 U+093C U+091C U+093C U+0921 U+093C U+0922 U+093C U+092B U+093C U+092F U+093C ok
+        nfd  ACII B3 E9 B4 E9 B5 E9 BA E9 BF E9 C0 E9 C9 E9 CD E9 Romenagri `kzakhzagzajza_rda_rdhaphzayza` -> क़ख़ग़ज़ड़ढ़फ़य़   U+0915 U+093C U+0916 U+093C U+0917 U+093C U+091C U+093C U+0921 U+093C U+0922 U+093C U+092B U+093C U+092F U+093C
+          nfd expected: U+0915 U+093C U+0916 U+093C U+0917 U+093C U+091C U+093C U+0921 U+093C U+0922 U+093C U+092B U+093C U+092F U+093C ok
+    C2  ऩ ऱ ऴ: Unicode gave them code points and not the others; in the layer they are a consonant and a nukta like the rest
+    C2  the single code points
+        in: ऩऱऴ   U+0929 U+0931 U+0934
+        asis ACII C7 D0 D2 E9                Romenagri `_nza_rralvrza`        -> ऩऱऴ   U+0929 U+0931 U+0933 U+093C
+          asis expected: U+0929 U+0931 U+0933 U+093C                                                                 ok
+        nfc  ACII C7 D0 D2 E9                Romenagri `_nza_rralvrza`        -> ऩऱऴ   U+0929 U+0931 U+0934
+          nfc expected: U+0929 U+0931 U+0934                                                                         ok
+        nfd  ACII C6 E9 CF E9 D2 E9          Romenagri `nzarzalvrza`          -> ऩऱऴ   U+0928 U+093C U+0930 U+093C U+0933 U+093C
+          nfd expected: U+0928 U+093C U+0930 U+093C U+0933 U+093C                                                    ok
+    C2  consonant + nukta, three times
+        in: ऩऱऴ   U+0928 U+093C U+0930 U+093C U+0933 U+093C
+        asis ACII C6 E9 CF E9 D2 E9          Romenagri `nzarzalvrza`          -> ऩऱऴ   U+0928 U+093C U+0930 U+093C U+0933 U+093C
+          asis expected: U+0928 U+093C U+0930 U+093C U+0933 U+093C                                                   ok
+        nfc  ACII C7 D0 D2 E9                Romenagri `_nza_rralvrza`        -> ऩऱऴ   U+0929 U+0931 U+0934
+          nfc expected: U+0929 U+0931 U+0934                                                                         ok
+        nfd  ACII C6 E9 CF E9 D2 E9          Romenagri `nzarzalvrza`          -> ऩऱऴ   U+0928 U+093C U+0930 U+093C U+0933 U+093C
+          nfd expected: U+0928 U+093C U+0930 U+093C U+0933 U+093C                                                    ok
+          C7 is U+0929 in asis and nfc and U+0928 U+093C in nfd; C6 E9 is U+0928 U+093C in asis and nfd and U+0929 in nfc ok
+          D0 is U+0931 in asis and nfc and U+0930 U+093C in nfd; CF E9 is U+0930 U+093C in asis and nfd and U+0931 in nfc ok
+          typed in Romenagri: nza is C6 E9 and _nza is C7 (acii2rmn writes them so); with uni2acii -f nfd the single code point U+0929 is `nza`, as the pair is ok
+    C3  a nukta after a halant is not rebuilt in any form: न् + nukta
+    C3  न + halant + nukta  (NFC and NFD reorder it before the halant; E8 E9 is ISCII's soft halant, so the layer leaves it alone: no decision taken)
+        in: ऩ्   U+0928 U+094D U+093C   NFC: U+0929 U+094D
+        asis ACII C6 E8 E9                   Romenagri (not run)              -> ऩ्   U+0928 U+094D U+093C
+          asis expected: U+0928 U+094D U+093C                                                                        ok
+        nfc  ACII C6 E8 E9                   Romenagri (not run)              -> ऩ्   U+0928 U+094D U+093C
+          nfc expected: U+0928 U+094D U+093C                                                                         ok
+        nfd  ACII C6 E8 E9                   Romenagri (not run)              -> ऩ्   U+0928 U+094D U+093C
+          nfd expected: U+0928 U+094D U+093C                                                                         ok
+          and acii2rmn cannot carry a halant + nukta on to Romenagri: C6 E8 E9 gives exit status -11 (section 11.4, unchanged by the layer) ok
+    C4  a nukta that does not follow a consonant directly is nothing to rebuild; the form of the output is the user's (flag, environment, macro, function)
+    C4  न + sign I + nukta  (NFC does not compose it either)
+        in: नि़   U+0928 U+093F U+093C
+        asis ACII C6 DB E9                   Romenagri (not run)              -> नि़   U+0928 U+093F U+093C
+          asis expected: U+0928 U+093F U+093C                                                                        ok
+        nfc  ACII C6 DB E9                   Romenagri (not run)              -> नि़   U+0928 U+093F U+093C
+          nfc expected: U+0928 U+093F U+093C                                                                         ok
+        nfd  ACII C6 DB E9                   Romenagri (not run)              -> नि़   U+0928 U+093F U+093C
+          nfd expected: U+0928 U+093F U+093C                                                                         ok
+    C4  न + space + nukta
+        in: न ़   U+0928 U+0020 U+093C
+        asis ACII C6 20 E9                   Romenagri (not run)              -> न ़   U+0928 U+0020 U+093C
+          asis expected: U+0928 U+0020 U+093C                                                                        ok
+        nfc  ACII C6 20 E9                   Romenagri (not run)              -> न ़   U+0928 U+0020 U+093C
+          nfc expected: U+0928 U+0020 U+093C                                                                         ok
+        nfd  ACII C6 20 E9                   Romenagri (not run)              -> न ़   U+0928 U+0020 U+093C
+          nfd expected: U+0928 U+0020 U+093C                                                                         ok
+    C5  an e with an acute accent is written by uni2acii as its low byte E9, and E9 is the nukta: a character with no ACII byte is treated as any other such character; -w reports it
+    C5  नé: the é is not a nukta in the input; the byte E9 is read as one, as before the layer (asis: न and a nukta)
+        in: नé   U+0928 U+00E9   the low-byte problem of section 11.6, not new
+        asis ACII C6 E9                      Romenagri `nza`                  -> ऩ   U+0928 U+093C
+          asis expected: U+0928 U+093C                                                                               ok
+        nfc  ACII C6 E9                      Romenagri `nza`                  -> ऩ   U+0929
+          nfc expected: U+0929                                                                                       ok
+        nfd  ACII C6 E9                      Romenagri `nza`                  -> ऩ   U+0928 U+093C
+          nfd expected: U+0928 U+093C                                                                                ok
+        uni2acii -w on it, stderr: uni2acii: note: a code point that unicode.h has no row for is written as its low byte, which ACII reads as another character; every converter of this kind does this (TRANSLITERATION.md, section 11.6) / uni2acii: warning: U+00E9 has no ACII byte and is written as its low byte E9, the nukta byte / uni2acii: 1 code point with no ACII byte was written as its low byte (0 further occurrences not listed)
+          with -w: a note, the warning for U+00E9 (the nukta byte) and a count; without -w: nothing                  ok
+    C6  the cluster ड़्व of section 11.3 with the single code point U+095C: not a case of its own; the rule of C1 gives it a consonant and a nukta before the halant is bound
+    C6  with the layer
+        in: ड़्व   U+095C U+094D U+0935
+        asis ACII BF E9 E8 D4                Romenagri `_rdwa`                -> ड़्व   U+0921 U+093C U+094D U+0935
+          asis expected: U+0921 U+093C U+094D U+0935                                                                 ok
+        nfc  ACII BF E9 E8 D4                Romenagri `_rdwa`                -> ड़्व   U+0921 U+093C U+094D U+0935
+          nfc expected: U+0921 U+093C U+094D U+0935                                                                  ok
+        nfd  ACII BF E9 E8 D4                Romenagri `_rdwa`                -> ड़्व   U+0921 U+093C U+094D U+0935
+          nfd expected: U+0921 U+093C U+094D U+0935                                                                  ok
+    C6  ड + nukta + halant + व
+        in: ड़्व   U+0921 U+093C U+094D U+0935
+        asis ACII BF E9 E8 D4                Romenagri `_rdwa`                -> ड़्व   U+0921 U+093C U+094D U+0935
+          asis expected: U+0921 U+093C U+094D U+0935                                                                 ok
+        nfc  ACII BF E9 E8 D4                Romenagri `_rdwa`                -> ड़्व   U+0921 U+093C U+094D U+0935
+          nfc expected: U+0921 U+093C U+094D U+0935                                                                  ok
+        nfd  ACII BF E9 E8 D4                Romenagri `_rdwa`                -> ड़्व   U+0921 U+093C U+094D U+0935
+          nfd expected: U+0921 U+093C U+094D U+0935                                                                  ok
+    C6  patch 0001 alone: 5C is a backslash, and the Romenagri filter loses the ड़् altogether
+        in: ड़्व   U+095C U+094D U+0935   what it did before
+        asis ACII 5C E8 D4                   Romenagri `wa`                   -> व   U+0935
+          asis expected: U+0935                                                                                      ok
+    C7  ऴ has no byte of its own: ळ + nukta, D2 E9; ISCII's D3 stays unused in every form
+    C7  ऴ alone
+        in: ऴ   U+0934
+        asis ACII D2 E9                      Romenagri `lvrza`                -> ऴ   U+0933 U+093C
+          asis expected: U+0933 U+093C                                                                               ok
+        nfc  ACII D2 E9                      Romenagri `lvrza`                -> ऴ   U+0934
+          nfc expected: U+0934                                                                                       ok
+        nfd  ACII D2 E9                      Romenagri `lvrza`                -> ऴ   U+0933 U+093C
+          nfd expected: U+0933 U+093C                                                                                ok
+    C7  in a word: कऴन
+        in: कऴन   U+0915 U+0934 U+0928
+        asis ACII B3 D2 E9 C6                Romenagri `kalvrzana`            -> कऴन   U+0915 U+0933 U+093C U+0928
+          asis expected: U+0915 U+0933 U+093C U+0928                                                                 ok
+        nfc  ACII B3 D2 E9 C6                Romenagri `kalvrzana`            -> कऴन   U+0915 U+0934 U+0928
+          nfc expected: U+0915 U+0934 U+0928                                                                         ok
+        nfd  ACII B3 D2 E9 C6                Romenagri `kalvrzana`            -> कऴन   U+0915 U+0933 U+093C U+0928
+          nfd expected: U+0915 U+0933 U+093C U+0928                                                                  ok
+          D3 is written for none of these, and unicode.h has no row for it                                           ok
+    C8  the 15 reserved keys of section 11.3 are not touched: the Devanagari clusters are code points, passed through one for one; the typed keys still crash
+    C8  ऱ्ह and ल्ह, the two aspirate clusters
+        in: ऱ्हल्ह   U+0931 U+094D U+0939 U+0932 U+094D U+0939
+        asis ACII D0 E8 D8 D1 E8 D8          Romenagri `_rr_hal_ha`           -> ऱ्हल्ह   U+0931 U+094D U+0939 U+0932 U+094D U+0939
+          asis expected: U+0931 U+094D U+0939 U+0932 U+094D U+0939                                                   ok
+        nfc  ACII D0 E8 D8 D1 E8 D8          Romenagri `_rr_hal_ha`           -> ऱ्हल्ह   U+0931 U+094D U+0939 U+0932 U+094D U+0939
+          nfc expected: U+0931 U+094D U+0939 U+0932 U+094D U+0939                                                    ok
+        nfd  ACII CF E9 E8 D8 D1 E8 D8       Romenagri `rz_hal_ha`            -> ऱ्हल्ह   U+0930 U+093C U+094D U+0939 U+0932 U+094D U+0939
+          nfd expected: U+0930 U+093C U+094D U+0939 U+0932 U+094D U+0939                                             ok
+          the typed form lh (section 11.3) still crashes rmn2acii (exit status -11)                                  ok
+          the typed form _rrh (section 11.3) still crashes rmn2acii (exit status -11)                                ok
+          the typed form _rdvr (section 11.3) still crashes rmn2acii (exit status -11)                               ok
+          the typed form tvr (section 11.3) still crashes rmn2acii (exit status -11)                                 ok
+RESULT: PASS

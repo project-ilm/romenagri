@@ -1,0 +1,40 @@
+<h1 class="page">Challenges</h1>
+<p class="lead">What the converters leave open, and the decisions behind the nukta layer. The eight cases below were decided one by one by the author on 8 November 2026; each is run through the compiled converters in all three forms, and the tables show what they wrote.</p>
+<ul>
+<li><a href="#danda">The danda</a></li>
+<li><a href="#cases">The eight cases of the nukta layer, C1 to C8</a></li>
+<li><a href="#reserved">The fifteen reserved keys</a></li>
+<li><a href="#open">What is open</a></li>
+</ul>
+
+<h2 id="danda">The danda</h2>
+{{danda_note}}
+<p>What the code does with the two dandas today, from runs of the compiled programs. The first three columns are the chain; the last says whether the text came back as it went in.</p>
+{{danda_table}}
+<ul>
+<li>The single danda (U+0964) has the ISCII byte <code>EA</code>. The decoder writes <code>|</code> for it, and the lexical layer of <code>rmn2acii</code> never hands <code>|</code> to the parser: it copies it as the ASCII byte <code>7C</code>, which <code>acii2uni</code> reads as U+007C. In the repository's own corpus, {{u:091A,094B,0932,093E,0964}} comes back as {{u:091A,094B,0932,093E}}<code>|</code>. The danda is outside the round-trip contract.</li>
+<li>The double danda (U+0965) was written as its low byte <code>65</code>, the letter <code>e</code>, before patch 0001, so that {{u:091A,094B,0932,093E,0965}} came back as {{u:091A,094B,0932,093E}}<code>e</code>. Patch 0001 gave it the byte <code>87</code> and the string <code>_vd</code>, and it round-trips.</li>
+<li>Nothing in this package retires or changes either of them. What the note says is to be done is for the author to decide. The row of the single danda (<code>EA</code>, <code>|</code>) is in the original tables; the row of the double danda (<code>87</code>, <code>_vd</code>) was added by patch 0001.</li>
+</ul>
+
+<h2 id="cases">The eight cases of the nukta layer</h2>
+<p>Each case is a place where the layer, or the standard that it follows, asked for a decision or left a limit. A row says &ldquo;all three&rdquo; when the three forms give the same line, and otherwise has a row of its own for the forms that differ. Every code point is written out. The ACII column is what <code>uni2acii</code> wrote, the Romenagri column what <code>acii2rmn</code> made of it, and the last column what <code>acii2uni</code> wrote after <code>rmn2acii</code> had turned the Romenagri back into bytes.</p>
+{{cases}}
+
+<h2 id="reserved">The fifteen reserved keys</h2>
+<p>Fifteen keys that the parser can ask for have no row in <code>acii.h</code>. When the parser asks for a missing key, <code>lookup()</code> returns NULL and the next <code>strcat</code> crashes. They are two things of different kinds. Thirteen are the Latin letter <code>v</code> typed after a consonant stem: <code>v</code> is not a letter of Romenagri ({{u:0935}} is <code>w</code>), and the one spelling in which the parser accepts it is that of {{u:0933}}, <code>lvra</code>, so every other stem followed by <code>v</code> asks for a key that no script has. Two are conjuncts typed as aspirates: Devanagari has no letter for an aspirated <code>l</code> or an aspirated {{u:0931}}, and Hindi and Marathi write those sounds as {{u:0932,094D,0939}} and {{u:0931,094D,0939}}; Romenagri's own spelling is <code>l_ha</code> and <code>_rr_ha</code>, but <code>lh</code> is what a person at a keyboard types.</p>
+<p>The author is working on these himself, and nothing in this package changes them. The table shows what the compiled <code>rmn2acii</code> did with each typed form when the site was built. The nukta layer does not touch them either: {{u:0931,094D,0939}} and {{u:0932,094D,0939}} have always passed through the chain from Unicode (case C8).</p>
+{{reserved_table}}
+
+<h2 id="open">What is open</h2>
+<p>Decided on 8 November and closed: the form is a user option and the default is what the converters always wrote (C1, C4); the rule is uniform, a character and a nukta, and is applied before anything is bound (C1, C2, C6); {{u:0934}} takes no byte of its own and <code>D3</code> is not assigned (C7); the clusters get no special cases (C6, C8); a mixed encoding is not repaired, only reported, on request (C5); no decision on a nukta after a halant (C3); the fifteen reserved keys are not touched (C8).</p>
+<p>Left to the reader:</p>
+<ol>
+<li><strong>The form for a pipeline.</strong> The default is <code>asis</code>. A pipeline that compares or stores text in NFC sets <code>nfc</code> on both converters (<code>ROMENAGRI_NUKTA_FORM=nfc</code> does it for a whole script); one that wants every nukta letter as a pair sets <code>nfd</code>.</li>
+<li><strong>Reordering.</strong> Folding a nukta that follows a halant needs a decision between a nukta and ISCII's soft halant, which is written <code>E8 E9</code> as well. The converters do not make it.</li>
+<li><strong>A fourth form,</strong> all eleven letters as single code points, is a table row and a few lines away. Any normaliser would split the eight again.</li>
+<li><strong>The converters as functions.</strong> The conversion loops are in the <code>main</code> of each program. <code>nukta_set_form()</code> and <code>nukta_options()</code> give a program that includes <code>nukta.h</code> the form and the options; calling the loops themselves as functions would mean moving them out of <code>main</code>, which the patch does not do.</li>
+<li><strong>The low-byte fallback for everything else.</strong> A code point that has no row is written as its low byte, which ACII reads as another character (the table below). The cure is to deal with such characters before <code>uni2acii</code>; the warning layer shows which ones there are.</li>
+</ol>
+{{lowbyte_table}}
+<p>The specification lists these in section 15.9, together with the question whether to fold patch 0003 into patch 0001.</p>

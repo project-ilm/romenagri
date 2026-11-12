@@ -1,0 +1,44 @@
+old repertoire: 73 bytes, new: 85 bytes
+(1) old repertoire, sequences up to length 3: 394419
+    round-trip exact: old 235466, new 245999
+    final output identical old/new: 378107 of 394419; differing sequences without avagraha: 2707
+    REGRESSIONS (exact before, broken now): 0
+    repaired (broken before, exact now): 10533  (all contain avagraha: True)
+    crashes (SEGV) old/new: 184 / 174
+      differs (no avagraha): a1df 5fcfdb 6eaa
+      differs (no avagraha): a1e8 75 6e
+      differs (no avagraha): a7df a7cfdb 65aa
+      differs (no avagraha): a7e8 a775 65
+      differs (no avagraha): a9df 5fcfdb 6faa
+      differs (no avagraha): a9e8 75 6f
+      differs (no avagraha): aadc 6565 83
+      differs (no avagraha): aadf 5fcfdb 72aa
+    the guards (mid -> new): final output identical on 391937 of 394419; differs on 2482 (exact before and broken now: 0, broken before and exact now: 0)
+    crashes (SEGV) mid/new: 174 / 174
+      guards change: a1df 5fcfdb 6eaa
+      guards change: a1e8 75 6e
+      guards change: a7df a7cfdb 65aa
+      guards change: a7e8 a775 65
+      guards change: a9df 5fcfdb 6faa
+    of those 2482 sequences, those that belong to W (section 9.2) over the old repertoire: 0 (must be 0)
+(2) sequences with at least one new byte: 227016
+    round-trip exact: new bytes 135278, analogue bytes 121782
+    equivariant (new result == old result of the analogue sequence, modulo the substitution): 177785 of 227016
+    of the 49231 non-equivariant sequences, those whose analogue round-trips exactly: 0 (must be 0)
+      e.g. invalid sequence a184 -> 6e81 | analogue a1df -> 5fcfdb
+      e.g. invalid sequence a185 -> 6e82 | analogue a1df -> 5fcfdb
+      e.g. invalid sequence a186 -> 6e83 | analogue a1df -> 5fcfdb
+      e.g. invalid sequence a284 -> 5fd1db | analogue a2df -> 5fcfdb
+(2b) analogue exact but new byte not: 0   new byte exact but analogue not: 13496
+(3) old build, 207310 sequences: model_encode differs from acii2rmn on 0, model_filter differs from the filter pair on 0 (skipped, undefined behaviour: 394)
+(3) mid build, 207310 sequences: model_encode differs from acii2rmn on 0, model_filter differs from the filter pair on 0 (skipped, undefined behaviour: 352)
+(3) new build, 207310 sequences: model_encode differs from acii2rmn on 0, model_filter differs from the filter pair on 0 (skipped, undefined behaviour: 0)
+(4) 200000 well-formed texts over the old repertoire, 200000 over the new repertoire (vocalic L LL RR and signs, OM, double danda, accents)
+    old build, old repertoire: exact 167615 (83.81%), crashes 0, failing texts without avagraha: 0
+    new build, old repertoire: exact 200000 (100.00%), crashes 0
+    new build, new repertoire: exact 200000 (100.00%), crashes 0
+    the guards are invisible: mid and new write the same bytes on 200000 of 200000 texts over the old repertoire and on 200000 of 200000 over the new one
+(5) every sequence of up to 3 bytes over the new repertoire: 621435, of which 331621 belong to W (section 9.2)
+    in W: the mid and the new build write the same bytes on 331621 of 331621, and the new build returns 331621 of them exactly
+    not in W: the guards change the output of 8599 of 289814
+RESULT: PASS

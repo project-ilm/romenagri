@@ -40,3 +40,7 @@ AyeAI®, AyeCNSe® and AyeAM® are registered trademarks of Abhishek Choudhary i
 licences in this repository grant copyright permissions only and no right in any mark.
 © 1993–2026 Abhishek Choudhary. All rights reserved. AyeAI.
 <!-- trademarks:end -->
+
+## The Sanskrit characters, the v6 mapping layers and v7
+
+`romenagri-sanskrit-characters/` holds zip no. 5 (the Romenagri core with the Sanskrit characters, patches 0001 to 0003, its tests and results), the v6 delta over it (sed mapping layers for 18 Indic scripts with Devanagari as the pivot, Perso-Arabic Unicode to Unicode, one page per script and a navigator for linguists) and v7: `V7-TASKS.md` (every other Unicode script, Hebrew to Egyptian Hieroglyphs, the rest of the Brahmic scripts, Cyrillic and the alphabets, the other abugidas), `v7/inventory/` and AInagri (`v7/ainagri/`). Start with its `README.md`, `V6-README.md` and `V7-TASKS.md`.

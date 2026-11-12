@@ -1,0 +1,12 @@
+
+U2  closedness is needed: the parser without the guards (patch 0001 alone)
+  U2  [P] a lone marker: P(___ta) = 5F C2 but P(_) 5F P(ta) = E8 5F BD                                                 ok
+  U2  [P] every one of the 195 strings u (length <= 3) that is not closed breaks the law for some w of length <= 2     ok
+      (0s)
+
+U2  closedness is needed: the parser with the guards (this package)
+  U2  [Q] a lone marker: P(___ta) = 5F C2 but P(_) 5F P(ta) = E8 5F BD                                                 ok
+  U2  [Q] every one of the 225 strings u (length <= 3) that is not closed breaks the law for some w of length <= 2     ok
+      (0s)
+
+RESULT: PASS   (0 s)   [only U2]

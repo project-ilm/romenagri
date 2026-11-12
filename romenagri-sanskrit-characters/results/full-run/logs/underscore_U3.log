@@ -1,0 +1,12 @@
+
+U3  parity is all that a run remembers: the parser without the guards (patch 0001 alone)
+  U3  [P] after any closed prefix, the suffix `ta` ends in TA after an even run and in the family letter _ta after an odd one (336 runs) ok
+  U3  [P] for n = 2 .. 13 the residual behaviour after n underscores falls into exactly two classes, even and odd, for every closed prefix (16 prefixes) ok
+      (0s)
+
+U3  parity is all that a run remembers: the parser with the guards (this package)
+  U3  [Q] after any closed prefix, the suffix `ta` ends in TA after an even run and in the family letter _ta after an odd one (336 runs) ok
+  U3  [Q] for n = 2 .. 13 the residual behaviour after n underscores falls into exactly two classes, even and odd, for every closed prefix (16 prefixes) ok
+      (0s)
+
+RESULT: PASS   (0 s)   [only U3]

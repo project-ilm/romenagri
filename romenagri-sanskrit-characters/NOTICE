@@ -1,0 +1,88 @@
+Romenagri: the missing Sanskrit characters, the underscore guards, and the nukta layer
+Copyright (C) 1993-2026 Abhishek Choudhary
+
+This package contains three changes to the Romenagri Transliteration System (the
+Romenagri/ directory of https://github.com/hindawiai/chintamani, commit
+3ad87785a75dc2b18438a8b068807103cb920c81: patch 0001, the missing Sanskrit
+characters; patch 0002, the underscore guards of the parser; and patch 0003,
+the nukta layer of the Unicode converters), the documentation of how Romenagri
+transliterates, the tools and tests that check the changes, a site of five
+pages and a notebook that explains them (romenagri-site/), and a narrative of
+the conversation in which they were made.
+
+LICENCE
+-------
+Everything that Abhishek Choudhary wrote, in this package and in the
+repository it is based on, is free software under the GNU General Public
+License, version 2, or (at your option) any later version. The licence text is
+in COPYING (it is the same text as Romenagri/copying). The short statement is
+in LICENSE.
+
+WHAT CARRIES WHICH NOTICE
+-------------------------
+1. The eight files of Romenagri/ that the changes edit:
+       acii.h  unicode.h  aciihin.h  acii2hin.c  rmn2acii.c   (patches 0001, 0002)
+       uni2acii.c  acii2uni.c  Makefile                       (patch 0003)
+   They carry "Copyright (C) 1993-2026 Abhishek Choudhary", the GPL notice
+   they have always carried (version 2 or later), and a new entry in their
+   own "Modifications" log (rmn2acii.c has two entries, one for each of
+   patches 0001 and 0002).
+
+2. The files that are new:
+       Romenagri/TRANSLITERATION.md, Romenagri/nukta.h, README.md,
+       CONVERSATION-NARRATIVE.md, NOTICE, LICENSE, patches/*, tools/*, tests/*,
+       romenagri-site/*
+   Each source file carries "Copyright (C) 1993-2026 Abhishek Choudhary" and
+   "SPDX-License-Identifier: GPL-2.0-or-later". The SPDX identifier refers to
+   the licence text in COPYING. The files that carry no header (the patch,
+   tests/e2e/c.uhin, tests/e2e/j.uhin, tests/e2e/expect.json, SHA256SUMS, the
+   page fragments romenagri-site/src/*.body.html and the logs in results/)
+   are covered by the same licence. The pages, the notebook and the
+   JavaScript in romenagri-site/docs/ are generated and carry the notice.
+
+   The plan and the look of the pages of romenagri-site/ (five pages, a header
+   band, a narrow column of text, a page for each topic) and the author's note
+   on the danda come from a first draft of a site that the author had another
+   AI model (Grok) build from version 4 of this package. Nothing else of that
+   draft is kept: its tables, its demonstration and its notebook were written
+   again, and the pages, the style sheet and the scripts here are new. The
+   note on the danda is marked on the pages as carried over and not yet
+   confirmed by the author.
+
+3. The other 54 files of Romenagri/ are exactly as in the repository. Fifteen
+   of them carry a notice of their own (the GPL, version 2 or later; for the
+   sources "Copyright (C) 2003,2004,2005,2006 Abhishek Choudhary" or
+   "Copyright (C) 2004-2021 Abhishek Choudhary"; COPYING itself carries the
+   Free Software Foundation's notice). The rest are data files, built
+   programs and generated files without a notice. This package does not change
+   them or their notices.
+
+EXCEPTION: THE CORPUS FILES
+---------------------------
+The files Romenagri/corp_*.txt are texts derived from Wikipedia articles.
+As Romenagri/LEGAL says, "They usually come with a CC-BY-SA 3.0 license. The
+exact license terms may kindly be verified from original source". They are the
+work of the authors of those articles, they are NOT covered by the GPL, and
+the terms are those of the original articles (Creative Commons
+Attribution-ShareAlike 3.0, https://creativecommons.org/licenses/by-sa/3.0/).
+This package includes them unchanged, only because they are part of the
+Romenagri/ directory.
+
+THIRD-PARTY MATERIAL THAT IS CITED BUT NOT INCLUDED
+---------------------------------------------------
+The documentation (Romenagri/TRANSLITERATION.md, section 12) cites, as
+sources of facts, five public web pages: Apple's DEVANAGA.TXT mapping table,
+the ICU converter source ucnvisci.cpp, and the Wikipedia article on ISCII (for
+byte values); and a copy of the Unicode Character Database file
+CompositionExclusions.txt and a thread of the Unicode mailing list on
+composition exclusions for Devanagari (for the nukta layer). None of their
+text or code is part of this package. The pages of romenagri-site/ link to
+some of the same pages (the hindawiai/chintamani repository, DEVANAGA.TXT,
+ucnvisci.cpp and the Wikipedia article on ISCII) and load nothing from any
+other site: no script, no style sheet, no font.
+
+NO WARRANTY
+-----------
+This package is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See COPYING.

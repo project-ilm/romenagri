@@ -1,0 +1,20 @@
+R1  table-only extension: U+0934 LLLA = byte D3 = key `lha`
+    ok   D3 is ISCII's 'Consonant ZHA'  (Consonant ZHA (Tamil & Malayalam))
+    ok   `lha` is a key the parser asks for and the patched table lacks
+    ok   the patched library crashes on `lha` and on `lh`  (SEGV SEGV)
+    ok   D3 is listed as a free byte before the edit
+    ok   lint: no error  (0 error(s))
+    ok   D3 is no longer listed as free
+    ok   `lha` -> D3, `lh` -> D3 + halant, `lhaa` -> D3 + sign AA, `kalha` -> KA, LHA  (d3 d3e8 d3da b3d3)
+    ok   filter round trip: D3 | LA LHA | KA halant LHA | LHA sign-I LA  (d3 d1d3 b3e8d3 d3dbd1)
+    ok   uni2acii: U+0934 -> D3  (d3)
+    ok   acii2uni: D3 -> U+0934  (fffe3409)
+    ok   25354 strings compared: results differ only on strings that contain `lh`  (56 differ, all with lh: True)
+R2  a key without a parser branch is caught (T6)
+    ok   lint reports ERROR T6 for `_ka` (the parser reads it as the text `ka`)
+R3  repeated key, repeated byte, bad alphabet, stale length
+    ok   a repeated key `_li`: ERROR T4
+    ok   a byte given to two code points (81): ERROR T4
+    ok   a key with a digit: ERROR T3
+    ok   a table length that was not updated: ERROR T1
+RESULT: PASS

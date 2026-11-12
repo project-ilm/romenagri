@@ -1,0 +1,19 @@
+bn BENGALI 84.38 83.33 69.79
+as BENGALI 84.38 83.33 69.79
+pa GURMUKHI 91.25 91.25 72.5
+gu GUJARATI 92.31 92.31 80.22
+or ORIYA 87.91 87.91 74.73
+ta TAMIL 48.78 48.78 39.84
+te TELUGU 83.0 83.0 72.0
+kn KANNADA 91.21 91.21 79.12
+ml MALAYALAM 70.34 70.34 61.02
+si SINHALA 0.9 0.9 0.9
+brah BRAHMI 66.09 66.09 56.52
+kthi KAITHI 92.65 92.65 86.76
+gran GRANTHA 87.67 87.67 87.67
+shrd SHARADA 86.46 86.46 71.88
+modi MODI 97.47 97.47 82.28
+tirh TIRHUTA 97.56 97.56 84.15
+sidd SIDDHAM 70.65 70.65 69.57
+newa NEWA 82.47 82.47 69.07
+{"urdu": {"letters_in_alpha_urdu": 41, "T1_char_reversible": 27, "T1_char_pct": 65.85, "not_reversible": ["ا", "ث", "ح", "خ", "ذ", "ع", "غ", "ف", "ق", "و", "ہ", "ۂ", "ی", "ے"], "corpus_lines": 56, "T1_line_pct": 0.0, "T2_line_pct": 0.0}, "sindhi": {"extra_letters": 19, "with_devanagari_image": 2, "no_image": ["ٻ", "ڀ", "ٺ", "ٽ", "ٿ", "ڦ", "ڄ", "ڇ", "ڍ", "ڊ", "ڏ", "ڌ", "ڙ", "ڻ", "ڱ", "ڳ", "ڪ"]}, "shahmukhi": {"extra_letters": 6, "with_devanagari_image": 6, "no_image": []}}

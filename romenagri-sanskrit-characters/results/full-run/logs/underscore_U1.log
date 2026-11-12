@@ -1,0 +1,20 @@
+
+U1  the cut law and the run law  (section 14.2): the parser without the guards (patch 0001 alone)
+  U1  [P] cut law P(u__w) = P(u) 5F P(w): every closed u of length <= 3 and every w of length <= 2 over 'aeiouhvzcktlnr_' (598994 cases) ok
+  U1  [P]   ... and whenever P(u) and P(w) are defined, P(u__w) is defined too                                         ok
+  U1  [P] cut law on 100000 random pairs (length <= 8 over a-z and _)                                                  ok
+  U1  [P] cut law on the C parser of that build (tests/harness.c): 30000 of the pairs                                  ok
+  U1  [P] run law P(u _^n w) = P(u) 5F^(n div 2) P((_ if n odd) w), n = 2 .. 40: 8768 runs, 256 contexts               ok
+  U1  [P] n = 1 is different, and only through `vocalic`: k_ri is KA + the sign RI, k___ri is KA, halant, 5F, the vowel RI ok
+      (17s)
+
+U1  the cut law and the run law  (section 14.2): the parser with the guards (this package)
+  U1  [Q] cut law P(u__w) = P(u) 5F P(w): every closed u of length <= 3 and every w of length <= 2 over 'aeiouhvzcktlnr_' (800160 cases) ok
+  U1  [Q]   ... and whenever P(u) and P(w) are defined, P(u__w) is defined too                                         ok
+  U1  [Q] cut law on 100000 random pairs (length <= 8 over a-z and _)                                                  ok
+  U1  [Q] cut law on the C parser of that build (tests/harness.c): 30000 of the pairs                                  ok
+  U1  [Q] run law P(u _^n w) = P(u) 5F^(n div 2) P((_ if n odd) w), n = 2 .. 40: 9984 runs, 256 contexts               ok
+  U1  [Q] n = 1 is different, and only through `vocalic`: k_ri is KA + the sign RI, k___ri is KA, halant, 5F, the vowel RI ok
+      (20s)
+
+RESULT: PASS   (37 s)   [only U1]

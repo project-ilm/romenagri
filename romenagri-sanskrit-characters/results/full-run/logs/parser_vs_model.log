@@ -1,0 +1,19 @@
+table rows: old 84  mid 96  new 96
+grammar read from the document: 5 states, 95 rules (12 of them added by patch 0001, 12 guards added by patch 0002)
+strings: 1232540
+C parsers done in 11s
+old C parser vs spec: agree 1151267 (of which both crash: 56012), DISAGREE 0, skipped (undefined behaviour) 81273
+old C parser vs hand: agree 1151267 (of which both crash: 56012), DISAGREE 0, skipped (undefined behaviour) 81273
+old spec vs hand     : identical outcome 1232540, different 0
+mid C parser vs spec: agree 1150887 (of which both crash: 40051), DISAGREE 0, skipped (undefined behaviour) 81653
+mid C parser vs hand: agree 1150887 (of which both crash: 40051), DISAGREE 0, skipped (undefined behaviour) 81653
+mid spec vs hand     : identical outcome 1232540, different 0
+new C parser vs spec: agree 1232540 (of which both crash: 30133), DISAGREE 0, skipped (undefined behaviour) 0
+new C parser vs hand: agree 1232540 (of which both crash: 30133), DISAGREE 0, skipped (undefined behaviour) 0
+new spec vs hand     : identical outcome 1232540, different 0
+(old/mid results that differ only because the C code reads past the terminator: 587)
+strings whose result changed old -> mid (patch 0001): 98075 ; unexplained (no new token inside): 0
+(mid/new results that differ only because the mid C code reads past the terminator: 81595)
+strings whose result changed mid -> new (patch 0002): 24412 ; unexplained (no guard applied): 0
+strings on which the new grammar reads past the terminator: 0 (must be 0: no string is skipped for the new build)
+RESULT: PASS

@@ -1,0 +1,13 @@
+
+U4  the marker rule and the decoder  (sections 14.3 and 14.5)
+  U4  decoder output of 30000 well-formed texts with literal underscores (368768 bytes 5F, runs up to 21): every odd run is followed by a letter ok
+  U4  a run of n underscores followed by a letter splits in exactly one way into pairs and a last marker (n = 0 .. 11): pairs first, marker last ok
+  U4  decoder then parser (the grammar without the guards) returns the text exactly, for all 30000 texts               ok
+  U4  decoder then parser (the grammar with the guards) returns the text exactly, for all 30000 texts                  ok
+  U4  decoder then parser on the C library, without the guards (mid) (harness -f): 20000 of the texts return exactly   ok
+  U4  decoder then parser on the C library, with the guards (new) (harness -f): 20000 of the texts return exactly      ok
+  U4  outside well-formed ACII the decoder can leave an underscore without its letter: A4 E8, A2 E8 and EB E8 are written `_` (an odd run at the end) ok
+  U4  ... or put it in front of the letters of another key: C4 E9 is written `__rda`, C5 E9 `__rdha`, A4 E9 `_za` (the contract of section 9 excludes these) ok
+      (10s)
+
+RESULT: PASS   (10 s)   [only U4]

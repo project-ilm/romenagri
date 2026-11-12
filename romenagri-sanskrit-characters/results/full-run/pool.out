@@ -1,0 +1,551 @@
+pool started 2026-11-08T23:43:56Z (all 21 steps, the longest first, two at a time: xargs -P 2)
+== underscore_U7
+== underscore_U1
+   
+   U1  the cut law and the run law  (section 14.2): the parser without the guards (patch 0001 alone)
+     U1  [P] cut law P(u__w) = P(u) 5F P(w): every closed u of length <= 3 and every w of length <= 2 over 'aeiouhvzcktlnr_' (598994 cases) ok
+     U1  [P]   ... and whenever P(u) and P(w) are defined, P(u__w) is defined too                                         ok
+     U1  [P] cut law on 100000 random pairs (length <= 8 over a-z and _)                                                  ok
+     U1  [P] cut law on the C parser of that build (tests/harness.c): 30000 of the pairs                                  ok
+     U1  [P] run law P(u _^n w) = P(u) 5F^(n div 2) P((_ if n odd) w), n = 2 .. 40: 8768 runs, 256 contexts               ok
+     U1  [P] n = 1 is different, and only through `vocalic`: k_ri is KA + the sign RI, k___ri is KA, halant, 5F, the vowel RI ok
+         (17s)
+   
+   U1  the cut law and the run law  (section 14.2): the parser with the guards (this package)
+     U1  [Q] cut law P(u__w) = P(u) 5F P(w): every closed u of length <= 3 and every w of length <= 2 over 'aeiouhvzcktlnr_' (800160 cases) ok
+     U1  [Q]   ... and whenever P(u) and P(w) are defined, P(u__w) is defined too                                         ok
+     U1  [Q] cut law on 100000 random pairs (length <= 8 over a-z and _)                                                  ok
+     U1  [Q] cut law on the C parser of that build (tests/harness.c): 30000 of the pairs                                  ok
+     U1  [Q] run law P(u _^n w) = P(u) 5F^(n div 2) P((_ if n odd) w), n = 2 .. 40: 9984 runs, 256 contexts               ok
+     U1  [Q] n = 1 is different, and only through `vocalic`: k_ri is KA + the sign RI, k___ri is KA, halant, 5F, the vowel RI ok
+         (20s)
+   
+   RESULT: PASS   (37 s)   [only U1]
+
+================ SUMMARY
+  underscore_U1          PASS
+  logs: <build>/logs
+== parser_vs_model
+   
+   U7  the twelve guards  (section 14.7)
+     U7  the grammar has 12 guards (the rules tagged '!'), one for each position found in U6 (12)                         ok
+     U7  no rule of the grammar with the guards can consume an underscore, or step over the terminator, unseen            ok
+     U7  the guards add 12 rules and no state (5 states, longest guard 4 characters)                                      ok
+     U7  the witness that each guard names is, for every rule of U6, the string that the search of U6 found (the second guard of state M has its own) ok
+     U7  every one of the 551881 strings of length <= 4 over a-z and _: the grammar with the guards writes one 5F per pair of underscores (538039 defined, 13842 with a missing row) ok
+     U7  every one of the 1118481 strings of length <= 5 over the letters that the rules test (acehjklnortvyz_^): the same (1066440 defined, 52041 with a missing row) ok
+     U7  with the table completed, the parser with the guards is defined on all 551881 strings of length <= 4 over a-z and _ (a total function in this range) ok
+     U7  the grammar without the guards with the table as it is, same strings                                             (informational) defined 486585, reads past the end 44948, missing row 20348
+     U7  guard L1  'c' [_ $]                          witness 'c__'  : breaks the law without it, holds with it           ok
+     U7  guard L2b 'v' [_ $]                          witness 'lv__' : breaks the law without it, holds with it           ok
+     U7  guard L2c 'e' [_ $]                          witness '_e__' : breaks the law without it, holds with it           ok
+     U7  guard L2c 'y' [_ $]                          witness '_y__' : breaks the law without it, holds with it           ok
+     U7  guard L2c 'o' [_ $]                          witness '_o_'  : breaks the law without it, holds with it           ok
+     U7  guard L2c 'n' [_ $]                          witness '_n_'  : breaks the law without it, holds with it           ok
+     U7  guard L2c 'r' [_ $]                          witness '_r_'  : breaks the law without it, holds with it           ok
+     U7  guard L2c 'j' [_ $]                          witness '_j_'  : breaks the law without it, holds with it           ok
+     U7  guard M   'e' [_ $]                          witness 'je__' : breaks the law without it, holds with it           ok
+     U7  guard M   '_' [_ $]                          witness '^__a' : breaks the law without it, holds with it           ok
+     U7  guard M   '_' . [_ $]                        witness '^_^__': breaks the law without it, holds with it           ok
+     U7  guard M   'o' [_ $]                          witness 'jo_'  : breaks the law without it, holds with it           ok
+     U7  no guard changes the parse of two table keys written one after the other (9025 strings), except where the parser without the guards reads past the end (6: the key `^` followed by an underscore key) ok
+     U7  strings of length <= 3 that both grammars read                                                                   (informational) 18208; the output differs on 86 (on 66 of them the parser without the guards kept the law); e.g. [('c_', 'b8 e8', '63 e8'), ('ac_', '61 b8 e8', '61 63 e8'), ('bc_', 'ca e8 b8 e8', 'ca e8 63 e8')]
+     U7  on the 12 witness strings the C parser of this package writes what the grammar with the guards writes, one 5F per pair ok
+     U7  the C parser of this package: on 1670362 strings the output is the same whatever follows the terminator (an underscore, a letter, what an earlier string left) ok
+     U7  the C parser without the guards (patch 0001 alone), on the 90345 strings of the quick run                        (informational) 11000 give other bytes when `x` follows the terminator instead of `_`
+     U7  ... so the measurement can see a read past the end: the parser without the guards fails it                       ok
+         (83s)
+   
+   RESULT: PASS   (85 s)   [only U7]
+
+================ SUMMARY
+  underscore_U7          PASS
+  logs: <build>/logs
+== roundtrip
+       REGRESSIONS (exact before, broken now): 0
+       repaired (broken before, exact now): 10533  (all contain avagraha: True)
+       crashes (SEGV) old/new: 184 / 174
+         differs (no avagraha): a1df 5fcfdb 6eaa
+         differs (no avagraha): a1e8 75 6e
+         differs (no avagraha): a7df a7cfdb 65aa
+         differs (no avagraha): a7e8 a775 65
+         differs (no avagraha): a9df 5fcfdb 6faa
+         differs (no avagraha): a9e8 75 6f
+         differs (no avagraha): aadc 6565 83
+         differs (no avagraha): aadf 5fcfdb 72aa
+       the guards (mid -> new): final output identical on 391937 of 394419; differs on 2482 (exact before and broken now: 0, broken before and exact now: 0)
+       crashes (SEGV) mid/new: 174 / 174
+         guards change: a1df 5fcfdb 6eaa
+         guards change: a1e8 75 6e
+         guards change: a7df a7cfdb 65aa
+         guards change: a7e8 a775 65
+         guards change: a9df 5fcfdb 6faa
+       of those 2482 sequences, those that belong to W (section 9.2) over the old repertoire: 0 (must be 0)
+   (2) sequences with at least one new byte: 227016
+       round-trip exact: new bytes 135278, analogue bytes 121782
+       equivariant (new result == old result of the analogue sequence, modulo the substitution): 177785 of 227016
+       of the 49231 non-equivariant sequences, those whose analogue round-trips exactly: 0 (must be 0)
+         e.g. invalid sequence a184 -> 6e81 | analogue a1df -> 5fcfdb
+         e.g. invalid sequence a185 -> 6e82 | analogue a1df -> 5fcfdb
+         e.g. invalid sequence a186 -> 6e83 | analogue a1df -> 5fcfdb
+         e.g. invalid sequence a284 -> 5fd1db | analogue a2df -> 5fcfdb
+   (2b) analogue exact but new byte not: 0   new byte exact but analogue not: 13496
+   (3) old build, 207310 sequences: model_encode differs from acii2rmn on 0, model_filter differs from the filter pair on 0 (skipped, undefined behaviour: 394)
+   (3) mid build, 207310 sequences: model_encode differs from acii2rmn on 0, model_filter differs from the filter pair on 0 (skipped, undefined behaviour: 352)
+   (3) new build, 207310 sequences: model_encode differs from acii2rmn on 0, model_filter differs from the filter pair on 0 (skipped, undefined behaviour: 0)
+   (4) 200000 well-formed texts over the old repertoire, 200000 over the new repertoire (vocalic L LL RR and signs, OM, double danda, accents)
+       old build, old repertoire: exact 167615 (83.81%), crashes 0, failing texts without avagraha: 0
+       new build, old repertoire: exact 200000 (100.00%), crashes 0
+       new build, new repertoire: exact 200000 (100.00%), crashes 0
+       the guards are invisible: mid and new write the same bytes on 200000 of 200000 texts over the old repertoire and on 200000 of 200000 over the new one
+   (5) every sequence of up to 3 bytes over the new repertoire: 621435, of which 331621 belong to W (section 9.2)
+       in W: the mid and the new build write the same bytes on 331621 of 331621, and the new build returns 331621 of them exactly
+       not in W: the guards change the output of 8599 of 289814
+   RESULT: PASS
+
+================ SUMMARY
+  roundtrip              PASS
+  logs: <build>/logs
+== underscore_U5
+   
+   U5  the escape E = sed 's/_/__/g'  (section 14.5): the parser without the guards (patch 0001 alone)
+     U5  [P] P(E(s)) = P(x0) 5F^m1 P(x1) ... for 100000 random strings whose segments x_i are closed and defined: one 5F per underscore of s ok
+     U5  [P] the same on the C parser of that build, 30000 strings                                                        ok
+     U5  [P] E is not the identity on markers: P(k_ta) is KA, halant, _ta; P(E(k_ta)) is KA, halant, 5F, TA               ok
+         (10s)
+   
+   U5  the escape E = sed 's/_/__/g'  (section 14.5): the parser with the guards (this package)
+     U5  [Q] P(E(s)) = P(x0) 5F^m1 P(x1) ... for 100000 random strings whose segments x_i are closed and defined: one 5F per underscore of s ok
+     U5  [Q] the same on the C parser of that build, 30000 strings                                                        ok
+     U5  [Q] E is not the identity on markers: P(k_ta) is KA, halant, _ta; P(E(k_ta)) is KA, halant, 5F, TA               ok
+         (10s)
+   
+   RESULT: PASS   (20 s)   [only U5]
+
+================ SUMMARY
+  underscore_U5          PASS
+  logs: <build>/logs
+== underscore_U6
+   
+   U6  eleven rules read an underscore unseen  (section 14.6): the parser without the guards (patch 0001 alone)
+     U6  static analysis finds 12 positions in 11 rules that consume an underscore other than as the first character of a unit ok
+     U6  the same rules, at the same positions, are the ones that can step over the terminator (a read past the end of the input) ok
+     U6  every one of the 11 rules has a string, at most 4 letters long, on which it breaks the pairing law               ok
+     U6  on those 11 strings the C parser of patch 0001 alone writes what the grammar writes (the grammar is undefined on 0 of them, where C reads past the end) ok
+     U6  and on 11 of them the output has the wrong number of literal underscores (the escaped underscore is lost, or one is made up) ok
+     U6  the filter of patch 0001 alone turns the escaped identifier `tc__flag` into bytes without any underscore: bd e8 b8 e8 66 d1 b5 e8 ok
+     U6  the filter of patch 0001 alone turns the escaped identifier `abc__x` into bytes without any underscore: 61 ca e8 b8 e8 78 ok
+     U6  the filter of patch 0001 alone crashes on `tv__set` (the stem t, then v: the row `tvra` does not exist, section 11.3) ok
+     U6  the filter of this package keeps the underscore of `tc__flag`: bd e8 63 5f 66 d1 b5 e8                           ok
+     U6  the filter of this package keeps the underscore of `abc__x`: 61 ca e8 63 5f d6 e8                                ok
+     U6  ... and does not crash on `tv__set`: the guard does not ask for the row `tvra`                                   ok
+         (0s)
+   
+   RESULT: PASS   (1 s)   [only U6]
+
+================ SUMMARY
+  underscore_U6          PASS
+  logs: <build>/logs
+== underscore_U8
+   table rows: old 84  mid 96  new 96
+   grammar read from the document: 5 states, 95 rules (12 of them added by patch 0001, 12 guards added by patch 0002)
+   strings: 1232540
+   C parsers done in 11s
+   old C parser vs spec: agree 1151267 (of which both crash: 56012), DISAGREE 0, skipped (undefined behaviour) 81273
+   old C parser vs hand: agree 1151267 (of which both crash: 56012), DISAGREE 0, skipped (undefined behaviour) 81273
+   old spec vs hand     : identical outcome 1232540, different 0
+   mid C parser vs spec: agree 1150887 (of which both crash: 40051), DISAGREE 0, skipped (undefined behaviour) 81653
+   mid C parser vs hand: agree 1150887 (of which both crash: 40051), DISAGREE 0, skipped (undefined behaviour) 81653
+   mid spec vs hand     : identical outcome 1232540, different 0
+   new C parser vs spec: agree 1232540 (of which both crash: 30133), DISAGREE 0, skipped (undefined behaviour) 0
+   new C parser vs hand: agree 1232540 (of which both crash: 30133), DISAGREE 0, skipped (undefined behaviour) 0
+   new spec vs hand     : identical outcome 1232540, different 0
+   (old/mid results that differ only because the C code reads past the terminator: 587)
+   strings whose result changed old -> mid (patch 0001): 98075 ; unexplained (no new token inside): 0
+   (mid/new results that differ only because the mid C code reads past the terminator: 81595)
+   strings whose result changed mid -> new (patch 0002): 24412 ; unexplained (no guard applied): 0
+   strings on which the new grammar reads past the terminator: 0 (must be 0: no string is skipped for the new build)
+   RESULT: PASS
+
+================ SUMMARY
+  parser_vs_model        PASS
+  logs: <build>/logs
+== underscore_U9
+   
+   U9  joiners and operators  (section 14.9)
+     U9  rmn2acii changes 16 of the 95 printable ASCII bytes: the 15 letters `bdgjklmnprstwxy` and `_` (patch 0001 alone changes 17: a lone `c` reads past the end of the string and becomes CHA; the guard of section 14.7 keeps it the letter c) ok
+     U9  acii2cf and acii2pcf change none of them: operators, digits, quotes and the underscore pass through              ok
+     U9  acii2rmn wraps every ASCII letter and the underscore (53 bytes) as "e_x"; the 31 other punctuation marks pass    ok
+     U9  the parser's alphabet [a-z_] meets the 31 other ASCII punctuation marks of a host language in no character at all ok
+     U9  ZWJ and ZWNJ have no row: uni2acii writes their low bytes 0D and 0C (section 11.6)                               ok
+     U9  the ISCII explicit halant (E8 E8) is eaten by the decoder (KA disappears) and the soft halant (E8 E9) crashes it ok
+     U9  yet `k_` and `x_` write E8 E8: a final underscore is a halant, and the consonant has one already                 ok
+     U9  acii2cf is a projection: the Devanagari letter KA and the Latin word `ka` both come out as `ka`                  ok
+     U9  adding the two joiners _zwj and _zwn takes 2 rules, 0 states and no longer guard (5 states, longest guard 4)     ok
+     U9  ...creates no new place where an underscore can be read unseen (the 12 of section 14.6 remain without the guards, none with them) ok
+     U9  ...and the run law holds for them: a joiner after an odd run is the joiner, after an even run it is the plain letters z w j ok
+         (1s)
+   
+   RESULT: PASS   (2 s)   [only U9]
+
+================ SUMMARY
+  underscore_U9          PASS
+  logs: <build>/logs
+== underscore_U4
+   
+   U8  case folding and mutations of the environment  (section 14.8)
+     U8  tr A-Z a-z is idempotent, fixes `_`, and keeps every run of underscores (the lengths of the runs, in order) on 20000 random strings ok
+     U8  tr A-Z a-z is a monoid homomorphism (phi(uv) = phi(u) phi(v)) but not injective: A and a go to a                 ok
+     U8  capital letters are inert: P(s) and P(s with every capital replaced by Q) agree up to that replacement, on 20000 random strings (19360 defined) ok
+     U8  but the fold can create a key letter: the escaped `C_f` keeps its underscore (C 5F f), the folded `c_f` loses it in the parser without the guards and keeps it in the parser with them ok
+     U8  ... on the C filters too: patch 0001 alone writes B8 E8 66 for `c__f`, this package writes 63 5F 66, and both write 43 5F 66 for `C__f` ok
+     U8  59091 random mutations of valid spellings (truncate, case, insert, delete, replace, escape, concatenate)         (informational) grammar without the guards: {'ok': 57476, 'overrun': 1455, 'missing': 160}; with the guards: {'ok': 58944, 'overrun': 0, 'missing': 147}; C parser without the guards: 57 crashes in 20000; with the guards: 48
+     U8  the grammar with the guards and the completed table is defined on every mutation (no read past the end, no missing row) ok
+     U8  the parser without the guards is not: it reads past the end or asks for a row that is missing on some mutations  ok
+     U8  the C parser of this package crashes on a mutation exactly when the grammar asks for a row that is missing (48 of the 20000), and on no other ok
+         (8s)
+   
+   RESULT: PASS   (8 s)   [only U8]
+
+================ SUMMARY
+  underscore_U8          PASS
+  logs: <build>/logs
+== underscore_U2
+   
+   U2  closedness is needed: the parser without the guards (patch 0001 alone)
+     U2  [P] a lone marker: P(___ta) = 5F C2 but P(_) 5F P(ta) = E8 5F BD                                                 ok
+     U2  [P] every one of the 195 strings u (length <= 3) that is not closed breaks the law for some w of length <= 2     ok
+         (0s)
+   
+   U2  closedness is needed: the parser with the guards (this package)
+     U2  [Q] a lone marker: P(___ta) = 5F C2 but P(_) 5F P(ta) = E8 5F BD                                                 ok
+     U2  [Q] every one of the 225 strings u (length <= 3) that is not closed breaks the law for some w of length <= 2     ok
+         (0s)
+   
+   RESULT: PASS   (0 s)   [only U2]
+
+================ SUMMARY
+  underscore_U2          PASS
+  logs: <build>/logs
+== underscore_U3
+   
+   U3  parity is all that a run remembers: the parser without the guards (patch 0001 alone)
+     U3  [P] after any closed prefix, the suffix `ta` ends in TA after an even run and in the family letter _ta after an odd one (336 runs) ok
+     U3  [P] for n = 2 .. 13 the residual behaviour after n underscores falls into exactly two classes, even and odd, for every closed prefix (16 prefixes) ok
+         (0s)
+   
+   U3  parity is all that a run remembers: the parser with the guards (this package)
+     U3  [Q] after any closed prefix, the suffix `ta` ends in TA after an even run and in the family letter _ta after an odd one (336 runs) ok
+     U3  [Q] for n = 2 .. 13 the residual behaviour after n underscores falls into exactly two classes, even and odd, for every closed prefix (16 prefixes) ok
+         (0s)
+   
+   RESULT: PASS   (0 s)   [only U3]
+
+================ SUMMARY
+  underscore_U3          PASS
+  logs: <build>/logs
+== corpus
+   Romenagri/corp_hi.txt
+       lines 102 | restored exactly: old 71, new 72 | crashed lines: old 0, new 0 | old != new: 2  {'line contains a new character': 2, 'line contains avagraha': 0, 'unexplained': 0}
+       of the differing lines the new build restores 1 that the old did not, and fails on 0 that the old restored
+         e.g. '    मेरा रँग दे बसन्ती चोला। माय रँग दे बसन्ती चोला॥'
+              old -> '    मेरा रँग दे बसन्ती चोला| माय रँग दे बसन्ती चोलाe'
+              new -> '    मेरा रँग दे बसन्ती चोला| माय रँग दे बसन्ती चोला॥'
+         e.g. '    सारा जहाँ अदू सही, आओ! मुक़ाबला करें॥'
+              old -> '    सारा जहाँ अदू सही, आओ! मुक़ाबला करेंe'
+              new -> '    सारा जहाँ अदू सही, आओ! मुक़ाबला करें॥'
+   Romenagri/test_hi.txt
+       lines 102 | restored exactly: old 1, new 1 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+       of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+   RESULT: PASS
+
+================ SUMMARY
+  corpus                 PASS
+  logs: <build>/logs
+== limitations
+     11.6  old: ZWNJ comes back as U+000C (form feed) and ZWJ as U+000D (carriage return)         ok
+     11.6  old: U+2190 comes back as a control character                                          ok
+     11.6  old: U+1F600 gives the bytes 3D 00                                                     ok
+     11.6  mid: U+00A0 comes back as ' '                                                          ok
+     11.6  mid: U+00AD comes back as 'ऐ'                                                          ok
+     11.6  mid: U+00B7 comes back as 'ङ'                                                          ok
+     11.6  mid: U+00D7 comes back as 'स'                                                          ok
+     11.6  mid: U+00E9 comes back as '़'                                                          ok
+     11.6  mid: U+20B9 comes back as 'छ'                                                          ok
+     11.6  mid: U+2022 comes back as '"'                                                          ok
+     11.6  mid: U+2122 comes back as '"'                                                          ok
+     11.6  mid: U+2026 comes back as '&'                                                          ok
+     11.6  mid: U+2020 comes back as ' '                                                          ok
+     11.6  mid: U+FFFD comes back as '}'                                                          ok
+     11.6  mid: U+1CD0 comes back as 'ऱ'                                                          ok
+     11.6  mid: U+0934 comes back as '4' (the low byte 34)                                        ok
+     11.6  mid: U+2002-U+2019, U+201C, U+201D (including ZWNJ U+200C and ZWJ U+200D) all come back as control characters ok
+     11.6  mid: ZWNJ comes back as U+000C (form feed) and ZWJ as U+000D (carriage return)         ok
+     11.6  mid: U+2190 comes back as a control character                                          ok
+     11.6  mid: U+1F600 gives the bytes 3D 00                                                     ok
+     11.6  new: U+00A0 comes back as ' '                                                          ok
+     11.6  new: U+00AD comes back as 'ऐ'                                                          ok
+     11.6  new: U+00B7 comes back as 'ङ'                                                          ok
+     11.6  new: U+00D7 comes back as 'स'                                                          ok
+     11.6  new: U+00E9 comes back as '़'                                                          ok
+     11.6  new: U+20B9 comes back as 'छ'                                                          ok
+     11.6  new: U+2022 comes back as '"'                                                          ok
+     11.6  new: U+2122 comes back as '"'                                                          ok
+     11.6  new: U+2026 comes back as '&'                                                          ok
+     11.6  new: U+2020 comes back as ' '                                                          ok
+     11.6  new: U+FFFD comes back as '}'                                                          ok
+     11.6  new: U+1CD0 comes back as 'ऱ'                                                          ok
+     11.6  new: U+0934 comes back as 'ऴ' (the nukta layer writes D2 E9, and acii2uni writes ळ and a nukta, section 15) ok
+     11.6  new: with -f nfc on both converters U+0934 comes back as itself (D2 E9 is composed by acii2uni, section 15) ok
+     11.6  new: U+2002-U+2019, U+201C, U+201D (including ZWNJ U+200C and ZWJ U+200D) all come back as control characters ok
+     11.6  new: ZWNJ comes back as U+000C (form feed) and ZWJ as U+000D (carriage return)         ok
+     11.6  new: U+2190 comes back as a control character                                          ok
+     11.6  new: U+1F600 gives the bytes 3D 00                                                     ok
+     11.6  the double danda U+0965 came back as `e` before the patch and comes back as itself now ok
+   RESULT: PASS
+
+================ SUMMARY
+  limitations            PASS
+  logs: <build>/logs
+== recipes
+   R1  table-only extension: U+0934 LLLA = byte D3 = key `lha`
+       ok   D3 is ISCII's 'Consonant ZHA'  (Consonant ZHA (Tamil & Malayalam))
+       ok   `lha` is a key the parser asks for and the patched table lacks
+       ok   the patched library crashes on `lha` and on `lh`  (SEGV SEGV)
+       ok   D3 is listed as a free byte before the edit
+       ok   lint: no error  (0 error(s))
+       ok   D3 is no longer listed as free
+       ok   `lha` -> D3, `lh` -> D3 + halant, `lhaa` -> D3 + sign AA, `kalha` -> KA, LHA  (d3 d3e8 d3da b3d3)
+       ok   filter round trip: D3 | LA LHA | KA halant LHA | LHA sign-I LA  (d3 d1d3 b3e8d3 d3dbd1)
+       ok   uni2acii: U+0934 -> D3  (d3)
+       ok   acii2uni: D3 -> U+0934  (fffe3409)
+       ok   25354 strings compared: results differ only on strings that contain `lh`  (56 differ, all with lh: True)
+   R2  a key without a parser branch is caught (T6)
+       ok   lint reports ERROR T6 for `_ka` (the parser reads it as the text `ka`)
+   R3  repeated key, repeated byte, bad alphabet, stale length
+       ok   a repeated key `_li`: ERROR T4
+       ok   a byte given to two code points (81): ERROR T4
+       ok   a key with a digit: ERROR T3
+       ok   a table length that was not updated: ERROR T1
+   RESULT: PASS
+
+================ SUMMARY
+  recipes                PASS
+  logs: <build>/logs
+== unicode
+   (a) 12 new rows in unicode.h
+       U+090C DEVANAGARI LETTER VOCALIC L        -> new 0x81 -> U+090C ok | old: 0c -> U+0001
+       U+0961 DEVANAGARI LETTER VOCALIC LL       -> new 0x82 -> U+0961 ok | old: 61 -> U+0002
+       U+0960 DEVANAGARI LETTER VOCALIC RR       -> new 0x83 -> U+0960 ok | old: 60 -> U+0003
+       U+0962 DEVANAGARI VOWEL SIGN VOCALIC L    -> new 0x84 -> U+0962 ok | old: 62 -> U+0004
+       U+0963 DEVANAGARI VOWEL SIGN VOCALIC LL   -> new 0x85 -> U+0963 ok | old: 63 -> U+0005
+       U+0944 DEVANAGARI VOWEL SIGN VOCALIC RR   -> new 0x86 -> U+0944 ok | old: 44 -> U+0006
+       U+0965 DEVANAGARI DOUBLE DANDA            -> new 0x87 -> U+0965 ok | old: 65 -> U+0007
+       U+0951 DEVANAGARI STRESS SIGN UDATTA      -> new 0x88 -> U+0951 ok | old: 51 -> U+0008
+       U+0952 DEVANAGARI STRESS SIGN ANUDATTA    -> new 0x89 -> U+0952 ok | old: 52 -> U+0009
+       U+0953 DEVANAGARI GRAVE ACCENT            -> new 0x8a -> U+0953 ok | old: 53 -> U+000A
+       U+0954 DEVANAGARI ACUTE ACCENT            -> new 0x8b -> U+0954 ok | old: 54 -> U+000B
+       U+0950 DEVANAGARI OM                      -> new 0x8c -> U+0950 ok | old: 50 -> U+000C
+       round trip exact in the new build: 12 of 12
+   (b) the 73 old rows
+       identical to the old build and to the table: 73 of 73
+   (c) mixed text
+       307 characters, 307 ACII bytes, round trip exact: True
+   (d) the unmapped code points of U+0900-U+097F
+       43 unmapped: 10 digits, 9 composites, 24 uncovered
+       patch 0001 only: uni2acii writes the low byte for 43 of 43 (a silent corruption of text)
+       new build: uni2acii writes the byte of the consonant and E9 for 9 of the 9 composites; the low byte for 34 of the other 34
+       fixuninum on the ten digits: b'0123456789'
+       composites whose NFD form (consonant + nukta) comes out of the whole chain as that NFD form: 9 of 9
+       ... and composites whose single code point comes out as consonant + nukta, WITHOUT normalisation first: 9 of 9
+       with -f nfc on both converters, either spelling comes out as NFC writes it: 9 of 9 (1 of them as the single code point)
+       with -f nfd on both converters, either spelling comes out as NFD writes it: 9 of 9
+       still uncovered: U+0900 U+0904 U+093A U+093B U+094E U+094F U+0955 U+0956 U+0957 U+0970 U+0971 U+0972 U+0973 U+0974 U+0975 U+0976 U+0977 U+0978 U+097A U+097B U+097C U+097D U+097E U+097F
+       U+200C ZERO WIDTH NON-JOINER          uni2acii -> 0c (not in the Devanagari block; ZWNJ/ZWJ are not mapped)
+       U+200D ZERO WIDTH JOINER              uni2acii -> 0d (not in the Devanagari block; ZWNJ/ZWJ are not mapped)
+   (e) characters of real text outside Devanagari and ASCII (uni2acii writes the low byte of each)
+       32 common characters; reaching a new byte: 0; coming out differently than before the patch: 0
+       U+00A0 through uni2acii and acii2uni: ' ' (the old build: ' ')
+       rarer characters that DO reach a new byte, by block (informational): U+0100 12, U+0200 12, U+0300 8, U+0400 5, U+0500 10, U+0600 12, U+0700 12, U+0800 12, U+0900 8, U+0A00 8, U+0B00 7, U+0C00 9, U+0D00 8, U+0E00 9, U+0F00 6, U+1000 1, U+1100 12, U+1200 11, U+1300 12, U+1400 12, U+1500 12, U+1600 12, U+1700 12, U+1800 10, U+1900 12, U+1A00 9, U+1B00 10, U+1C00 8, U+1D00 12, U+1E00 12, U+1F00 12, U+2000 12, U+2100 11, U+2200 12, U+2300 12, U+2400 12, U+2500 12, U+2600 12, U+2700 12, U+2800 12, U+2900 12, U+2A00 12, U+2B00 12, U+2C00 12, U+2D00 12, U+2E00 12, U+2F00 12
+   RESULT: PASS
+
+================ SUMMARY
+  unicode                PASS
+  logs: <build>/logs
+   
+   U4  the marker rule and the decoder  (sections 14.3 and 14.5)
+     U4  decoder output of 30000 well-formed texts with literal underscores (368768 bytes 5F, runs up to 21): every odd run is followed by a letter ok
+     U4  a run of n underscores followed by a letter splits in exactly one way into pairs and a last marker (n = 0 .. 11): pairs first, marker last ok
+     U4  decoder then parser (the grammar without the guards) returns the text exactly, for all 30000 texts               ok
+     U4  decoder then parser (the grammar with the guards) returns the text exactly, for all 30000 texts                  ok
+     U4  decoder then parser on the C library, without the guards (mid) (harness -f): 20000 of the texts return exactly   ok
+     U4  decoder then parser on the C library, with the guards (new) (harness -f): 20000 of the texts return exactly      ok
+     U4  outside well-formed ACII the decoder can leave an underscore without its letter: A4 E8, A2 E8 and EB E8 are written `_` (an odd run at the end) ok
+     U4  ... or put it in front of the letters of another key: C4 E9 is written `__rda`, C5 E9 `__rdha`, A4 E9 `_za` (the contract of section 9 excludes these) ok
+         (10s)
+   
+   RESULT: PASS   (10 s)   [only U4]
+
+================ SUMMARY
+  underscore_U4          PASS
+  logs: <build>/logs
+== nukta
+== saral
+   OM                 8c           -> b'om'      ok   (old build: b'\x8c')
+   vocalic L          81           -> b'lri'     ok   (old build: b'\x81')
+   vocalic LL         82           -> b'lri'     ok   (old build: b'\x82')
+   vocalic RR         83           -> b'ri'      ok   (old build: b'\x83')
+   KA + sign L        b384         -> b'klri'    ok   (old build: b'ka\x84')
+   KA + sign LL       b385         -> b'klri'    ok   (old build: b'ka\x85')
+   KA + sign RR       b386         -> b'kri'     ok   (old build: b'ka\x86')
+   double danda       87           -> b'||'      ok   (old build: b'\x87')
+   KA + udatta        b388         -> b'ka'      ok   (old build: b'ka\x88')
+   KA + anudatta      b389         -> b'ka'      ok   (old build: b'ka\x89')
+   KA + grave         b38a         -> b'ka'      ok   (old build: b'ka\x8a')
+   KA + acute         b38b         -> b'ka'      ok   (old build: b'ka\x8b')
+   OM bhur (mixed)    8c20cbe9cf   -> b'om bhara' ok   (old build: b'\x8c bhara')
+   old-repertoire inputs (312) rendering differently in the new build: 0
+   RESULT: PASS
+
+================ SUMMARY
+  saral                  PASS
+  logs: <build>/logs
+== table_lint_new
+      0x91  C1 extension block (first choice for new characters) 
+      0x92  C1 extension block (first choice for new characters) 
+      0x93  C1 extension block (first choice for new characters) 
+      0x94  C1 extension block (first choice for new characters) 
+      0x95  C1 extension block (first choice for new characters) 
+      0x96  C1 extension block (first choice for new characters) 
+      0x97  C1 extension block (first choice for new characters) 
+      0x98  C1 extension block (first choice for new characters) 
+      0x99  C1 extension block (first choice for new characters) 
+      0x9A  C1 extension block (first choice for new characters) 
+      0x9B  C1 extension block (first choice for new characters) 
+      0x9C  C1 extension block (first choice for new characters) 
+      0x9D  C1 extension block (first choice for new characters) 
+      0x9E  C1 extension block (first choice for new characters) 
+      0x9F  C1 extension block (first choice for new characters) 
+      0xA0  avoided (no-break space)                       U+00A0 NO-BREAK SPACE reaches this byte through uni2acii's low-byte fallback (TRANSLITERATION.md, section 10.3)
+      0xCE  ISCII-assigned: use for that very character    Consonant JYA (Bengali, Assamese & Oriya)
+      0xD3  ISCII-assigned: use for that very character    Consonant ZHA (Tamil & Malayalam)
+      0xD9  ISCII-assigned: use for that very character    Consonant INVISIBLE
+      0xEC  ISCII-unassigned                               Unused
+      0xED  ISCII-unassigned                               Unused
+      0xEE  ISCII-unassigned                               Unused
+      0xF0  never                                          extension prefix (ISCII EXT)
+      0xF1  digits (reserved for Devanagari digits)        Digit 0
+      0xF2  digits (reserved for Devanagari digits)        Digit 1
+      0xF3  digits (reserved for Devanagari digits)        Digit 2
+      0xF4  digits (reserved for Devanagari digits)        Digit 3
+      0xF5  digits (reserved for Devanagari digits)        Digit 4
+      0xF6  digits (reserved for Devanagari digits)        Digit 5
+      0xF7  digits (reserved for Devanagari digits)        Digit 6
+      0xF8  digits (reserved for Devanagari digits)        Digit 7
+      0xF9  digits (reserved for Devanagari digits)        Digit 8
+      0xFA  digits (reserved for Devanagari digits)        Digit 9
+      0xFB  ISCII-unassigned                               Unused
+      0xFC  ISCII-unassigned                               Unused
+      0xFD  ISCII-unassigned                               Unused
+      0xFE  ISCII-unassigned                               Unused
+      0xFF  ISCII-unassigned                               Unused
+      total free: 42  (C1 extension block (first choice for new characters): 19; ISCII-assigned: use for that very character: 3; ISCII-unassigned: 8; avoided (no-break space): 1; digits (reserved for Devanagari digits): 10; never: 1)
+   0 error(s)
+
+================ SUMMARY
+  table_lint_new         PASS
+  logs: <build>/logs
+== reserved_keys
+   <package>/Romenagri: the grammar can ask for 102 keys; 15 have no row in acii.h
+   
+   typed    asks for  what the C parser does with the typed form
+   _dvr     _dvra     crash (SEGV): nothing is written
+   _rdvr    _rdvra    crash (SEGV): nothing is written
+   _rrh     _rrha     crash (SEGV): nothing is written
+   _rrvr    _rrvra    crash (SEGV): nothing is written
+   _tvr     _tvra     crash (SEGV): nothing is written
+   bvr      bvra      crash (SEGV): nothing is written
+   chvr     chvra     crash (SEGV): nothing is written
+   dvr      dvra      crash (SEGV): nothing is written
+   gvr      gvra      crash (SEGV): nothing is written
+   jvr      jvra      crash (SEGV): nothing is written
+   kvr      kvra      crash (SEGV): nothing is written
+   lh       lha       crash (SEGV): nothing is written
+   pvr      pvra      crash (SEGV): nothing is written
+   svr      svra      crash (SEGV): nothing is written
+   tvr      tvra      crash (SEGV): nothing is written
+   
+   the rows of the same shape that do exist:
+   lvr      lvra      D2(lvra) E8(^)
+   
+   20440 strings of at most three letters over a-z and _: the C parser and the grammar agree on 20179; both reach a missing row on 261; 0 read past the end of the input (undefined, not compared); they disagree on 0
+
+================ SUMMARY
+  reserved_keys          PASS
+  logs: <build>/logs
+== doc_tables_in_sync
+   generated blocks: 17, out of date or missing: 0
+
+================ SUMMARY
+  doc_tables_in_sync     PASS
+  logs: <build>/logs
+== end-to-end through hincc (new build must pass; the old build is expected to fail to compile)
+== e2e_new
+   C    : hin.exe built
+   C0   : hin.exe built
+   Java : Test.class 
+   C            : 6 of 6 lines identical to the Devanagari source  ......
+   C (control)  : 5 of 5 lines identical to the Devanagari source  .....
+   Java         : 6 of 6 lines identical to the Devanagari source  ......
+   old:       want U+0915 U+0951 U+0941   U+0915 U+0952 U+093F   U+0915 U+0951 U+093C U+093E
+   old:       got  U+0915 Q U+0941   U+0915 R U+093F   U+0915 Q U+093C U+093E
+   old: C (control)  : 1 of 5 lines identical to the Devanagari source  xxxx.
+   old: Java          no output
+
+================ SUMMARY
+  e2e_new                PASS
+  logs: <build>/logs
+           nfc  ACII BF E9 E8 D4                Romenagri `_rdwa`                -> ड़्व   U+0921 U+093C U+094D U+0935
+             nfc expected: U+0921 U+093C U+094D U+0935                                                                  ok
+           nfd  ACII BF E9 E8 D4                Romenagri `_rdwa`                -> ड़्व   U+0921 U+093C U+094D U+0935
+             nfd expected: U+0921 U+093C U+094D U+0935                                                                  ok
+       C6  patch 0001 alone: 5C is a backslash, and the Romenagri filter loses the ड़् altogether
+           in: ड़्व   U+095C U+094D U+0935   what it did before
+           asis ACII 5C E8 D4                   Romenagri `wa`                   -> व   U+0935
+             asis expected: U+0935                                                                                      ok
+       C7  ऴ has no byte of its own: ळ + nukta, D2 E9; ISCII's D3 stays unused in every form
+       C7  ऴ alone
+           in: ऴ   U+0934
+           asis ACII D2 E9                      Romenagri `lvrza`                -> ऴ   U+0933 U+093C
+             asis expected: U+0933 U+093C                                                                               ok
+           nfc  ACII D2 E9                      Romenagri `lvrza`                -> ऴ   U+0934
+             nfc expected: U+0934                                                                                       ok
+           nfd  ACII D2 E9                      Romenagri `lvrza`                -> ऴ   U+0933 U+093C
+             nfd expected: U+0933 U+093C                                                                                ok
+       C7  in a word: कऴन
+           in: कऴन   U+0915 U+0934 U+0928
+           asis ACII B3 D2 E9 C6                Romenagri `kalvrzana`            -> कऴन   U+0915 U+0933 U+093C U+0928
+             asis expected: U+0915 U+0933 U+093C U+0928                                                                 ok
+           nfc  ACII B3 D2 E9 C6                Romenagri `kalvrzana`            -> कऴन   U+0915 U+0934 U+0928
+             nfc expected: U+0915 U+0934 U+0928                                                                         ok
+           nfd  ACII B3 D2 E9 C6                Romenagri `kalvrzana`            -> कऴन   U+0915 U+0933 U+093C U+0928
+             nfd expected: U+0915 U+0933 U+093C U+0928                                                                  ok
+             D3 is written for none of these, and unicode.h has no row for it                                           ok
+       C8  the 15 reserved keys of section 11.3 are not touched: the Devanagari clusters are code points, passed through one for one; the typed keys still crash
+       C8  ऱ्ह and ल्ह, the two aspirate clusters
+           in: ऱ्हल्ह   U+0931 U+094D U+0939 U+0932 U+094D U+0939
+           asis ACII D0 E8 D8 D1 E8 D8          Romenagri `_rr_hal_ha`           -> ऱ्हल्ह   U+0931 U+094D U+0939 U+0932 U+094D U+0939
+             asis expected: U+0931 U+094D U+0939 U+0932 U+094D U+0939                                                   ok
+           nfc  ACII D0 E8 D8 D1 E8 D8          Romenagri `_rr_hal_ha`           -> ऱ्हल्ह   U+0931 U+094D U+0939 U+0932 U+094D U+0939
+             nfc expected: U+0931 U+094D U+0939 U+0932 U+094D U+0939                                                    ok
+           nfd  ACII CF E9 E8 D8 D1 E8 D8       Romenagri `rz_hal_ha`            -> ऱ्हल्ह   U+0930 U+093C U+094D U+0939 U+0932 U+094D U+0939
+             nfd expected: U+0930 U+093C U+094D U+0939 U+0932 U+094D U+0939                                             ok
+             the typed form lh (section 11.3) still crashes rmn2acii (exit status -11)                                  ok
+             the typed form _rrh (section 11.3) still crashes rmn2acii (exit status -11)                                ok
+             the typed form _rdvr (section 11.3) still crashes rmn2acii (exit status -11)                               ok
+             the typed form tvr (section 11.3) still crashes rmn2acii (exit status -11)                                 ok
+   RESULT: PASS
+
+================ SUMMARY
+  nukta                  PASS
+  logs: <build>/logs

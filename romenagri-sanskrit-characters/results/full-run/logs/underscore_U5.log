@@ -1,0 +1,14 @@
+
+U5  the escape E = sed 's/_/__/g'  (section 14.5): the parser without the guards (patch 0001 alone)
+  U5  [P] P(E(s)) = P(x0) 5F^m1 P(x1) ... for 100000 random strings whose segments x_i are closed and defined: one 5F per underscore of s ok
+  U5  [P] the same on the C parser of that build, 30000 strings                                                        ok
+  U5  [P] E is not the identity on markers: P(k_ta) is KA, halant, _ta; P(E(k_ta)) is KA, halant, 5F, TA               ok
+      (10s)
+
+U5  the escape E = sed 's/_/__/g'  (section 14.5): the parser with the guards (this package)
+  U5  [Q] P(E(s)) = P(x0) 5F^m1 P(x1) ... for 100000 random strings whose segments x_i are closed and defined: one 5F per underscore of s ok
+  U5  [Q] the same on the C parser of that build, 30000 strings                                                        ok
+  U5  [Q] E is not the identity on markers: P(k_ta) is KA, halant, _ta; P(E(k_ta)) is KA, halant, 5F, TA               ok
+      (10s)
+
+RESULT: PASS   (20 s)   [only U5]

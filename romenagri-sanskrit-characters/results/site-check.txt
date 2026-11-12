@@ -1,0 +1,56 @@
+Site check, 11 November 2026
+command:  python3 romenagri-site/build_site.py --check --cbin <build>/new/Romenagri
+          (<build>/new/Romenagri = the tree with all three patches, built by tests/build_trees.sh; its sources are those of Romenagri/ of this package)
+tools:    node v22.22.0, Python 3.13.16 (unicodedata 15.1.0), gcc 13.3.0, flex 2.6.4, in the same container image as the other recorded runs
+note:     nbformat is not installed in that image and could not be installed (the package index was not reachable through the proxy),
+          so the notebook was checked by the structural validator of build_site.py only; it was not validated with nbformat
+          the time of the run is the last line (wall clock, in seconds; the files were built before it)
+------------------------------------------------------------------------------------------------------------------------
+romenagri-site/build_site.py --check
+the files on disk against a new build
+  10 generated files are what the build gives now                                                          ok
+  docs/ holds only the generated files and style.css and demo.js                                           ok
+  docs/style.css exists and carries the copyright line                                                     ok
+  docs/demo.js exists and carries the copyright line                                                       ok
+  docs/romenagri.js says that it is generated and that it is not the production code                       ok
+the pages: tags, anchors, links
+  challenges.html: well-formed, ids unique, no placeholder left, lang, title, viewport                     ok
+  characters.html: well-formed, ids unique, no placeholder left, lang, title, viewport                     ok
+  documents.html: well-formed, ids unique, no placeholder left, lang, title, viewport                      ok
+  explainer.html: well-formed, ids unique, no placeholder left, lang, title, viewport                      ok
+  index.html: well-formed, ids unique, no placeholder left, lang, title, viewport                          ok
+  every link and script of the five pages leads to a file or an anchor that exists                         ok
+  the notebook is a valid nbformat 4 document                                                              ok  structure (nbformat is not installed: not validated with it)
+the JavaScript (docs/romenagri.js) against the C programs and the models
+  uni2acii (3 forms and the default, with and without -w): the bytes and the lines written on stderr          4,900 cases, 0 disagreements  ok
+  acii2uni (3 forms and the default): the code units                                                          2,450 cases, 0 disagreements  ok
+  acii2rmn against the compiled filter (a crash on an empty stack included)                                   3,000 cases, 0 disagreements  ok
+  rmn2acii against the compiled filter (a key that the table lacks is a crash)                                3,500 cases, 0 disagreements  ok
+  the chain, Unicode to ACII to Romenagri to ACII to Unicode (3 forms; where it stops: the same program)      2,250 cases, 0 disagreements  ok
+  the decoder against the Python model of tests/model.py: every pair of bytes, and 7 x 8 x 251 triples       77,057 cases, 0 disagreements  ok
+  the parser against the hand-written parser of tests/: every string of up to 4 letters over 23 letters, and 20,000 longer ones  312,560 cases, 0 disagreements  ok
+what the cases reach
+  uni2acii cases that contain a letter with a nukta: the fewest, over the eleven letters                   ok  1523
+  uni2acii cases, form nfc, with na or ra directly before a nukta (the byte that waits)                    ok  60
+  uni2acii cases in which the warning layer wrote something                                                ok  1551
+  acii2uni cases, form nfc, with C6, CF or D2 directly before E9                                           ok  30
+  acii2uni cases, form nfd, with C7 or D0                                                                  ok  298
+  acii2rmn cases on which the C program crashes (and the JavaScript with it)                               ok  91
+  rmn2acii cases on which the C program crashes (and the JavaScript with it)                               ok  67
+  chain cases: stop in acii2rmn, stop in rmn2acii (none can: no missing key is decoded), complete          ok  39, 0, 2211
+deliberately broken copies of the JavaScript (each has to be caught by the comparison above)
+  uni2acii: the rule is dropped (a letter that has no row is written as its low byte again)                ok  caught by: uni2acii (3023 disagreements)
+  uni2acii, form nfc: a consonant and a nukta are not joined                                               ok  caught by: uni2acii (63 disagreements)
+  uni2acii: the warning layer reports every occurrence, not each code point once                           ok  caught by: uni2acii (227 disagreements)
+  uni2acii: the warning layer reports ASCII characters too                                                 ok  caught by: uni2acii (1115 disagreements)
+  the default form is nfc, not asis                                                                        ok  caught by: uni2acii (36 disagreements)
+  acii2uni, form nfd: C7 and D0 are not written as pairs                                                   ok  caught by: acii2uni (298 disagreements)
+  acii2uni: a line feed is not written as CR LF                                                            ok  caught by: acii2uni (136 disagreements)
+  acii2rmn: DA and a nukta is not _rda                                                                     ok  caught by: acii2rmn against the compiled filter (16 disagreements)
+  acii2rmn: the last row with the byte is taken, not the first                                             ok  caught by: acii2rmn against the compiled filter (1212 disagreements)
+  acii2rmn: a nukta on an empty stack does not stop                                                        ok  caught by: acii2rmn against the compiled filter (91 disagreements)
+  rmn2acii: the guard of the letter c is gone                                                              ok  caught by: rmn2acii against the compiled filter (109 disagreements)
+  rmn2acii: vocalic does not replace a halant                                                              ok  caught by: rmn2acii against the compiled filter (356 disagreements)
+39 checks, all ok
+
+wall clock 48 s

@@ -1,0 +1,162 @@
+code,script,kind (read from the data),chars,letters,marks,vowel signs,virama-like,right-to-left,status
+Ahom,Ahom,"Brahmic abugida, pairs with Devanagari by letter name",65,34,15,11,1,0,v7 task
+Beng,Bengali,"Brahmic abugida, pairs with Devanagari by letter name",96,55,20,13,1,0,v6
+Bhks,Bhaiksuki,"Brahmic abugida, pairs with Devanagari by letter name",97,47,16,12,1,0,v7 task
+Brah,Brahmi,"Brahmic abugida, pairs with Devanagari by letter name",115,56,22,16,2,0,v6
+Cham,Cham,"Brahmic abugida, pairs with Devanagari by letter name",83,52,17,10,0,0,v7 task
+Deva,Devanagari,"Brahmic abugida, pairs with Devanagari by letter name",164,90,49,25,3,0,pivot
+Diak,Dives Akuru,"Brahmic abugida, pairs with Devanagari by letter name",72,44,15,8,2,0,v7 task
+Dogr,Dogra,"Brahmic abugida, pairs with Devanagari by letter name",60,44,15,11,1,0,v7 task
+Gran,Grantha,"Brahmic abugida, pairs with Devanagari by letter name",85,53,32,13,1,0,v6
+Gujr,Gujarati,"Brahmic abugida, pairs with Devanagari by letter name",91,53,26,15,1,0,v6
+Gong,Gunjala Gondi,"Brahmic abugida, pairs with Devanagari by letter name",63,41,12,9,1,0,v7 task
+Guru,Gurmukhi,"Brahmic abugida, pairs with Devanagari by letter name",80,51,18,9,1,0,v6
+Kthi,Kaithi,"Brahmic abugida, pairs with Devanagari by letter name",68,45,15,10,1,0,v6
+Knda,Kannada,"Brahmic abugida, pairs with Devanagari by letter name",91,57,23,15,1,0,v6
+Kawi,Kawi,"Brahmic abugida, pairs with Devanagari by letter name",86,48,15,10,1,0,v7 task
+Khar,Kharoshthi,"Brahmic abugida, pairs with Devanagari by letter name",68,37,13,5,1,55,v7 task
+Khoj,Khojki,"Brahmic abugida, pairs with Devanagari by letter name",65,45,14,9,1,0,v7 task
+Sind,Khudawadi,"Brahmic abugida, pairs with Devanagari by letter name",69,47,12,9,1,0,v7 task
+Limb,Limbu,"Brahmic abugida, pairs with Devanagari by letter name",68,31,24,9,0,0,v7 task
+Mlym,Malayalam,"Brahmic abugida, pairs with Devanagari by letter name",118,67,23,15,3,0,v6
+Gonm,Masaram Gondi,"Brahmic abugida, pairs with Devanagari by letter name",75,48,17,10,2,0,v7 task
+Modi,Modi,"Brahmic abugida, pairs with Devanagari by letter name",79,49,17,13,1,0,v6
+Mong,Mongolian,"Brahmic abugida, pairs with Devanagari by letter name",168,129,7,1,0,0,v7 task
+Mymr,Myanmar,"Brahmic abugida, pairs with Devanagari by letter name",223,120,62,28,2,0,v7 task
+Nand,Nandinagari,"Brahmic abugida, pairs with Devanagari by letter name",65,49,15,12,1,0,v7 task
+Newa,Newa,"Brahmic abugida, pairs with Devanagari by letter name",97,60,19,13,1,0,v6
+Orya,Oriya,"Brahmic abugida, pairs with Devanagari by letter name",91,53,21,13,1,0,v6
+Saur,Saurashtra,"Brahmic abugida, pairs with Devanagari by letter name",82,50,20,15,1,0,v7 task
+Shrd,Sharada,"Brahmic abugida, pairs with Devanagari by letter name",96,54,23,14,1,0,v6
+Sidd,Siddham,"Brahmic abugida, pairs with Devanagari by letter name",92,51,18,13,1,0,v6
+Soyo,Soyombo,"Brahmic abugida, pairs with Devanagari by letter name",83,48,27,10,0,0,v7 task
+Takr,Takri,"Brahmic abugida, pairs with Devanagari by letter name",68,44,13,9,1,0,v7 task
+Telu,Telugu,"Brahmic abugida, pairs with Devanagari by letter name",100,57,24,15,1,0,v6
+Tibt,Tibetan,"Brahmic abugida, pairs with Devanagari by letter name",207,50,77,15,1,0,v7 task
+Tirh,Tirhuta,"Brahmic abugida, pairs with Devanagari by letter name",82,51,20,15,1,0,v6
+Zanb,Zanabazar Square,"Brahmic abugida, pairs with Devanagari by letter name",72,42,22,9,1,0,v7 task
+Arab,Arabic,"abugida, other inventory",1368,1144,104,3,0,1173,v6 (Urdu)
+Bali,Balinese,"abugida, other inventory",124,55,31,15,0,0,v7 task
+Batk,Batak,"abugida, other inventory",56,38,14,9,2,0,v7 task
+Bugi,Buginese,"abugida, other inventory",30,23,5,5,0,0,v7 task
+Buhd,Buhid,"abugida, other inventory",20,18,2,2,0,0,v7 task
+Cakm,Chakma,"abugida, other inventory",71,38,19,12,1,0,v7 task
+Hano,Hanunoo,"abugida, other inventory",21,18,3,2,0,0,v7 task
+Java,Javanese,"abugida, other inventory",90,47,18,9,0,0,v7 task
+Khmr,Khmer,"abugida, other inventory",146,54,33,16,4,0,v7 task
+Laoo,Lao,"abugida, other inventory",83,56,17,18,1,0,v7 task
+Lepc,Lepcha,"abugida, other inventory",74,39,20,7,0,0,v7 task
+Maka,Makasar,"abugida, other inventory",25,19,4,4,0,0,v7 task
+Marc,Marchen,"abugida, other inventory",68,30,36,5,0,0,v7 task
+Mtei,Meetei Mayek,"abugida, other inventory",79,49,17,14,1,0,v7 task
+Plrd,Miao,"abugida, other inventory",149,89,60,52,0,0,v7 task
+Talu,New Tai Lue,"abugida, other inventory",83,70,0,17,0,0,v7 task
+Rjng,Rejang,"abugida, other inventory",37,23,13,8,1,0,v7 task
+Samr,Samaritan,"abugida, other inventory",61,25,21,15,0,40,v7 task
+Sinh,Sinhala,"abugida, other inventory",111,59,21,17,0,0,v6
+Sund,Sundanese,"abugida, other inventory",72,38,16,6,2,0,v7 task
+Sylo,Syloti Nagri,"abugida, other inventory",45,32,9,5,0,0,v7 task
+Tglg,Tagalog,"abugida, other inventory",23,19,4,2,1,0,v7 task
+Tagb,Tagbanwa,"abugida, other inventory",18,16,2,2,0,0,v7 task
+Lana,Tai Tham,"abugida, other inventory",127,54,40,19,0,0,v7 task
+Taml,Tamil,"abugida, other inventory",123,37,14,11,1,0,v6
+Bamu,Bamum,alphabet or other,657,639,2,0,0,0,v7 task
+Bass,Bassa Vah,alphabet or other,36,30,5,0,0,0,v7 task
+Bopo,Bopomofo,alphabet or other,77,75,0,0,0,0,v7 task
+Brai,Braille,alphabet or other,256,0,0,0,0,0,v7 task
+Cari,Carian,alphabet or other,49,49,0,0,0,0,v7 task
+Aghb,Caucasian Albanian,alphabet or other,53,52,0,0,0,0,v7 task
+Cher,Cherokee,alphabet or other,172,172,0,0,0,0,v7 task
+Cpmn,Cypro Minoan,alphabet or other,99,97,0,0,0,0,v7 task
+Dupl,Duployan,alphabet or other,143,139,2,0,0,0,v7 task
+Elba,Elbasan,alphabet or other,40,40,0,0,0,0,v7 task
+Goth,Gothic,alphabet or other,27,25,0,0,0,0,v7 task
+Hira,Hiragana,alphabet or other,381,380,0,0,0,0,v7 task
+Kana,Katakana,alphabet or other,321,186,0,0,0,0,v7 task
+Kali,Kayah Li,alphabet or other,47,28,8,0,0,0,v7 task
+Kits,Khitan Small Script,alphabet or other,471,470,1,0,0,0,v7 task
+Lina,Linear A,alphabet or other,341,341,0,0,0,0,v7 task
+Lisu,Lisu,alphabet or other,49,47,0,0,0,0,v7 task
+Lyci,Lycian,alphabet or other,29,29,0,0,0,0,v7 task
+Mahj,Mahajani,alphabet or other,39,36,1,0,0,0,v7 task
+Mroo,Mro,alphabet or other,43,31,0,0,0,0,v7 task
+Mult,Multani,alphabet or other,38,37,0,0,0,0,v7 task
+Nagm,Nag Mundari,alphabet or other,42,28,4,0,0,0,v7 task
+Nshu,Nushu,alphabet or other,397,397,0,0,0,0,v7 task
+Hmnp,Nyiakeng Puachue Hmong,alphabet or other,71,53,7,0,0,0,v7 task
+Ogam,Ogham,alphabet or other,29,26,0,0,0,0,v7 task
+Olck,Ol Chiki,alphabet or other,48,36,0,0,0,0,v7 task
+Ital,Old Italic,alphabet or other,39,35,0,0,0,0,v7 task
+Perm,Old Permic,alphabet or other,43,38,5,0,0,0,v7 task
+Xpeo,Old Persian,alphabet or other,50,44,0,0,0,0,v7 task
+Osma,Osmanya,alphabet or other,40,30,0,0,0,0,v7 task
+Hmng,Pahawh Hmong,alphabet or other,127,92,7,0,0,0,v7 task
+Pauc,Pau Cin Hau,alphabet or other,57,57,0,0,0,0,v7 task
+Phag,Phags Pa,alphabet or other,56,52,0,0,0,0,v7 task
+Runr,Runic,alphabet or other,86,83,0,0,0,0,v7 task
+Shaw,Shavian,alphabet or other,48,48,0,0,0,0,v7 task
+Sgnw,SignWriting,alphabet or other,672,0,127,0,0,0,v7 task
+Sora,Sora Sompeng,alphabet or other,35,25,0,0,0,0,v7 task
+Tale,Tai Le,alphabet or other,35,35,0,0,0,0,v7 task
+Tavt,Tai Viet,alphabet or other,72,61,9,0,0,0,v7 task
+Tnsa,Tangsa,alphabet or other,89,79,0,0,0,0,v7 task
+Tang,Tangut,alphabet or other,6914,6914,0,0,0,0,v7 task
+Thai,Thai,alphabet or other,86,57,16,0,0,0,v7 task
+Tfng,Tifinagh,alphabet or other,59,57,1,0,0,0,v7 task
+Toto,Toto,alphabet or other,31,30,1,0,0,0,v7 task
+Ugar,Ugaritic,alphabet or other,31,30,0,0,0,0,v7 task
+Wcho,Wancho,alphabet or other,59,44,4,0,0,0,v7 task
+Armn,Armenian,cased alphabet,96,85,0,0,0,0,v7 task
+Copt,Coptic,cased alphabet,137,121,3,0,0,0,v7 task
+Cyrl,Cyrillic,cased alphabet,506,447,56,0,0,0,v7 task
+Dsrt,Deseret,cased alphabet,80,80,0,0,0,0,v7 task
+Geor,Georgian,cased alphabet,173,173,0,0,0,0,v7 task
+Glag,Glagolitic,cased alphabet,134,96,38,0,0,0,v7 task
+Grek,Greek,cased alphabet,518,350,3,0,0,0,v7 task
+Latn,Latin,cased alphabet,1481,1442,0,0,0,0,v7 task
+Medf,Medefaidrin,cased alphabet,91,64,0,0,0,0,v7 task
+Osge,Osage,cased alphabet,72,72,0,0,0,0,v7 task
+Vith,Vithkuqi,cased alphabet,70,70,0,0,0,0,v7 task
+Wara,Warang Citi,cased alphabet,84,65,0,0,0,0,v7 task
+Hluw,Anatolian Hieroglyphs,logographic or hieroglyphic,583,583,0,0,0,0,v7 task
+Xsux,Cuneiform,logographic or hieroglyphic,1234,1118,0,0,0,0,v7 task
+Egyp,Egyptian Hieroglyphs,logographic or hieroglyphic,1110,1078,16,0,0,0,v7 task
+Hani,Han,logographic or hieroglyphic,98408,98063,2,0,0,0,v7 task
+Mero,Meroitic Hieroglyphs,logographic or hieroglyphic,32,32,0,0,0,32,v7 task
+Adlm,Adlam,right-to-left alphabet or abjad,88,69,7,0,0,81,v7 task
+Avst,Avestan,right-to-left alphabet or abjad,61,54,0,0,0,54,v7 task
+Chrs,Chorasmian,right-to-left alphabet or abjad,28,21,0,0,0,28,v7 task
+Elym,Elymaic,right-to-left alphabet or abjad,23,23,0,0,0,23,v7 task
+Rohg,Hanifi Rohingya,right-to-left alphabet or abjad,50,36,4,0,0,36,v7 task
+Hatr,Hatran,right-to-left alphabet or abjad,26,21,0,0,0,26,v7 task
+Hebr,Hebrew,right-to-left alphabet or abjad,134,75,52,0,0,81,v7 task
+Armi,Imperial Aramaic,right-to-left alphabet or abjad,31,22,0,0,0,31,v7 task
+Phli,Inscriptional Pahlavi,right-to-left alphabet or abjad,27,19,0,0,0,27,v7 task
+Prti,Inscriptional Parthian,right-to-left alphabet or abjad,30,22,0,0,0,30,v7 task
+Lydi,Lydian,right-to-left alphabet or abjad,27,26,0,0,0,27,v7 task
+Mand,Mandaic,right-to-left alphabet or abjad,29,25,3,0,0,26,v7 task
+Mani,Manichaean,right-to-left alphabet or abjad,51,36,2,0,0,49,v7 task
+Merc,Meroitic Cursive,right-to-left alphabet or abjad,90,26,0,0,0,90,v7 task
+Nbat,Nabataean,right-to-left alphabet or abjad,40,31,0,0,0,40,v7 task
+Nkoo,Nko,right-to-left alphabet or abjad,62,36,10,0,0,48,v7 task
+Hung,Old Hungarian,right-to-left alphabet or abjad,108,102,0,0,0,108,v7 task
+Narb,Old North Arabian,right-to-left alphabet or abjad,32,29,0,0,0,32,v7 task
+Sogo,Old Sogdian,right-to-left alphabet or abjad,40,30,0,0,0,40,v7 task
+Sarb,Old South Arabian,right-to-left alphabet or abjad,32,29,0,0,0,32,v7 task
+Orkh,Old Turkic,right-to-left alphabet or abjad,73,73,0,0,0,73,v7 task
+Ougr,Old Uyghur,right-to-left alphabet or abjad,26,18,4,0,0,22,v7 task
+Palm,Palmyrene,right-to-left alphabet or abjad,32,23,0,0,0,32,v7 task
+Phnx,Phoenician,right-to-left alphabet or abjad,29,22,0,0,0,28,v7 task
+Phlp,Psalter Pahlavi,right-to-left alphabet or abjad,29,18,0,0,0,29,v7 task
+Sogd,Sogdian,right-to-left alphabet or abjad,42,22,11,0,0,31,v7 task
+Syrc,Syriac,right-to-left alphabet or abjad,88,45,28,0,0,60,v7 task
+Thaa,Thaana,right-to-left alphabet or abjad,50,39,11,0,0,39,v7 task
+Yezi,Yezidi,right-to-left alphabet or abjad,47,44,2,0,0,45,v7 task
+Cans,Canadian Aboriginal,syllabary,726,723,0,0,0,0,v7 task
+Cprt,Cypriot,syllabary,55,55,0,0,0,55,v7 task
+Ethi,Ethiopic,syllabary,523,481,3,0,0,0,v7 task
+Hang,Hangul,syllabary,11739,11675,2,0,1,0,v7 task
+Linb,Linear B,syllabary,211,211,0,0,0,0,v7 task
+Mend,Mende Kikakui,syllabary,213,197,7,0,0,206,v7 task
+Vaii,Vai,syllabary,300,287,0,0,0,0,v7 task
+Yiii,Yi,syllabary,1220,1165,0,0,0,0,v7 task

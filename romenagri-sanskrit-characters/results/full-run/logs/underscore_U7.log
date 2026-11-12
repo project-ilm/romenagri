@@ -1,0 +1,31 @@
+
+U7  the twelve guards  (section 14.7)
+  U7  the grammar has 12 guards (the rules tagged '!'), one for each position found in U6 (12)                         ok
+  U7  no rule of the grammar with the guards can consume an underscore, or step over the terminator, unseen            ok
+  U7  the guards add 12 rules and no state (5 states, longest guard 4 characters)                                      ok
+  U7  the witness that each guard names is, for every rule of U6, the string that the search of U6 found (the second guard of state M has its own) ok
+  U7  every one of the 551881 strings of length <= 4 over a-z and _: the grammar with the guards writes one 5F per pair of underscores (538039 defined, 13842 with a missing row) ok
+  U7  every one of the 1118481 strings of length <= 5 over the letters that the rules test (acehjklnortvyz_^): the same (1066440 defined, 52041 with a missing row) ok
+  U7  with the table completed, the parser with the guards is defined on all 551881 strings of length <= 4 over a-z and _ (a total function in this range) ok
+  U7  the grammar without the guards with the table as it is, same strings                                             (informational) defined 486585, reads past the end 44948, missing row 20348
+  U7  guard L1  'c' [_ $]                          witness 'c__'  : breaks the law without it, holds with it           ok
+  U7  guard L2b 'v' [_ $]                          witness 'lv__' : breaks the law without it, holds with it           ok
+  U7  guard L2c 'e' [_ $]                          witness '_e__' : breaks the law without it, holds with it           ok
+  U7  guard L2c 'y' [_ $]                          witness '_y__' : breaks the law without it, holds with it           ok
+  U7  guard L2c 'o' [_ $]                          witness '_o_'  : breaks the law without it, holds with it           ok
+  U7  guard L2c 'n' [_ $]                          witness '_n_'  : breaks the law without it, holds with it           ok
+  U7  guard L2c 'r' [_ $]                          witness '_r_'  : breaks the law without it, holds with it           ok
+  U7  guard L2c 'j' [_ $]                          witness '_j_'  : breaks the law without it, holds with it           ok
+  U7  guard M   'e' [_ $]                          witness 'je__' : breaks the law without it, holds with it           ok
+  U7  guard M   '_' [_ $]                          witness '^__a' : breaks the law without it, holds with it           ok
+  U7  guard M   '_' . [_ $]                        witness '^_^__': breaks the law without it, holds with it           ok
+  U7  guard M   'o' [_ $]                          witness 'jo_'  : breaks the law without it, holds with it           ok
+  U7  no guard changes the parse of two table keys written one after the other (9025 strings), except where the parser without the guards reads past the end (6: the key `^` followed by an underscore key) ok
+  U7  strings of length <= 3 that both grammars read                                                                   (informational) 18208; the output differs on 86 (on 66 of them the parser without the guards kept the law); e.g. [('c_', 'b8 e8', '63 e8'), ('ac_', '61 b8 e8', '61 63 e8'), ('bc_', 'ca e8 b8 e8', 'ca e8 63 e8')]
+  U7  on the 12 witness strings the C parser of this package writes what the grammar with the guards writes, one 5F per pair ok
+  U7  the C parser of this package: on 1670362 strings the output is the same whatever follows the terminator (an underscore, a letter, what an earlier string left) ok
+  U7  the C parser without the guards (patch 0001 alone), on the 90345 strings of the quick run                        (informational) 11000 give other bytes when `x` follows the terminator instead of `_`
+  U7  ... so the measurement can see a read past the end: the parser without the guards fails it                       ok
+      (83s)
+
+RESULT: PASS   (85 s)   [only U7]

@@ -1,0 +1,243 @@
+11.1  the lexical layer
+  11.1  old: typed `k^aa` gives KA, halant and the ASCII text `^aa`                            ok
+  11.1  old: a sign alone (DA) is written `^aa`, and that comes back as the ASCII text 5E 61 61 ok
+  11.1  old: the danda (EA) is written `|`, and `|` comes back as the ASCII bar 7C             ok
+  11.1  old: a Latin word and a quoted string cross acii2rmn wrapped, and rmn2acii unwraps them ok
+  11.1  old: a literal underscore is the row `__` (5F); `_` followed by a letter is a family letter ok
+  11.1  old: acii2cf writes `trace__ka` and acii2pcf `trace_ka` for the Latin word `trace_` followed by KA ok
+  11.1  mid: typed `k^aa` gives KA, halant and the ASCII text `^aa`                            ok
+  11.1  mid: a sign alone (DA) is written `^aa`, and that comes back as the ASCII text 5E 61 61 ok
+  11.1  mid: the danda (EA) is written `|`, and `|` comes back as the ASCII bar 7C             ok
+  11.1  mid: a Latin word and a quoted string cross acii2rmn wrapped, and rmn2acii unwraps them ok
+  11.1  mid: a literal underscore is the row `__` (5F); `_` followed by a letter is a family letter ok
+  11.1  mid: acii2cf writes `trace__ka` and acii2pcf `trace_ka` for the Latin word `trace_` followed by KA ok
+  11.1  new: typed `k^aa` gives KA, halant and the ASCII text `^aa`                            ok
+  11.1  new: a sign alone (DA) is written `^aa`, and that comes back as the ASCII text 5E 61 61 ok
+  11.1  new: the danda (EA) is written `|`, and `|` comes back as the ASCII bar 7C             ok
+  11.1  new: a Latin word and a quoted string cross acii2rmn wrapped, and rmn2acii unwraps them ok
+  11.1  new: a literal underscore is the row `__` (5F); `_` followed by a letter is a family letter ok
+  11.1  new: acii2cf writes `trace__ka` and acii2pcf `trace_ka` for the Latin word `trace_` followed by KA ok
+11.3  keys the parser asks for and the table lacks
+  11.3  old: the grammar asks for 15 keys that the table lacks: 13 `...vra` keys and the aspirates `_rrha`, `lha` ok
+  11.3  old: and the avagraha key `_s` is missing (the defect the patch repairs)               ok
+  11.3  old: `_dvr` (asks for `_dvra`) crashes the filter and writes nothing                   ok
+  11.3  old: `_dvra` (asks for `_dvra`) crashes the filter and writes nothing                  ok
+  11.3  old: `_rdvr` (asks for `_rdvra`) crashes the filter and writes nothing                 ok
+  11.3  old: `_rdvra` (asks for `_rdvra`) crashes the filter and writes nothing                ok
+  11.3  old: `_rrh` (asks for `_rrha`) crashes the filter and writes nothing                   ok
+  11.3  old: `_rrvr` (asks for `_rrvra`) crashes the filter and writes nothing                 ok
+  11.3  old: `_rrvra` (asks for `_rrvra`) crashes the filter and writes nothing                ok
+  11.3  old: `_tvr` (asks for `_tvra`) crashes the filter and writes nothing                   ok
+  11.3  old: `_tvra` (asks for `_tvra`) crashes the filter and writes nothing                  ok
+  11.3  old: `bvr` (asks for `bvra`) crashes the filter and writes nothing                     ok
+  11.3  old: `bvra` (asks for `bvra`) crashes the filter and writes nothing                    ok
+  11.3  old: `chvr` (asks for `chvra`) crashes the filter and writes nothing                   ok
+  11.3  old: `chvra` (asks for `chvra`) crashes the filter and writes nothing                  ok
+  11.3  old: `dvr` (asks for `dvra`) crashes the filter and writes nothing                     ok
+  11.3  old: `dvra` (asks for `dvra`) crashes the filter and writes nothing                    ok
+  11.3  old: `gvr` (asks for `gvra`) crashes the filter and writes nothing                     ok
+  11.3  old: `gvra` (asks for `gvra`) crashes the filter and writes nothing                    ok
+  11.3  old: `jvr` (asks for `jvra`) crashes the filter and writes nothing                     ok
+  11.3  old: `jvra` (asks for `jvra`) crashes the filter and writes nothing                    ok
+  11.3  old: `kvr` (asks for `kvra`) crashes the filter and writes nothing                     ok
+  11.3  old: `kvra` (asks for `kvra`) crashes the filter and writes nothing                    ok
+  11.3  old: `lh` (asks for `lha`) crashes the filter and writes nothing                       ok
+  11.3  old: `pvr` (asks for `pvra`) crashes the filter and writes nothing                     ok
+  11.3  old: `pvra` (asks for `pvra`) crashes the filter and writes nothing                    ok
+  11.3  old: `svr` (asks for `svra`) crashes the filter and writes nothing                     ok
+  11.3  old: `svra` (asks for `svra`) crashes the filter and writes nothing                    ok
+  11.3  old: `tvr` (asks for `tvra`) crashes the filter and writes nothing                     ok
+  11.3  old: `tvra` (asks for `tvra`) crashes the filter and writes nothing                    ok
+  11.3  old: `lvr` works (the row `lvra` exists)                                               ok
+  11.3  old: `nv` and `nh` do not crash: the stem `n` is not read in L2b (`nv` is NA and the letter v as text, `nh` is NA, a halant and the letter h) ok
+  11.3  mid: the grammar asks for 15 keys that the table lacks: 13 `...vra` keys and the aspirates `_rrha`, `lha` ok
+  11.3  mid: and the avagraha key `_s` is present                                              ok
+  11.3  mid: `_dvr` (asks for `_dvra`) crashes the filter and writes nothing                   ok
+  11.3  mid: `_dvra` (asks for `_dvra`) crashes the filter and writes nothing                  ok
+  11.3  mid: `_rdvr` (asks for `_rdvra`) crashes the filter and writes nothing                 ok
+  11.3  mid: `_rdvra` (asks for `_rdvra`) crashes the filter and writes nothing                ok
+  11.3  mid: `_rrh` (asks for `_rrha`) crashes the filter and writes nothing                   ok
+  11.3  mid: `_rrvr` (asks for `_rrvra`) crashes the filter and writes nothing                 ok
+  11.3  mid: `_rrvra` (asks for `_rrvra`) crashes the filter and writes nothing                ok
+  11.3  mid: `_tvr` (asks for `_tvra`) crashes the filter and writes nothing                   ok
+  11.3  mid: `_tvra` (asks for `_tvra`) crashes the filter and writes nothing                  ok
+  11.3  mid: `bvr` (asks for `bvra`) crashes the filter and writes nothing                     ok
+  11.3  mid: `bvra` (asks for `bvra`) crashes the filter and writes nothing                    ok
+  11.3  mid: `chvr` (asks for `chvra`) crashes the filter and writes nothing                   ok
+  11.3  mid: `chvra` (asks for `chvra`) crashes the filter and writes nothing                  ok
+  11.3  mid: `dvr` (asks for `dvra`) crashes the filter and writes nothing                     ok
+  11.3  mid: `dvra` (asks for `dvra`) crashes the filter and writes nothing                    ok
+  11.3  mid: `gvr` (asks for `gvra`) crashes the filter and writes nothing                     ok
+  11.3  mid: `gvra` (asks for `gvra`) crashes the filter and writes nothing                    ok
+  11.3  mid: `jvr` (asks for `jvra`) crashes the filter and writes nothing                     ok
+  11.3  mid: `jvra` (asks for `jvra`) crashes the filter and writes nothing                    ok
+  11.3  mid: `kvr` (asks for `kvra`) crashes the filter and writes nothing                     ok
+  11.3  mid: `kvra` (asks for `kvra`) crashes the filter and writes nothing                    ok
+  11.3  mid: `lh` (asks for `lha`) crashes the filter and writes nothing                       ok
+  11.3  mid: `pvr` (asks for `pvra`) crashes the filter and writes nothing                     ok
+  11.3  mid: `pvra` (asks for `pvra`) crashes the filter and writes nothing                    ok
+  11.3  mid: `svr` (asks for `svra`) crashes the filter and writes nothing                     ok
+  11.3  mid: `svra` (asks for `svra`) crashes the filter and writes nothing                    ok
+  11.3  mid: `tvr` (asks for `tvra`) crashes the filter and writes nothing                     ok
+  11.3  mid: `tvra` (asks for `tvra`) crashes the filter and writes nothing                    ok
+  11.3  mid: `lvr` works (the row `lvra` exists)                                               ok
+  11.3  mid: `nv` and `nh` do not crash: the stem `n` is not read in L2b (`nv` is NA and the letter v as text, `nh` is NA, a halant and the letter h) ok
+  11.3  new: the grammar asks for 15 keys that the table lacks: 13 `...vra` keys and the aspirates `_rrha`, `lha` ok
+  11.3  new: and the avagraha key `_s` is present                                              ok
+  11.3  new: `_dvr` (asks for `_dvra`) crashes the filter and writes nothing                   ok
+  11.3  new: `_dvra` (asks for `_dvra`) crashes the filter and writes nothing                  ok
+  11.3  new: `_rdvr` (asks for `_rdvra`) crashes the filter and writes nothing                 ok
+  11.3  new: `_rdvra` (asks for `_rdvra`) crashes the filter and writes nothing                ok
+  11.3  new: `_rrh` (asks for `_rrha`) crashes the filter and writes nothing                   ok
+  11.3  new: `_rrvr` (asks for `_rrvra`) crashes the filter and writes nothing                 ok
+  11.3  new: `_rrvra` (asks for `_rrvra`) crashes the filter and writes nothing                ok
+  11.3  new: `_tvr` (asks for `_tvra`) crashes the filter and writes nothing                   ok
+  11.3  new: `_tvra` (asks for `_tvra`) crashes the filter and writes nothing                  ok
+  11.3  new: `bvr` (asks for `bvra`) crashes the filter and writes nothing                     ok
+  11.3  new: `bvra` (asks for `bvra`) crashes the filter and writes nothing                    ok
+  11.3  new: `chvr` (asks for `chvra`) crashes the filter and writes nothing                   ok
+  11.3  new: `chvra` (asks for `chvra`) crashes the filter and writes nothing                  ok
+  11.3  new: `dvr` (asks for `dvra`) crashes the filter and writes nothing                     ok
+  11.3  new: `dvra` (asks for `dvra`) crashes the filter and writes nothing                    ok
+  11.3  new: `gvr` (asks for `gvra`) crashes the filter and writes nothing                     ok
+  11.3  new: `gvra` (asks for `gvra`) crashes the filter and writes nothing                    ok
+  11.3  new: `jvr` (asks for `jvra`) crashes the filter and writes nothing                     ok
+  11.3  new: `jvra` (asks for `jvra`) crashes the filter and writes nothing                    ok
+  11.3  new: `kvr` (asks for `kvra`) crashes the filter and writes nothing                     ok
+  11.3  new: `kvra` (asks for `kvra`) crashes the filter and writes nothing                    ok
+  11.3  new: `lh` (asks for `lha`) crashes the filter and writes nothing                       ok
+  11.3  new: `pvr` (asks for `pvra`) crashes the filter and writes nothing                     ok
+  11.3  new: `pvra` (asks for `pvra`) crashes the filter and writes nothing                    ok
+  11.3  new: `svr` (asks for `svra`) crashes the filter and writes nothing                     ok
+  11.3  new: `svra` (asks for `svra`) crashes the filter and writes nothing                    ok
+  11.3  new: `tvr` (asks for `tvra`) crashes the filter and writes nothing                     ok
+  11.3  new: `tvra` (asks for `tvra`) crashes the filter and writes nothing                    ok
+  11.3  new: `lvr` works (the row `lvra` exists)                                               ok
+  11.3  new: `nv` and `nh` do not crash: the stem `n` is not read in L2b (`nv` is NA and the letter v as text, `nh` is NA, a halant and the letter h) ok
+11.4  buffers, limits and unchecked reads
+  11.4  old: a stretch of 10,239 decoded characters (5,119 x KA and a space) is accepted       ok
+  11.4  old: 10,240 decoded characters (the same and two spaces)                               (informational) crashes (rc=-11)
+  11.4  old: a run of 1,023 letters goes through the parser                                    ok
+  11.4  old: a run of 1,024 letters / of 1,025 letters                                         (informational) rc=0 / rc=-11
+  11.4  old: after `kakakaka`, the `c` of the next word reads the stale buffer; in a fresh process `c` is B8 E8 ok
+  11.4  old: after `kakakaka`, `lv` at the end of the next word reads the stale buffer (fresh process: d2 e8) ok
+  11.4  old: after `kakakaka`, `ke` at the end of the next word reads the stale buffer (fresh process: b3 dc) ok
+  11.4  old: after `kakakaka`, `_e` at the end of the next word reads the stale buffer (fresh process: a7) ok
+  11.4  old: after `kakakaka`, `_y` at the end of the next word reads the stale buffer (fresh process: bc e8) ok
+  11.4  old: after `kakakaka`, `_o` at the end of the next word reads the stale buffer (fresh process: nothing) ok
+  11.4  old: after `kakakaka`, `_n` at the end of the next word reads the stale buffer (fresh process: nothing) ok
+  11.4  old: after `kakakaka`, `_r` at the end of the next word reads the stale buffer (fresh process: nothing) ok
+  11.4  old: after `kakakaka`, `_j` at the end of the next word reads the stale buffer (fresh process: nothing) ok
+  11.4  old: acii2rmn crashes on E8 E9 (a nukta with fewer than two characters below it)       ok
+  11.4  old: acii2rmn crashes on EA E9 (a nukta with fewer than two characters below it)       ok
+  11.4  old: acii2rmn crashes on B3 E8 E9 (a nukta with fewer than two characters below it)    ok
+  11.4  mid: a stretch of 10,239 decoded characters (5,119 x KA and a space) is accepted       ok
+  11.4  mid: 10,240 decoded characters (the same and two spaces)                               (informational) crashes (rc=-11)
+  11.4  mid: a run of 1,023 letters goes through the parser                                    ok
+  11.4  mid: a run of 1,024 letters / of 1,025 letters                                         (informational) rc=0 / rc=-11
+  11.4  mid: after `kakakaka`, the `c` of the next word reads the stale buffer; in a fresh process `c` is B8 E8 ok
+  11.4  mid: after `kakakaka`, `lv` at the end of the next word reads the stale buffer (fresh process: d2 e8) ok
+  11.4  mid: after `kakakaka`, `ke` at the end of the next word reads the stale buffer (fresh process: b3 dc) ok
+  11.4  mid: after `kakakaka`, `_e` at the end of the next word reads the stale buffer (fresh process: a7) ok
+  11.4  mid: after `kakakaka`, `_y` at the end of the next word reads the stale buffer (fresh process: bc e8) ok
+  11.4  mid: after `kakakaka`, `_o` at the end of the next word reads the stale buffer (fresh process: nothing) ok
+  11.4  mid: after `kakakaka`, `_n` at the end of the next word reads the stale buffer (fresh process: nothing) ok
+  11.4  mid: after `kakakaka`, `_r` at the end of the next word reads the stale buffer (fresh process: nothing) ok
+  11.4  mid: after `kakakaka`, `_j` at the end of the next word reads the stale buffer (fresh process: nothing) ok
+  11.4  mid: acii2rmn crashes on E8 E9 (a nukta with fewer than two characters below it)       ok
+  11.4  mid: acii2rmn crashes on EA E9 (a nukta with fewer than two characters below it)       ok
+  11.4  mid: acii2rmn crashes on B3 E8 E9 (a nukta with fewer than two characters below it)    ok
+  11.4  new: a stretch of 10,239 decoded characters (5,119 x KA and a space) is accepted       ok
+  11.4  new: 10,240 decoded characters (the same and two spaces)                               (informational) crashes (rc=-11)
+  11.4  new: a run of 1,023 letters goes through the parser                                    ok
+  11.4  new: a run of 1,024 letters / of 1,025 letters                                         (informational) rc=0 / rc=-11
+  11.4  new: after `kakakaka`, the `c` of the next word is the letter c, as in a fresh process: the guard of section 14.7 does not step over the end ok
+  11.4  new: after `kakakaka`, `lv` at the end of the next word is read as in a fresh process (d1 76): the guards stop at the end ok
+  11.4  new: after `kakakaka`, `ke` at the end of the next word is read as in a fresh process (b3 65): the guards stop at the end ok
+  11.4  new: after `kakakaka`, `_e` at the end of the next word is read as in a fresh process (65): the guards stop at the end ok
+  11.4  new: after `kakakaka`, `_y` at the end of the next word is read as in a fresh process (79): the guards stop at the end ok
+  11.4  new: after `kakakaka`, `_o` at the end of the next word is read as in a fresh process (6f): the guards stop at the end ok
+  11.4  new: after `kakakaka`, `_n` at the end of the next word is read as in a fresh process (6e): the guards stop at the end ok
+  11.4  new: after `kakakaka`, `_r` at the end of the next word is read as in a fresh process (72): the guards stop at the end ok
+  11.4  new: after `kakakaka`, `_j` at the end of the next word is read as in a fresh process (6a): the guards stop at the end ok
+  11.4  new: acii2rmn crashes on E8 E9 (a nukta with fewer than two characters below it)       ok
+  11.4  new: acii2rmn crashes on EA E9 (a nukta with fewer than two characters below it)       ok
+  11.4  new: acii2rmn crashes on B3 E8 E9 (a nukta with fewer than two characters below it)    ok
+11.5  what does not survive a round trip
+  11.5  old: KA, halant, independent vocalic vowel AA comes back as KA and the sign DF         ok
+  11.5  old: dental DA and the nukta (C4 E9) is written `__rda`, which is read as a literal underscore and `rda` ok
+  11.5  old: ISCII's explicit halant (KA, E8, E8, KHA) comes out of acii2rmn as `kha`: the consonant before it is lost ok
+  11.5  old: ISCII's soft halant (KA, E8, E9, KHA) crashes acii2rmn                            ok
+  11.5  mid: KA, halant, independent vocalic vowel AA comes back as KA and the sign DF         ok
+  11.5  mid: KA, halant, independent vocalic vowel 81 comes back as KA and the sign 84         ok
+  11.5  mid: KA, halant, independent vocalic vowel 82 comes back as KA and the sign 85         ok
+  11.5  mid: KA, halant, independent vocalic vowel 83 comes back as KA and the sign 86         ok
+  11.5  mid: dental DA and the nukta (C4 E9) is written `__rda`, which is read as a literal underscore and `rda` ok
+  11.5  mid: ISCII's explicit halant (KA, E8, E8, KHA) comes out of acii2rmn as `kha`: the consonant before it is lost ok
+  11.5  mid: ISCII's soft halant (KA, E8, E9, KHA) crashes acii2rmn                            ok
+  11.5  new: KA, halant, independent vocalic vowel AA comes back as KA and the sign DF         ok
+  11.5  new: KA, halant, independent vocalic vowel 81 comes back as KA and the sign 84         ok
+  11.5  new: KA, halant, independent vocalic vowel 82 comes back as KA and the sign 85         ok
+  11.5  new: KA, halant, independent vocalic vowel 83 comes back as KA and the sign 86         ok
+  11.5  new: dental DA and the nukta (C4 E9) is written `__rda`, which is read as a literal underscore and `rda` ok
+  11.5  new: ISCII's explicit halant (KA, E8, E8, KHA) comes out of acii2rmn as `kha`: the consonant before it is lost ok
+  11.5  new: ISCII's soft halant (KA, E8, E9, KHA) crashes acii2rmn                            ok
+10.6  a consonant followed by the nukta
+  10.6  old: of the 36 consonant bytes (one-byte rows in B3-D8), `byte, nukta` survives acii2rmn | rmn2acii except C4 and C5 ok
+  10.6  mid: of the 36 consonant bytes (one-byte rows in B3-D8), `byte, nukta` survives acii2rmn | rmn2acii except C4 and C5 ok
+  10.6  new: of the 36 consonant bytes (one-byte rows in B3-D8), `byte, nukta` survives acii2rmn | rmn2acii except C4 and C5 ok
+11.6  what uni2acii does with characters it has no row for (the low byte, and acii2uni's byte % 128)
+  11.6  old: U+00A0 comes back as ' '                                                          ok
+  11.6  old: U+00AD comes back as 'ऐ'                                                          ok
+  11.6  old: U+00B7 comes back as 'ङ'                                                          ok
+  11.6  old: U+00D7 comes back as 'स'                                                          ok
+  11.6  old: U+00E9 comes back as '़'                                                          ok
+  11.6  old: U+20B9 comes back as 'छ'                                                          ok
+  11.6  old: U+2022 comes back as '"'                                                          ok
+  11.6  old: U+2122 comes back as '"'                                                          ok
+  11.6  old: U+2026 comes back as '&'                                                          ok
+  11.6  old: U+2020 comes back as ' '                                                          ok
+  11.6  old: U+FFFD comes back as '}'                                                          ok
+  11.6  old: U+1CD0 comes back as 'ऱ'                                                          ok
+  11.6  old: U+0934 comes back as '4' (the low byte 34)                                        ok
+  11.6  old: U+2002-U+2019, U+201C, U+201D (including ZWNJ U+200C and ZWJ U+200D) all come back as control characters ok
+  11.6  old: ZWNJ comes back as U+000C (form feed) and ZWJ as U+000D (carriage return)         ok
+  11.6  old: U+2190 comes back as a control character                                          ok
+  11.6  old: U+1F600 gives the bytes 3D 00                                                     ok
+  11.6  mid: U+00A0 comes back as ' '                                                          ok
+  11.6  mid: U+00AD comes back as 'ऐ'                                                          ok
+  11.6  mid: U+00B7 comes back as 'ङ'                                                          ok
+  11.6  mid: U+00D7 comes back as 'स'                                                          ok
+  11.6  mid: U+00E9 comes back as '़'                                                          ok
+  11.6  mid: U+20B9 comes back as 'छ'                                                          ok
+  11.6  mid: U+2022 comes back as '"'                                                          ok
+  11.6  mid: U+2122 comes back as '"'                                                          ok
+  11.6  mid: U+2026 comes back as '&'                                                          ok
+  11.6  mid: U+2020 comes back as ' '                                                          ok
+  11.6  mid: U+FFFD comes back as '}'                                                          ok
+  11.6  mid: U+1CD0 comes back as 'ऱ'                                                          ok
+  11.6  mid: U+0934 comes back as '4' (the low byte 34)                                        ok
+  11.6  mid: U+2002-U+2019, U+201C, U+201D (including ZWNJ U+200C and ZWJ U+200D) all come back as control characters ok
+  11.6  mid: ZWNJ comes back as U+000C (form feed) and ZWJ as U+000D (carriage return)         ok
+  11.6  mid: U+2190 comes back as a control character                                          ok
+  11.6  mid: U+1F600 gives the bytes 3D 00                                                     ok
+  11.6  new: U+00A0 comes back as ' '                                                          ok
+  11.6  new: U+00AD comes back as 'ऐ'                                                          ok
+  11.6  new: U+00B7 comes back as 'ङ'                                                          ok
+  11.6  new: U+00D7 comes back as 'स'                                                          ok
+  11.6  new: U+00E9 comes back as '़'                                                          ok
+  11.6  new: U+20B9 comes back as 'छ'                                                          ok
+  11.6  new: U+2022 comes back as '"'                                                          ok
+  11.6  new: U+2122 comes back as '"'                                                          ok
+  11.6  new: U+2026 comes back as '&'                                                          ok
+  11.6  new: U+2020 comes back as ' '                                                          ok
+  11.6  new: U+FFFD comes back as '}'                                                          ok
+  11.6  new: U+1CD0 comes back as 'ऱ'                                                          ok
+  11.6  new: U+0934 comes back as 'ऴ' (the nukta layer writes D2 E9, and acii2uni writes ळ and a nukta, section 15) ok
+  11.6  new: with -f nfc on both converters U+0934 comes back as itself (D2 E9 is composed by acii2uni, section 15) ok
+  11.6  new: U+2002-U+2019, U+201C, U+201D (including ZWNJ U+200C and ZWJ U+200D) all come back as control characters ok
+  11.6  new: ZWNJ comes back as U+000C (form feed) and ZWJ as U+000D (carriage return)         ok
+  11.6  new: U+2190 comes back as a control character                                          ok
+  11.6  new: U+1F600 gives the bytes 3D 00                                                     ok
+  11.6  the double danda U+0965 came back as `e` before the patch and comes back as itself now ok
+RESULT: PASS

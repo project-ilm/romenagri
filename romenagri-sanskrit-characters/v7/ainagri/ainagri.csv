@@ -1,0 +1,80 @@
+kind,devanagari,matra,ainagri,name,rule
+vowel,अ,,a,DEVANAGARI LETTER A,vowel
+vowel,आ,ा,ā,DEVANAGARI LETTER AA,length: macron
+vowel,इ,ि,i,DEVANAGARI LETTER I,vowel
+vowel,ई,ी,ī,DEVANAGARI LETTER II,length: macron
+vowel,उ,ु,u,DEVANAGARI LETTER U,vowel
+vowel,ऊ,ू,ū,DEVANAGARI LETTER UU,length: macron
+vowel,ऋ,ृ,r̥,DEVANAGARI LETTER VOCALIC R,vocalic: ring below (ISO 15919)
+vowel,ॠ,ॄ,r̥̄,DEVANAGARI LETTER VOCALIC RR,length: macron
+vowel,ऌ,ॢ,l̥,DEVANAGARI LETTER VOCALIC L,vocalic: ring below (ISO 15919)
+vowel,ॡ,ॣ,l̥̄,DEVANAGARI LETTER VOCALIC LL,length: macron
+vowel,ऎ,ॆ,ĕ,DEVANAGARI LETTER SHORT E,vowel
+vowel,ए,े,e,DEVANAGARI LETTER E,vowel
+vowel,ऐ,ै,ê,DEVANAGARI LETTER AI,vowel
+vowel,ऒ,ॊ,ŏ,DEVANAGARI LETTER SHORT O,vowel
+vowel,ओ,ो,o,DEVANAGARI LETTER O,vowel
+vowel,औ,ौ,ô,DEVANAGARI LETTER AU,vowel
+vowel,ऍ,ॅ,è,DEVANAGARI LETTER CANDRA E,vowel
+vowel,ऑ,ॉ,ò,DEVANAGARI LETTER CANDRA O,vowel
+consonant,क,,k,DEVANAGARI LETTER KA,Latin letter
+consonant,ख,,kʰ,DEVANAGARI LETTER KHA,aspiration: raised h (IPA)
+consonant,ग,,g,DEVANAGARI LETTER GA,Latin letter
+consonant,घ,,gʰ,DEVANAGARI LETTER GHA,aspiration: raised h (IPA)
+consonant,ङ,,ṅ,DEVANAGARI LETTER NGA,Latin letter
+consonant,च,,c,DEVANAGARI LETTER CA,Latin letter
+consonant,छ,,cʰ,DEVANAGARI LETTER CHA,aspiration: raised h (IPA)
+consonant,ज,,j,DEVANAGARI LETTER JA,Latin letter
+consonant,झ,,jʰ,DEVANAGARI LETTER JHA,aspiration: raised h (IPA)
+consonant,ञ,,ñ,DEVANAGARI LETTER NYA,Latin letter
+consonant,ट,,ṭ,DEVANAGARI LETTER TTA,retroflex: dot below (ISO 15919)
+consonant,ठ,,ṭʰ,DEVANAGARI LETTER TTHA,aspiration: raised h (IPA)
+consonant,ड,,ḍ,DEVANAGARI LETTER DDA,retroflex: dot below (ISO 15919)
+consonant,ढ,,ḍʰ,DEVANAGARI LETTER DDHA,aspiration: raised h (IPA)
+consonant,ण,,ṇ,DEVANAGARI LETTER NNA,retroflex: dot below (ISO 15919)
+consonant,त,,t,DEVANAGARI LETTER TA,Latin letter
+consonant,थ,,tʰ,DEVANAGARI LETTER THA,aspiration: raised h (IPA)
+consonant,द,,d,DEVANAGARI LETTER DA,Latin letter
+consonant,ध,,dʰ,DEVANAGARI LETTER DHA,aspiration: raised h (IPA)
+consonant,न,,n,DEVANAGARI LETTER NA,Latin letter
+consonant,प,,p,DEVANAGARI LETTER PA,Latin letter
+consonant,फ,,pʰ,DEVANAGARI LETTER PHA,aspiration: raised h (IPA)
+consonant,ब,,b,DEVANAGARI LETTER BA,Latin letter
+consonant,भ,,bʰ,DEVANAGARI LETTER BHA,aspiration: raised h (IPA)
+consonant,म,,m,DEVANAGARI LETTER MA,Latin letter
+consonant,य,,y,DEVANAGARI LETTER YA,Latin letter
+consonant,र,,r,DEVANAGARI LETTER RA,Latin letter
+consonant,ल,,l,DEVANAGARI LETTER LA,Latin letter
+consonant,व,,v,DEVANAGARI LETTER VA,Latin letter
+consonant,ळ,,ḷ,DEVANAGARI LETTER LLA,retroflex: dot below (ISO 15919)
+consonant,श,,ś,DEVANAGARI LETTER SHA,Latin letter
+consonant,ष,,ṣ,DEVANAGARI LETTER SSA,retroflex: dot below (ISO 15919)
+consonant,स,,s,DEVANAGARI LETTER SA,Latin letter
+consonant,ह,,h,DEVANAGARI LETTER HA,Latin letter
+consonant,क़,,q,DEVANAGARI LETTER QA,Latin letter
+consonant,ख़,,x,DEVANAGARI LETTER KHHA,Latin letter
+consonant,ग़,,ġ,DEVANAGARI LETTER GHHA,Latin letter
+consonant,ज़,,z,DEVANAGARI LETTER ZA,Latin letter
+consonant,ड़,,ṛ,DEVANAGARI LETTER DDDHA,retroflex: dot below (ISO 15919)
+consonant,ढ़,,ṛʰ,DEVANAGARI LETTER RHA,aspiration: raised h (IPA)
+consonant,फ़,,f,DEVANAGARI LETTER FA,Latin letter
+consonant,य़,,ẏ,DEVANAGARI LETTER YYA,Latin letter
+consonant,ऩ,,ṉ,DEVANAGARI LETTER NNNA,Latin letter
+consonant,ऱ,,ṟ,DEVANAGARI LETTER RRA,Latin letter
+consonant,ऴ,,ḻ,DEVANAGARI LETTER LLLA,Latin letter
+sign,ं,,ṁ,DEVANAGARI SIGN ANUSVARA,sign
+sign,ः,,ḥ,DEVANAGARI SIGN VISARGA,retroflex: dot below (ISO 15919)
+sign,ँ,,m̐,DEVANAGARI SIGN CANDRABINDU,sign
+sign,ऽ,,ʼ,DEVANAGARI SIGN AVAGRAHA,sign
+sign,।,,|,DEVANAGARI DANDA,sign
+sign,॥,,‖,DEVANAGARI DOUBLE DANDA,sign
+sign,०,,0,DEVANAGARI DIGIT ZERO,sign
+sign,१,,1,DEVANAGARI DIGIT ONE,sign
+sign,२,,2,DEVANAGARI DIGIT TWO,sign
+sign,३,,3,DEVANAGARI DIGIT THREE,sign
+sign,४,,4,DEVANAGARI DIGIT FOUR,sign
+sign,५,,5,DEVANAGARI DIGIT FIVE,sign
+sign,६,,6,DEVANAGARI DIGIT SIX,sign
+sign,७,,7,DEVANAGARI DIGIT SEVEN,sign
+sign,८,,8,DEVANAGARI DIGIT EIGHT,sign
+sign,९,,9,DEVANAGARI DIGIT NINE,sign

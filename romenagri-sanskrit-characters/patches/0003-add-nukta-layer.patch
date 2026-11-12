@@ -1,0 +1,1310 @@
+diff --git a/Romenagri/Makefile b/Romenagri/Makefile
+index c309d77..7c8150d 100644
+--- a/Romenagri/Makefile
++++ b/Romenagri/Makefile
+@@ -1,4 +1,4 @@
+-#Copyright (C) 2004-2021 Abhishek Choudhary
++#Copyright (C) 1993-2026 Abhishek Choudhary
+ #This file is part of the Romenagri Transliteration System.
+ #
+ #The Romenagri Transliteration System is free software; 
+@@ -24,6 +24,10 @@
+ #                 Changed by <alias>,
+ #                 email@server.tld
+ #
++#  05-Nov-2026, Added nukta.h (the nukta layer of uni2acii and acii2uni) to the unicode target and to install and uninstall,
++#                 Abhishek Choudhary <obonac> (prepared with Claude),
++#                 a.choudhary@ieee.org
++#
+ #  08-Jun-2021, Add cleanup code for generated binaries,
+ #                 Abhishek Choudhary <obonac>,
+ #                 a.choudhary@ieee.org
+@@ -192,6 +196,7 @@ install:
+ 	install aciihin.h $(INSTROOT)$(INCDIR)/aciihin.h
+ 	install stack.h $(INSTROOT)$(INCDIR)/stack.h
+ 	install unicode.h $(INSTROOT)$(INCDIR)/unicode.h
++	install nukta.h $(INSTROOT)$(INCDIR)/nukta.h
+ 	install rmn2acii$(EXECEXT) $(INSTROOT)$(EXECDIR)/rmn2acii$(EXECEXT)
+ 	install acii2rmn$(EXECEXT) $(INSTROOT)$(EXECDIR)/acii2rmn$(EXECEXT)
+ 	install acii2cf$(EXECEXT) $(INSTROOT)$(EXECDIR)/acii2cf$(EXECEXT)
+@@ -211,6 +216,7 @@ uninstall:
+ 	rm $(INSTROOT)$(INCDIR)/aciihin.h
+ 	rm $(INSTROOT)$(INCDIR)/stack.h
+ 	rm $(INSTROOT)$(INCDIR)/unicode.h
++	rm $(INSTROOT)$(INCDIR)/nukta.h
+ 	rm $(INSTROOT)$(EXECDIR)/rmn2acii$(EXECEXT)
+ 	rm $(INSTROOT)$(EXECDIR)/acii2rmn$(EXECEXT)
+ 	rm $(INSTROOT)$(EXECDIR)/acii2cf$(EXECEXT)
+@@ -221,7 +227,7 @@ uninstall:
+ 	rm $(INSTROOT)$(EXECDIR)/uni2acii$(EXECEXT)
+ 
+ #Target to make UNICODE <-> ISCII converters for Devnagri
+-unicode: unicode.h acii2uni.c uni2acii.c
++unicode: unicode.h nukta.h acii2uni.c uni2acii.c
+ 	$(CC) $(CFLAGS) -o acii2uni$(EXECEXT) acii2uni.c
+ 	$(CC) $(CFLAGS) -o uni2acii$(EXECEXT) uni2acii.c
+ 
+diff --git a/Romenagri/TRANSLITERATION.md b/Romenagri/TRANSLITERATION.md
+index 36402c5..2c8a6dc 100644
+--- a/Romenagri/TRANSLITERATION.md
++++ b/Romenagri/TRANSLITERATION.md
+@@ -4,8 +4,8 @@ Copyright (C) 1993-2026 Abhishek Choudhary. Licensed under the GNU General Publi
+ version; see the file `COPYING`. SPDX-License-Identifier: GPL-2.0-or-later.
+ 
+ This is `Romenagri/TRANSLITERATION.md`. It describes the `Romenagri/` directory of the hindawiai/chintamani repository as it was at
+-commit `3ad87785a75dc2b18438a8b068807103cb920c81`, plus two patches: `patches/0001-add-missing-sanskrit-characters.patch`, which adds the twelve Sanskrit
+-characters and the first version of this file, and `patches/0002-apply-underscore-guards.patch`, which adds twelve guards to the parser and brings this file up to date (section 14.7).
++commit `3ad87785a75dc2b18438a8b068807103cb920c81`, plus three patches: `patches/0001-add-missing-sanskrit-characters.patch`, which adds the twelve Sanskrit
++characters and the first version of this file; `patches/0002-apply-underscore-guards.patch`, which adds twelve guards to the parser and brings this file up to date (section 14.7); and `patches/0003-add-nukta-layer.patch`, which adds the nukta layer to the two Unicode converters (section 15).
+ The scripts named below (`tools/...`, `tests/...`) belong to the package that carries the patches. They read the files of `Romenagri/`; they are not part of it.
+ 
+ **Contents**
+@@ -24,11 +24,12 @@ The scripts named below (`tools/...`, `tests/...`) belong to the package that ca
+ 12. Provenance and standards
+ 13. Running the checks
+ 14. Underscores: runs, escapes, case folding, joiners
++15. The nukta layer: precomposed nukta letters in the Unicode converters
+ - Appendix A: the complete table; Appendix B: examples
+ 
+ ## 1. Purpose, status, vocabulary
+ 
+-This document does five things.
++This document does six things.
+ 
+ 1. It defines, as exactly as the code allows, how Romenagri converts between Unicode Devanagari, the 8-bit ACII encoding, and the
+    ASCII transliteration that programs and shell tools work with. The recursive-descent parser in `rmn2acii.c`, which is the hard
+@@ -40,6 +41,7 @@ This document does five things.
+ 5. It answers three formal questions about the underscore, the one character that is both a letter of the script and an escape (runs of
+    any length, case folding and mutated input, joiners next to the operators of a host language), and records the twelve guard rules, added to
+    the parser by the second patch, that make its reading of underscores exact (section 14).
++6. It records the nukta layer that the third patch adds to `uni2acii` and `acii2uni`, so that the eleven precomposed nukta letters of Unicode go through the pipeline, the form in which the two converters write them (a choice of the user), what the layer does not do, and the eight challenges that were reviewed, each with the decision taken on it (section 15).
+ 
+ **How the document is kept true.** Statements here are of three kinds.
+ 
+@@ -62,9 +64,12 @@ This document does five things.
+ | stem | a consonant key without its final `a`: `k`, `kh`, `_t`, `lvr` |
+ | halant | the virama, U+094D, ACII `E8`; written in Romenagri only by what follows a consonant, and as `^` |
+ | nukta | the dot below, U+093C, ACII `E9`; written `z` after a consonant stem |
++| nukta layer | what patch 0003 adds to `uni2acii` and `acii2uni` (`nukta.h`, section 15): the rule that a letter with a nukta is a consonant and a nukta, the form in which the two converters write such letters, and the warning layer |
++| form | how the two Unicode converters write a letter with a nukta, as one code point or as two: `asis` (the default, what they always wrote), `nfc` or `nfd` (section 15.2) |
++| level 1, level 2 | the two stages of the parser (section 5.1): at level 1 (`level1`) a consonant is recognised and its sound mapped; at level 2 (`level2a`, `level2b`, `level2c`, `matra`) the halant, the adjunct consonants and the vowel signs are bound to it. The decision of section 15.7 (C1, C6) is that a nukta letter is a consonant and a nukta before level 2 binds anything |
+ | family | the keys that share their letter after `_`: `_li` and `_lee` are the `_l` family |
+ | guard | two senses, told apart by the context (section 5.2): the part of a rule of the grammar before `->`, the condition under which it applies; and a *guard rule*, one of the twelve rules tagged `!` (patch 0002), which stands in front of a rule that jumps over a character it has not tested and sends an underscore or the end of the string to the right place instead (section 14.7) |
+-| old, mid, new | the three builds that the tests compile and compare: the unpatched Romenagri; Romenagri with patch 0001 (the Sanskrit characters: *mid*); and this package's Romenagri, with patch 0002 (the guards) as well (*new*) |
++| old, mid, new | the three builds that the tests compile and compare: the unpatched Romenagri; Romenagri with patch 0001 (the Sanskrit characters: *mid*); and this package's Romenagri, with patches 0002 (the guards) and 0003 (the nukta layer) as well (*new*) |
+ | Hindawi | the programming system whose language styles (shailis) are built on these tools; it is not part of Romenagri |
+ 
+ ## 2. The three layers and the programs
+@@ -74,7 +79,7 @@ This document does five things.
+         |  iconv -f utf8 -t utf16
+         v
+    UTF-16LE, with or without a byte-order mark
+-        |  uni2acii                      table: unicode.h
++        |  uni2acii                      table: unicode.h, nukta.h
+         v
+    ACII bytes                            <- also read and written by the Hindawi translators
+         |  acii2rmn | acii2cf | acii2pcf         table: acii.h   (the decoder, section 4)
+@@ -83,7 +88,7 @@ This document does five things.
+         |  rmn2acii                            table: acii.h   (the parser, section 5)
+         v
+    ACII bytes
+-        |  acii2uni                      table: unicode.h
++        |  acii2uni                      table: unicode.h, nukta.h
+         v
+    UTF-16LE with a byte-order mark       -> iconv -f utf16 -t utf8
+ ```
+@@ -96,8 +101,8 @@ The commands that Hindawi runs are in `Romenagri/mass_hindawi`, for example
+ 
+ | Program | Reads, writes | Table | Source |
+ |---|---|---|---|
+-| `uni2acii` | UTF-16LE, ACII bytes | `unicode.h` | `uni2acii.c` |
+-| `acii2uni` | ACII bytes, UTF-16LE (with BOM; LF becomes CR LF) | `unicode.h` | `acii2uni.c` |
++| `uni2acii` | UTF-16LE, ACII bytes | `unicode.h`, `nukta.h` | `uni2acii.c` |
++| `acii2uni` | ACII bytes, UTF-16LE (with BOM; LF becomes CR LF) | `unicode.h`, `nukta.h` | `acii2uni.c` |
+ | `acii2rmn` | ACII, Romenagri; Latin words are wrapped as `"e_word"`, quoted strings as `""string""` | `acii.h` | `acii2rmn.lex`, `acii2rmn.c`, `stack.c` |
+ | `rmn2acii` | the reverse; unwraps `"e_word"` and `""string""`, hands every run of `[A-Za-z_]` to the parser | `acii.h` | `rmn2acii.lex`, `rmn2acii.c` |
+ | `acii2cf`, `acii2pcf` | ACII, Romenagri for program text: Latin words and string and character literals are left as they are; the two differ in how literals with escapes are recognised | `acii.h` | `acii2cf.lex`, `acii2pcf.lex` |
+@@ -117,12 +122,13 @@ Unicode converters are separate programs.
+ 
+ - `uni2acii` reads UTF-16LE in pairs of bytes. It drops a byte-order mark (`FF FE`) and a carriage return (`0D 00`). For every other
+   pair it looks for the first row with the same code point and writes that row's byte. If there is no such row it writes **the low byte of the pair and discards the high byte**
+-  ("presuming 0 to 127", says the source). Section 11.6 shows what this does to the characters the table lacks.
++  ("presuming 0 to 127", says the source). Section 11.6 shows what this does to the characters the table lacks. (Since patch 0003 the nine precomposed nukta letters that the table lacks are the exception: `uni2acii` writes each as the byte of its consonant and `E9`, section 15.)
+ - `acii2uni` writes the byte-order mark `FF FE` first. A line feed becomes `0D 00 0A 00`. For every other byte it looks for the first row with that byte and
+   writes the row's code point. If there is none it writes `byte mod 128` as an ASCII character; ASCII bytes are therefore unchanged,
+-  and an unknown byte of the upper half folds into the lower half.
++  and an unknown byte of the upper half folds into the lower half. (Since patch 0003, and only in the form `nfc`, a consonant byte followed directly by `E9` is written as one code point, instead of two, when `nukta.h` has a letter for the pair that NFC composes: `C6 E9`, `CF E9` and `D2 E9`; in the form `nfd`, `C7` and `D0` are written as pairs. The default form, `asis`, writes what the converter always wrote, section 15.2.)
+ 
+ So the table is a partial function from code points to bytes, and the lint (section 3.5) insists that it is injective: no code point twice, no byte twice.
++Patch 0003 adds a second, small table beside it, `nukta_hin` in `nukta.h`: eleven rows that let the two converters treat a precomposed nukta letter as a consonant and a nukta (section 15). It does not change a row of `unicode.h`.
+ 
+ ### 3.2 `acii.h`: ACII bytes and Romenagri keys
+ 
+@@ -555,7 +561,7 @@ Twelve characters of the Devanagari block that Sanskrit and Vedic text needs had
+ 
+ <!-- END GENERATED table-new -->
+ 
+-None of the twelve has a canonical decomposition in Unicode, so normalisation cannot help (contrast the nukta consonants, section 10.4): each needs a byte of its own.
++None of the twelve has a canonical decomposition in Unicode, so normalisation cannot help (contrast the nukta letters, which the nukta layer of section 15 writes as two bytes, a consonant and the nukta): each needs a byte of its own.
+ The files that patch 0001 changes, besides the three tables, are those that had to learn the new rows:
+ 
+ | File | Change |
+@@ -567,7 +573,7 @@ The files that patch 0001 changes, besides the three tables, are those that had
+ | `rmn2acii.c` | the helper `vocalic()` and the twelve rules that are marked `+` in the grammar of section 5.3 |
+ | `TRANSLITERATION.md` | this document |
+ 
+-The decoder, the Unicode converters, the lexers and the Makefile are untouched. The parser keeps its five states and its decision lists; it gained branches, not a new mechanism. Patch 0002 changes only `rmn2acii.c` and this document, and adds twelve tests in front of existing branches, again with no new state (section 14.7).
++The decoder, the Unicode converters, the lexers and the Makefile are untouched. The parser keeps its five states and its decision lists; it gained branches, not a new mechanism. Patch 0002 changes only `rmn2acii.c` and this document, and adds twelve tests in front of existing branches, again with no new state (section 14.7). Patch 0003 changes `uni2acii.c`, `acii2uni.c`, the Makefile and this document, and adds the header `nukta.h` (section 15).
+ 
+ **The avagraha.** Byte `EB` (U+093D) was written `_3` by the decoder. That string cannot come back: the lexical layer gives the parser only letters and `_`, so `_3` reaches it as `_`, which writes a halant, followed by a plain `3`
+ (measured on the unpatched build: `EB` through `acii2rmn | rmn2acii` gives `E8 33`). Meanwhile the parser's own branch for avagraha, written in the source as `case 's': //avagraha _s`, asks for a row `_s` that did not exist, and `rmn2acii` crashed on the input `_s`.
+@@ -587,7 +593,7 @@ The policy is section 10.3. Applied here:
+ The ICU converter points the same way: it reads `A0` as no-break space; Apple's table leaves `A0` unused. Both write OM as the two bytes `A1 E9` (section 12; the conflict is discussed in section 10.5).
+ 
+ **Why single bytes, not ISCII's two-byte sequences.** ISCII-91, as ICU and Apple implement it, writes seven of these characters as an existing code followed by the nukta: `A1 E9` for OM, `A6 E9` for vocalic L, and so on (section 12 has the table). Three things in the architecture rule that out:
+-`uni2acii` is a table of one byte per code point and cannot write two; the decoder handles a nukta only after a consonant (after a vowel, `A6 E9` comes out as the text `_za`, measured); and the task was to find unused bytes in the 8-bit page. A byte per character is what the three tables can express.
++`uni2acii` is a table of one byte per code point and cannot write two for these characters (patch 0003 gives it an exception for the eleven nukta letters, and for nothing else, section 15); the decoder handles a nukta only after a consonant (after a vowel, `A6 E9` comes out as the text `_za`, measured); and the task was to find unused bytes in the 8-bit page. A byte per character is what the three tables can express.
+ 
+ ### 7.3 Why these strings
+ 
+@@ -625,7 +631,7 @@ Worked traces for `k_lip_ta` (क + ॢ + प् + त) and `ka_vuu` (क + udat
+ 
+ ### 8.1 The checklist common to all recipes
+ 
+-1. **Classify the character** (section 10.4). A digit is `fixuninum`'s business. A nukta composite needs no byte: normalise to NFD. Only an *uncovered* character needs the rest of this section.
++1. **Classify the character** (section 10.4). A digit is `fixuninum`'s business. A precomposed nukta letter needs no byte: the nukta layer (section 15) writes it as its consonant and the nukta. Only an *uncovered* character needs the rest of this section.
+ 2. **Choose the byte** by the policy of section 10.3 and confirm with `python3 tools/check_tables.py Romenagri --free`.
+ 3. **Choose the string** by the conventions of section 6.
+ 4. **Edit the three tables.** Append one row to `unicode.h` (`{low, high, '\xNN'}`, the code point split into its low and high byte), one to `acii.h` (`{"key", "\xNN"}`) and one to `aciihin.h` (`{"saral", "\xNN"}`; an empty string is allowed). Raise `UNI_LEN`, `ACII_LEN` and `ACII_HIN_LEN`. **Append, never reorder or delete:** both translators take the first row that matches (section 3.2), so row order is part of the meaning.
+@@ -648,7 +654,7 @@ Worked traces for `k_lip_ta` (क + ॢ + प् + त) and `ka_vuu` (क + udat
+ /* aciihin.h */  {"lha", "\xD3"}
+ ```
+ 
+-Result, as measured by the test: `lha` gives `D3`, `lh` gives `D3 E8`, `lhaa` gives `D3 DA`, `kalha` gives `B3 D3`; the filter pair restores `D3`, `D1 D3`, `B3 E8 D3` and `D3 DB D1`; `uni2acii` writes `D3` for U+0934 and `acii2uni` reads it back; and of all strings up to length 3 and all table keys, only those containing `lh` change their result. Before the edit the parser of this package crashes on `lha` and `lh`.
++Result, as measured by the test: `lha` gives `D3`, `lh` gives `D3 E8`, `lhaa` gives `D3 DA`, `kalha` gives `B3 D3`; the filter pair restores `D3`, `D1 D3`, `B3 E8 D3` and `D3 DB D1`; `uni2acii` writes `D3` for U+0934 and `acii2uni` reads it back; and of all strings up to length 3 and all table keys, only those containing `lh` change their result. Before the edit the parser of this package crashes on `lha` and `lh`. With the nukta layer (section 15) U+0934 already goes through the pipeline as `D2 E9`; the recipe then gives it a second, one-byte spelling, as U+0929 and U+0931 have (`C7` and `C6 E9`, `D0` and `CF E9`), and `uni2acii` prefers the row of the table.
+ 
+ ### 8.3 Recipe B: a new key that needs a parser rule
+ 
+@@ -678,7 +684,7 @@ Write it like the nukta: the key ends in `a`, and the rule goes to L2a. Both hal
+ 
+ A consonant row is its stem plus `a` (R2), and the parser reaches it through L1 or L2c and then continues in L2a: the halant logic costs nothing. Four cases:
+ 
+-- *A nukta variant of an existing consonant* (क़ ख़ ग़ ज़ ड़ ढ़ फ़ य़ ऩ ऱ ऴ): nothing. The nukta is a separate mark (`kza` is `ka` and `E9`), and Unicode decomposes the single code points (section 10.4). Only the pipeline must normalise.
++- *A nukta variant of an existing consonant* (क़ ख़ ग़ ज़ ड़ ढ़ फ़ य़ ऩ ऱ ऴ): nothing. The nukta is a separate mark (`kza` is `ka` and `E9`), and the nukta layer (section 15) writes the single code points of Unicode as that pair, so nothing has to be normalised first.
+ - *An aspirate or a `vra` form of an existing stem:* the string is built by L2b and may already be a reserved key (recipe A).
+ - *A letter with a free plain Latin letter.* `f` and `q` are not used at the start of a unit (nor are `v` and `z`, but `z` is the nukta after a consonant and `v` follows stems, so they would be confusing). Add an L1 rule `[f] -> emit c 'a' ; skip 1 ; goto L2a` (or `goto L2b c` if an aspirate exists), add the letter to `UNIT` and to `lev1`, and note that existing text with that letter at the start of a unit, which is copied through today, changes.
+ - *A letter behind `_`:* an L2c rule, `'xy' -> emit '_xya' ; skip 2 ; goto L2a`, as for `_nga` and `_yna`.
+@@ -698,7 +704,7 @@ A row that nothing uses (section 11.2) can stay: it costs nothing and deleting i
+ ### 9.1 The statement
+ 
+ Let `W` be the set of ACII texts defined by the grammar below. For every text in `W`, `acii2rmn` followed by `rmn2acii` (with filter semantics: the second program sees every run of `[A-Za-z_]` separately) returns the same bytes. This holds for the mid and the new build, and the guards of patch 0002 are invisible on `W`: every sequence of up to three bytes of `W` gives the same result on both and round-trips on the new one (section 14.7, `tests/rt_filters.py`). The unpatched build satisfies the contract for the old repertoire except at the avagraha.
+-`tests/rt_filters.py`, part (4), generates random members of `W` and requires every one to round-trip. At the Unicode end, every code point that `unicode.h` maps survives `uni2acii` and `acii2uni` (`tests/test_unicode.py`).
++`tests/rt_filters.py`, part (4), generates random members of `W` and requires every one to round-trip. At the Unicode end, every code point that `unicode.h` maps survives `uni2acii` and `acii2uni` (`tests/test_unicode.py`); a consonant followed by the nukta comes back as that pair in the default form and, with `-f nfc` on both converters, as the single code point where NFC composes the pair (section 15).
+ 
+ ### 9.2 Well-formed ACII
+ 
+@@ -772,7 +778,7 @@ What is still missing from the Devanagari block (section 10.4 lists the characte
+ 
+ - code points of the Devanagari block U+0900-U+097F that `unicode.h` does not map: **43**
+   - 10 digits (rewritten to ASCII digits by `fixuninum` before `uni2acii`, by design)
+-  - 9 composites (a canonical decomposition into mapped code points: covered once the text is NFD-normalised)
++  - 9 precomposed nukta letters (written by `uni2acii` as the byte of the consonant and the nukta byte `E9`: the nukta layer, section 15)
+   - 24 characters that nothing covers yet
+ - free ACII bytes: **42**; of these 19 (the free part of the C1 block `80`-`9F`) plus 8 (ISCII-unassigned) can hold a new character, 3 are reserved for characters ISCII itself gives them, 10 for digits, 1 is avoided (no-break space) and 1 is never used
+ - so the 24 uncovered characters fit into the 27 allocatable single bytes with 3 to spare
+@@ -802,7 +808,7 @@ Nothing in this package implements the last two. They are listed so that the cho
+ **Other scripts.** The repository carries the other Indic scripts the way ISCII does, through one pivot repertoire. `gen_flatten_uni_dev` reads `iscii_map.csv`, which has one row per ISCII code and the letter of each of ten scripts in it (Devanagari, Bengali, Assamese, Gurmukhi, Gujarati, Oriya, Tamil, Telugu, Kannada, Malayalam), and writes the lexer `flatten_uni_dev.lex`: every letter of another script is replaced by the Devanagari letter in the same row. (The Makefile does not build that lexer; the repository carries a built `flatten_uni_dev`.) The text is Devanagari after that, and everything in this document applies to it. In the other direction `fltr_hi_te`, `fltr_te_hi`, `fltr_hi_ur` and `fltr_ur_hi` are `sed` scripts that replace letters one by one between Devanagari and Telugu or Urdu (the Urdu ones with `urdu_map.csv` and `ur_ar_delta`). So a letter of another script is one of two cases.
+ 
+ - It has a Devanagari counterpart already in the tables: nothing to do in Romenagri; its row in `iscii_map.csv` is what makes it work.
+-- It has none (Tamil ழ and Malayalam ഴ, which the CSV maps to U+0934; the letters of Sinhala, which `iscii_map.csv` does not cover): a pivot character must be chosen, a Devanagari-block code point if Unicode has one, and the pivot character is then a new character for the tables (sections 10.4 and 8). U+0934 is the live example: `flatten_uni_dev` writes it, `unicode.h` has no row for it, and `uni2acii` therefore writes the digit `4` (section 11.6).
++- It has none (Tamil ழ and Malayalam ഴ, which the CSV maps to U+0934; the letters of Sinhala, which `iscii_map.csv` does not cover): a pivot character must be chosen, a Devanagari-block code point if Unicode has one, and the pivot character is then a new character for the tables (sections 10.4 and 8). U+0934 is the live example: `flatten_uni_dev` writes it, `unicode.h` has no row for it, and `uni2acii` wrote the digit `4` for it until the nukta layer (section 15) made it write `D2 E9`, the byte of ळ and the nukta.
+ 
+ ### 10.3 Choosing the byte
+ 
+@@ -823,17 +829,17 @@ For a code point `u` that the text may contain, in this order:
+ 
+ 1. **A digit.** `fixuninum` rewrites the digits of the Indic scripts to ASCII digits before `uni2acii`; the Devanagari digit bytes `F1`-`FA` stay unused.
+ 2. **Mapped.** `unicode.h` has a row for it. Done.
+-3. **A composite.** Unicode gives it a canonical decomposition into mapped code points: U+0958-U+095F (the nukta consonants) and U+0934 (= U+0933 U+093C). The text must be normalised to **NFD** before `uni2acii`. Two traps: NFC *recomposes* U+0928 U+093C, U+0930 U+093C and U+0933 U+093C into U+0929, U+0931 and U+0934, and U+0958-U+095F are composition exclusions (they stay decomposed even in NFC). So the first two are in `unicode.h`, whichever way the text was normalised, and the third is not. NFD has to be the last step before `uni2acii`: `flatten_uni_dev` can write U+0934 itself, and any NFC step after the NFD one would recompose it.
++3. **A precomposed nukta letter.** Unicode gives it a canonical decomposition into a consonant and the nukta, U+093C: U+0929, U+0931 and U+0934, which NFC composes, and U+0958-U+095F, which are composition exclusions and stay decomposed even in NFC. Two of the eleven, U+0929 and U+0931, have a row in `unicode.h`. For the other nine the **nukta layer** (patch 0003, section 15) makes `uni2acii` write the byte of the consonant and `E9`, so no normalisation is needed before it, and the NFC form and the NFD form of the text give the same bytes. (In the default form the NFC and the NFD spelling of U+0929 and U+0931 give different bytes, `C7` and `C6 E9`, `D0` and `CF E9`; with `-f nfc` or `-f nfd` on `uni2acii` they give the same bytes, section 15.2.) (Before patch 0003 the text had to be normalised to NFD, and the NFD step had to be the last one before `uni2acii`, because `flatten_uni_dev` can write U+0934 itself and an NFC step after the NFD one would recompose it. For these letters the order no longer matters.) The layer does not reorder marks: a nukta that follows a halant stays where it is (section 15.5).
+ 4. **A letter of another script** with a Devanagari counterpart: flatten it (section 10.2).
+ 5. **Uncovered.** It needs a byte, a key, possibly a parser rule, and a saral spelling: section 8. The list for the Devanagari block:
+ 
+ <!-- BEGIN GENERATED unmapped -->
+ 
+-| Code point | Category | Name | Class | Today `uni2acii` writes | Remedy |
++| Code point | Category | Name | Class | `uni2acii` writes | Remedy |
+ |---|---|---|---|---|---|
+ | U+0900 | Mn | sign inverted candrabindu | uncovered | `00` | needs a byte and a string (section 8) |
+ | U+0904 | Lo | letter short a | uncovered | `04` | needs a byte and a string (section 8) |
+-| U+0934 | Lo | letter llla | composite | `34` | = U+0933 U+093C: normalise to NFD first |
++| U+0934 | Lo | letter llla | nukta | `D2 E9` | = U+0933 U+093C: the nukta layer (section 15) |
+ | U+093A | Mn | vowel sign oe | uncovered | `3A` | needs a byte and a string (section 8) |
+ | U+093B | Mc | vowel sign ooe | uncovered | `3B` | needs a byte and a string (section 8) |
+ | U+094E | Mc | vowel sign prishthamatra e | uncovered | `4E` | needs a byte and a string (section 8) |
+@@ -841,14 +847,14 @@ For a code point `u` that the text may contain, in this order:
+ | U+0955 | Mn | vowel sign candra long e | uncovered | `55` | needs a byte and a string (section 8) |
+ | U+0956 | Mn | vowel sign ue | uncovered | `56` | needs a byte and a string (section 8) |
+ | U+0957 | Mn | vowel sign uue | uncovered | `57` | needs a byte and a string (section 8) |
+-| U+0958 | Lo | letter qa | composite | `58` | = U+0915 U+093C: normalise to NFD first |
+-| U+0959 | Lo | letter khha | composite | `59` | = U+0916 U+093C: normalise to NFD first |
+-| U+095A | Lo | letter ghha | composite | `5A` | = U+0917 U+093C: normalise to NFD first |
+-| U+095B | Lo | letter za | composite | `5B` | = U+091C U+093C: normalise to NFD first |
+-| U+095C | Lo | letter dddha | composite | `5C` | = U+0921 U+093C: normalise to NFD first |
+-| U+095D | Lo | letter rha | composite | `5D` | = U+0922 U+093C: normalise to NFD first |
+-| U+095E | Lo | letter fa | composite | `5E` | = U+092B U+093C: normalise to NFD first |
+-| U+095F | Lo | letter yya | composite | `5F` | = U+092F U+093C: normalise to NFD first |
++| U+0958 | Lo | letter qa | nukta | `B3 E9` | = U+0915 U+093C: the nukta layer (section 15) |
++| U+0959 | Lo | letter khha | nukta | `B4 E9` | = U+0916 U+093C: the nukta layer (section 15) |
++| U+095A | Lo | letter ghha | nukta | `B5 E9` | = U+0917 U+093C: the nukta layer (section 15) |
++| U+095B | Lo | letter za | nukta | `BA E9` | = U+091C U+093C: the nukta layer (section 15) |
++| U+095C | Lo | letter dddha | nukta | `BF E9` | = U+0921 U+093C: the nukta layer (section 15) |
++| U+095D | Lo | letter rha | nukta | `C0 E9` | = U+0922 U+093C: the nukta layer (section 15) |
++| U+095E | Lo | letter fa | nukta | `C9 E9` | = U+092B U+093C: the nukta layer (section 15) |
++| U+095F | Lo | letter yya | nukta | `CD E9` | = U+092F U+093C: the nukta layer (section 15) |
+ | U+0966 | Nd | digit zero | digit | `66` | ASCII digit 0 |
+ | U+0967 | Nd | digit one | digit | `67` | ASCII digit 1 |
+ | U+0968 | Nd | digit two | digit | `68` | ASCII digit 2 |
+@@ -881,7 +887,7 @@ Whether any of the 24 uncovered characters should be added depends on which text
+ 
+ **Two characters outside the block.** Devanagari text also uses U+200C ZERO WIDTH NON-JOINER and U+200D ZERO WIDTH JOINER after the halant, to choose between a conjunct, a half form and a visible halant. They are not in the Devanagari block, so the list above does not show them, and `unicode.h` has no row for either: they fall back to the bytes `0C` and `0D` and come back as a form feed and a carriage return (section 11.6). ISCII writes the pairs *halant, ZWNJ* and *halant, ZWJ* as `E8 E8` (the "explicit halant") and `E8 E9` (the "soft halant"); Apple's table and ICU's converter agree (conflict C8). This package does not add them: they are format characters, not letters or signs, and the request was for the characters of the Devanagari block that Sanskrit needs. Adding them would take two bytes of the C1 block (section 10.1), two keys, and a decoder and parser that know that a joiner follows a halant (recipes B and C, section 8). Until then the pairs are misread, as section 11.5 shows.
+ 
+-*A tested recipe that is not shipped.* U+0934 is the one composite that the pipeline can produce by itself, because `flatten_uni_dev` writes it for Tamil and Malayalam. Recipe A (section 8.2) adds it as `D3`, key `lha`, in three rows; `tests/test_extension_recipes.py` carries it out on a scratch copy and checks it. It is not in the shipped tables because U+0934 is not a Sanskrit character, because it changes what the Hindawi pipeline does with Tamil and Malayalam text, which is for the owner of that pipeline to decide, and because the key `lha` is also the natural reading of the typed conjunct ल्ह (`lh`), which Hindi and Marathi need far more often (section 11.3). A key that does not collide, such as `_la`, needs a parser rule (recipe B).
++*A tested recipe that is not shipped.* U+0934 is the one nukta letter that the pipeline can produce by itself, because `flatten_uni_dev` writes it for Tamil and Malayalam; since patch 0003 it goes through as `D2 E9` (Romenagri `lvrza`, section 15), and the recipe is no longer needed to keep it from being corrupted. Recipe A (section 8.2) would add it as the single byte `D3`, key `lha`, in three rows; `tests/test_extension_recipes.py` carries it out on a scratch copy and checks it. It is not in the shipped tables because U+0934 is not a Sanskrit character, because it changes what the Hindawi pipeline does with Tamil and Malayalam text, which is for the owner of that pipeline to decide, and because the key `lha` is also the natural reading of the typed conjunct ल्ह (`lh`), which Hindi and Marathi need far more often (section 11.3). A key that does not collide, such as `_la`, needs a parser rule (recipe B).
+ 
+ ### 10.5 Conflicts between standards and files
+ 
+@@ -892,7 +898,7 @@ A *conflict* is a case where two sources that the project has to respect say dif
+ | C1 | byte `A0`: Sign OM, no-break space, or unused | `iscii_map.csv` and the chart in Wikipedia: OM. ICU: U+00A0. Apple's table: unused. | ACII leaves it unused and avoided; OM is `8C` (section 7.2) |
+ | C2 | OM, vocalic L, LL, RR and their three signs, avagraha: one byte in ACII, **two bytes (a code and the nukta)** in ISCII as ICU and Apple implement it | ICU `ucnvisci.cpp`, Apple `DEVANAGA.TXT`; Wikipedia's nukta table | a rewrite at the boundary, below; the rewrite is **not** in this package |
+ | C3 | double danda: `EA EA` (ICU), `90` (Apple), `87` (ACII) | ICU, Apple | the same rewrite |
+-| C4 | "ZHA": ISCII's `D3` is U+0934; ACII's `80` is U+0979 | `iscii_map.csv`, `unicode.h` | both stand: they are different characters; `D3` stays free for U+0934 (recipe A) |
++| C4 | "ZHA": ISCII's `D3` is U+0934; ACII's `80` is U+0979 | `iscii_map.csv`, `unicode.h` | both stand: they are different characters; `D3` stays free for U+0934 (recipe A); U+0934 itself is written `D2 E9` by the nukta layer (section 15) |
+ | C5 | avagraha: `EB` in ACII (an extension of this project), `EA E9` in ISCII | ICU, Apple | both stand; the rewrite maps one to the other |
+ | C6 | spellings: ISO 15919's 7-bit form writes the vocalic letters `,r` `,rr` `,l` `,ll` and the marks `;m` `.h`; Romenagri writes `_ri` `_ree` `_li` `_lee` | `iso15919_map.csv` | a separate table outside the parser: the lexical layer hands the parser only letters and `_` (section 11.1), so punctuation can never be part of a key |
+ | C7 | many-to-one: the CSV gives four different Perso-Arabic letters (ذ ض ظ ژ) the same Devanagari spelling झ़ | `iso15919_map.csv` | the merger is a decision that the table records; add a character if the distinction matters (section 10.6) |
+@@ -924,7 +930,7 @@ Without the rewrite, measured on the new build with `acii2rmn | rmn2acii` (the m
+ A *missing sound* is one that a text needs and the repertoire cannot write. What to do, in order:
+ 
+ 1. **Look for the character.** Unicode may have it in the Devanagari block (section 10.4), in Vedic Extensions, in Devanagari Extended, or in the block of another Indic script. An assigned character is always better than a private one.
+-2. **Use a nukta.** A consonant followed by the nukta is the established way of writing sounds that Devanagari did not have: क़ ख़ ग़ ज़ फ़ and the rest of the Perso-Arabic set, which `iso15919_map.csv` lists with the letters that the project uses for them. No byte is needed: the nukta is already `E9`, the key is the stem plus `za` (R7), and `uni2acii`, the decoder and the parser already handle it. Measured on the patched build: the pair *consonant, nukta* survives `acii2rmn | rmn2acii` for every consonant byte except dental DA and DHA (`C4`, `C5`). The decoder's special case for `d` + nukta, meant for the retroflex DDA, also catches them and writes `__rda`, which is read as a literal underscore and `rda`. The round-trip contract of section 9 promises the nukta only for the eleven consonants for which Unicode has a code point.
++2. **Use a nukta.** A consonant followed by the nukta is the established way of writing sounds that Devanagari did not have: क़ ख़ ग़ ज़ फ़ and the rest of the Perso-Arabic set, which `iso15919_map.csv` lists with the letters that the project uses for them. No byte is needed: the nukta is already `E9`, the key is the stem plus `za` (R7), and `uni2acii`, the decoder and the parser already handle it; since patch 0003 `uni2acii` also takes the single code points of Unicode's nukta letters (section 15). Measured on the patched build: the pair *consonant, nukta* survives `acii2rmn | rmn2acii` for every consonant byte except dental DA and DHA (`C4`, `C5`). The decoder's special case for `d` + nukta, meant for the retroflex DDA, also catches them and writes `__rda`, which is read as a literal underscore and `rda`. The round-trip contract of section 9 promises the nukta only for the eleven consonants for which Unicode has a code point.
+ 3. **Merge knowingly.** If a neighbouring sound is close enough, map to it and record the merger (conflict C7). A merger loses the distinction for good.
+ 4. **Add a new letter.** If a letter is unavoidable and Unicode has no code point for it, use a code point of the Private Use Area (U+E000-U+F8FF): `unicode.h` can hold it, since it stores any 16-bit value. Record it here; it is local to the project. Then give it a byte (section 10.3) and a spelling.
+ 5. **Spell it by the conventions of section 6.** The plain letter is the primary reading; where a Roman letter serves two sounds the second one takes `_`; an aspirate adds `h`; a mark that attaches ends in `a`. Check the result with the lint: T6 says whether the parser reads the key as one token, T7 whether it disturbs its neighbours.
+@@ -948,6 +954,7 @@ A change to the tables (and, if needed, to the parser) is admissible when all of
+ | A8 | The character survives `uni2acii` and `acii2uni`; no everyday character is moved to the new byte | `tests/test_unicode.py` |
+ | A9 | The grammar printed in section 5.3 and `rmn2acii.c` describe the same parser | `tests/diff_parser.py`, and the generated tables of this document: `tools/gen_doc_tables.py --check` |
+ | A10 | No rule of the parser consumes an underscore, or steps over the end of the input, without having looked at it: a rule that jumps over a character it has not tested has its guard rule (section 14.7) | `tests/test_underscore.py` (U7) |
++| A11 | Each precomposed nukta letter of Unicode goes through `uni2acii` and `acii2uni` as a consonant and a nukta and comes out in the form that is asked for: as the converters always wrote it by default, as NFC writes it with `-f nfc`, as NFD writes it with `-f nfd` (section 15.2); every other code unit of the BMP is written as before | `tests/test_nukta.py` |
+ 
+ ## 11. Known limitations and quirks
+ 
+@@ -1018,7 +1025,7 @@ When the parser asks for a missing key, `lookup()` returns `NULL` and the next `
+ 
+ *Two aspirate keys, `lha` and `_rrha`: conjuncts typed as aspirates.* Devanagari has no letter for an aspirated `l` or an aspirated ऱ. Hindi and Marathi write those sounds as conjuncts with ह: ल्ह (दुल्हन, चूल्हा, कुल्हाड़ी, मल्हार, उल्हासनगर) and ऱ्ह (वऱ्हाड, Marathi). Romenagri's own way of writing them is `l_ha` and `_rr_ha`, because plain `h` is the aspirate marker and ह is `_ha`; the decoder always writes them so (LA, halant, HA, the bytes `D1 E8 D8`, come out as `l_ha`, and `D0 E8 D8` as `_rr_ha`; never as `lh` or `_rrh`). But `lh` is what a person at a keyboard types for ल्ह (`dulhan`, `ullhaas`), and today it crashes. The other sonorants do not crash on the same typing: `nh` and `mh` give NA or MA, a halant and the ASCII letter `h`, because their stems do not go through L2b.
+ 
+-*Why `lha` is not simply ऴ.* U+0934 ऴ (ISCII byte `D3`, "Consonant ZHA (Tamil & Malayalam)"; Unicode's note: "for transcribing Dravidian l") has no row, and `D3` is free. `lha` is the one of the fifteen keys that could name an existing character, and recipe A (section 8.2) adds it for that reason, to show the mechanism. But it would take the typed form `lh` away from ल्ह, which Hindi and Marathi need far more often than ऴ. A spelling that does not collide, a family key such as `_la`, needs a parser rule (recipe B).
++*Why `lha` is not simply ऴ.* U+0934 ऴ (ISCII byte `D3`, "Consonant ZHA (Tamil & Malayalam)"; Unicode's note: "for transcribing Dravidian l") has no row, and `D3` is free. `lha` is the one of the fifteen keys that could name an existing character, and recipe A (section 8.2) adds it for that reason, to show the mechanism. But it would take the typed form `lh` away from ल्ह, which Hindi and Marathi need far more often than ऴ. A spelling that does not collide, a family key such as `_la`, needs a parser rule (recipe B). Since patch 0003 the character is not lost on its way through the pipeline either way: U+0934 is written `D2 E9`, read back as U+0934, and shown by Romenagri as `lvrza` (section 15.7, C7).
+ 
+ **Ways to close them.** None is applied in this package, except for the one corner of option A that the guard rule of L2b covers (a `v` that is followed by an underscore or by the end of the string, section 14.7); which one is right is the author's decision. Each of them leaves the decoder, and so the round trip, as it is.
+ 
+@@ -1053,13 +1060,14 @@ Section 9 defines the text for which `acii2rmn | rmn2acii` returns its input. Ou
+ - **A halant followed directly by an independent vocalic vowel** comes back as the sign: `B3 E8 AA` returns `B3 DF`, and the same for `81`, `82`, `83`. The parser cannot tell "consonant, halant, vowel" from "consonant with the vowel's sign", because the halant is replaced by the sign (`vocalic`, section 7.4), as it always was for `_ri`.
+ - **Dental DA or DHA followed by a nukta.** The decoder's special case for `d` + nukta, meant for the retroflex DDA, also catches the dental letters: `C4 E9` is written `__rda`, which the parser reads as a literal underscore and `rda`. The pair is not Hindi, and the round-trip contract excludes it.
+ - **A sign, halant or nukta where the grammar of section 9.2 does not allow it** (after a space, a vowel or another sign): the decoder pops whatever is on top of the stack.
+-- **ISCII's explicit halant and soft halant.** `E8 E8` and `E8 E9` are how ISCII writes a halant followed by ZWNJ or ZWJ (section 10.4). The decoder reads them as a halant after a halant and as a nukta after a halant. The second halant pops the letter before it: `B3 E8 E8 B4` (KA, halant, halant, KHA) is written `kha`, and the KA is gone. The nukta needs two characters below it and finds one: `B3 E8 E9 B4` crashes `acii2rmn` (section 11.4).
++- **ISCII's explicit halant and soft halant.** `E8 E8` and `E8 E9` are how ISCII writes a halant followed by ZWNJ or ZWJ (section 10.4). The decoder reads them as a halant after a halant and as a nukta after a halant. The second halant pops the letter before it: `B3 E8 E8 B4` (KA, halant, halant, KHA) is written `kha`, and the KA is gone. The nukta needs two characters below it and finds one: `B3 E8 E9 B4` crashes `acii2rmn` (section 11.4). The nukta layer (section 15) never rebuilds a nukta that follows a halant, for this reason.
+ - **The danda** and **a stand-alone sign** (section 11.1).
++- **Canonical equivalence at the Unicode end.** Since patch 0003 `uni2acii` writes the precomposed nukta letters as a consonant and a nukta, and `acii2uni` writes that pair back as two code points (as one, where NFC composes it, with `-f nfc`), so the round trip through the two converters is exact only up to canonical equivalence (section 15.5, item 2).
+ - **Schwa deletion is not supported.** `k` is क्, `ka` is क; Romenagri text has to write every inherent vowel (`raama`, not `raam`), which is what the comment above `level2a` says it does on purpose.
+ 
+ ### 11.6 What `uni2acii` does with characters it has no row for
+ 
+-`uni2acii` writes the **low byte** of the code point and drops the high byte; `acii2uni` reads a byte with no row as the byte modulo 128. Both fallbacks are silent. The effects, measured with `uni2acii | acii2uni` and held in place by `tests/test_limitations.py`; `tests/test_unicode.py`, part (e), keeps a longer list of everyday characters and requires that none of them reaches a new byte:
++`uni2acii` writes the **low byte** of the code point and drops the high byte; `acii2uni` reads a byte with no row as the byte modulo 128. Both fallbacks are silent by default (`uni2acii -w` reports each code point that falls back, once, on stderr: section 15.2). The effects, measured with `uni2acii | acii2uni` and held in place by `tests/test_limitations.py`; `tests/test_unicode.py`, part (e), keeps a longer list of everyday characters and requires that none of them reaches a new byte:
+ 
+ | Character | Low byte | Comes back as |
+ |---|---|---|
+@@ -1074,12 +1082,12 @@ Section 9 defines the text for which `acii2rmn | rmn2acii` returns its input. Ou
+ | U+2020 DAGGER | `20` | a space |
+ | U+FFFD REPLACEMENT CHARACTER | `FD` | `}` |
+ | U+2002 to U+2019, U+201C, U+201D (spaces, dashes, quotes, and the zero-width joiners U+200C and U+200D, section 10.4) | `02` to `1D` | control characters (U+200C a form feed, U+200D a carriage return) |
+-| U+0934 ऴ | `34` | `4` |
++| U+0934 ऴ | `34` (old and mid builds; the new build writes `D2 E9`, section 15) | `4` (old and mid builds; ळ and a nukta in the new build, ऴ with `-f nfc`) |
+ | U+1CD0 VEDIC TONE KARSHANA | `D0` | ऱ |
+ | U+2190 LEFTWARDS ARROW | `90` | a control character |
+ | any character above U+FFFF (an emoji, a Brahmi letter) | the low byte of each of its two UTF-16 units | U+1F600 gives `3D 00`, an equals sign and a NUL |
+ 
+-The table lacks 43 code points of the Devanagari block itself (section 10.4). Ten of them are the digits, which `fixuninum` rewrites first; the others fall back this way. In the corpus of the repository the effect is visible in the double danda: "चोला॥" came back as "चोलाe", because U+0965 has the low byte `65`, the letter `e`; with patch 0001 it comes back as it went in (`tests/test_corpus.py`, `Romenagri/corp_hi.txt`, two lines).
++The table lacks 43 code points of the Devanagari block itself (section 10.4). Ten of them are the digits, which `fixuninum` rewrites first; the others fall back this way, except the nine nukta letters, which the nukta layer writes as two bytes (section 15). In the corpus of the repository the effect is visible in the double danda: "चोला॥" came back as "चोलाe", because U+0965 has the low byte `65`, the letter `e`; with patch 0001 it comes back as it went in (`tests/test_corpus.py`, `Romenagri/corp_hi.txt`, two lines).
+ 
+ **What patch 0001 changes here.** The bytes `81`-`8C` were not in the table, so characters whose low byte is one of them came back as control characters. They now come back as the twelve new characters. Twelve of every 256 code points are affected: the block elements ▁ ▂ ▃ ▄ ▅ ▆ ▇ █ ▉ ▊ ▋ ▌ (U+2581-U+258C) become ऌ ॡ ॠ ॢ ॣ ॄ ॥ ॑ ॒ ॓ ॔ ॐ, and so on. None of the everyday characters of the list above is affected, which is what test (e) asserts. The fix for all of it is to deal with characters that are not in the tables before `uni2acii`, not to give every character a byte.
+ 
+@@ -1092,7 +1100,7 @@ So that the claims of this document can be weighed:
+ - **Crashes are compared, not repaired.** Where both the grammar and the C parser crash (missing rows, section 11.3), that counts as agreement.
+ - **The round-trip generator is narrower than the code.** It generates only the text of section 9.2, so the cases of section 11.5 are described, not tested for success.
+ - **The end-to-end test needs `hincc`.** `tests/e2e/run_e2e.sh` compiles and runs a Hindi C program and a Hindi Java program with the new characters; it is skipped when `hincc` is not on the `PATH`.
+-- **Normalisation is tested for what is mapped.** `tests/test_unicode.py` takes the NFD forms of the nine composites from Python's `unicodedata` and shows that they survive the chain; it does not test normalisation as such, nor the order of the steps in a real pipeline.
++- **Normalisation is tested for the nukta letters only.** `tests/test_unicode.py` and `tests/test_nukta.py` take the eleven letters and their NFD forms from Python's `unicodedata` and show that both come out of the chain as the form asks (as NFC writes them with `-f nfc`, as NFD writes them with `-f nfd`), and that, outside the cases of section 15.5, the two forms do what NFC and NFD do; they do not test normalisation of any other character, nor the order of the steps in a real pipeline.
+ 
+ ## 12. Provenance and standards
+ 
+@@ -1105,14 +1113,15 @@ So that the claims of this document can be weighed:
+ | Apple's Mac OS Devanagari mapping, [DEVANAGA.TXT](https://www.unicode.org/Public/MAPPINGS/VENDORS/APPLE/DEVANAGA.TXT) (header revision c02, 2005-Apr-05) | an implementation of ISCII-91 for Devanagari: byte pairs with the nukta, `90` for the double danda, `D3` for U+0934, `E8 E8` and `E8 E9` for the halant followed by ZWNJ and by ZWJ |
+ | ICU's ISCII converter, [ucnvisci.cpp](https://searchfox.org/mozilla-central/source/intl/icu/source/common/ucnvisci.cpp) (the copy in Mozilla's tree) | another implementation: the same nukta pairs, `EA EA` for the double danda, `F0 B8` for the anudatta, `A0` as the no-break space, `E8 E8` and `E8 E9` for the halant followed by ZWNJ and by ZWJ |
+ | Wikipedia, [Indian Script Code for Information Interchange](https://en.wikipedia.org/wiki/Indian_Script_Code_for_Information_Interchange) | the code chart (`A0` is "Sign OM"), the nukta table (`A1` plus the nukta is OM), the codes `EF` (attribute) and `F0` (extension) |
++| the Unicode Character Database file `CompositionExclusions.txt`, section "(1) Script Specifics", read in [a copy of an early version](https://stuff.mit.edu/afs/sipb/contrib/doc/specs/protocol/unicode/CompositionExclusions.txt), which lists U+0958 to U+095F, DEVANAGARI LETTER QA to YYA; and the thread [Query Regarding NFC Normalization and Script-Specific Exclusions for Devanagari](https://corp.unicode.org/pipermail/unicode/2025-May/011443.html) on the Unicode mailing list (1 May 2025), in which U+0958 is called a script-specific composition exclusion and the decomposed forms are said to have been the representation that experts preferred for Devanagari at the time | why NFC leaves the eight nukta letters U+0958-U+095F decomposed (section 15.3). The early copy is old and the thread names only U+0958, so the property that the layer relies on is also measured on the machine, with the `unicodedata` of Python 3 (Unicode 15.1): `tests/test_nukta.py`, part (a). |
+ | the Unicode Standard: the Devanagari, Vedic Extensions and Devanagari Extended blocks; UAX #15, Normalization Forms | names and properties of the characters. The counts in this document were taken with the `unicodedata` module of Python 3, which carries Unicode 15.1. |
+ | ISO 15919, as the repository reproduces it in `Romenagri/iso15919_map.csv` | the 7-bit transliteration scheme that section 10.5 compares with Romenagri |
+ 
+-The three web sources were read on 19 October 2026 (Apple's table and ICU's source once more on 20 October, for the explicit and soft halant). Two of them (Apple's table, ICU's source) are mapping tables that programs execute; the third (Wikipedia) is an encyclopedia page that disagrees with itself about OM (section 10.5), and is cited for the codes, not as the authority for any byte.
++The two pages about composition exclusions were read on 6 November 2026. The three web sources of the other rows were read on 19 October 2026 (Apple's table and ICU's source once more on 20 October, for the explicit and soft halant). Two of them (Apple's table, ICU's source) are mapping tables that programs execute; the third (Wikipedia) is an encyclopedia page that disagrees with itself about OM (section 10.5), and is cited for the codes, not as the authority for any byte.
+ 
+ ### 12.2 How each source writes the characters of section 7
+ 
+-| Character | `iscii_map.csv` | Apple | ICU | ACII, patch 0001 |
++| Character | `iscii_map.csv` | Apple | ICU | ACII, patches 0001 and 0003 |
+ |---|---|---|---|---|
+ | OM, U+0950 | `A0` | `A1 E9` | `A1 E9` | `8C` |
+ | vocalic L, U+090C | `A6*` | `A6 E9` | `A6 E9` | `81` |
+@@ -1127,15 +1136,15 @@ The three web sources were read on 19 October 2026 (Apple's table and ICU's sour
+ | grave accent, U+0953 | not listed | not mapped | not mapped | `8A` |
+ | acute accent, U+0954 | not listed | not mapped | not mapped | `8B` |
+ | avagraha, U+093D (not new) | `EA*` | `EA E9` | `EA E9` | `EB` |
+-| LLLA, U+0934 (not added) | `D3` | `D3` | `D3` | not mapped; `D3` is free |
++| LLLA, U+0934 (not added) | `D3` | `D3` | `D3` | not mapped; `D3` is free; written `D2 E9` by the nukta layer (section 15) |
+ 
+ ISCII-91 leaves the bytes `80`-`9F` unassigned (`iscii_map.csv` has no row there), so the choice of the bytes of section 7.2 is not a choice between standards, with one exception: Apple's table writes the double danda as the single byte `90`, ACII uses `87`, and the rewrite of section 10.5 translates between them (C3). Only OM is a real disagreement between the repository's CSV and the converters (section 10.5, C1).
+ 
+ ### 12.3 Licence and copyright
+ 
+-- The code of `Romenagri/` is free software under the GNU General Public License, version 2 or (at your option) any later version; its text is `Romenagri/copying`, and the package carries it as `COPYING`. The new files (this document, `tools/*`, `tests/*`, including `tools/apply_guards.py` and `tests/build_trees.sh` of patch 0002) carry `SPDX-License-Identifier: GPL-2.0-or-later`.
++- The code of `Romenagri/` is free software under the GNU General Public License, version 2 or (at your option) any later version; its text is `Romenagri/copying`, and the package carries it as `COPYING`. The new files (this document, `tools/*`, `tests/*`, including `tools/apply_guards.py` and `tests/build_trees.sh` of patch 0002, and `tools/apply_nukta.py`, `tests/test_nukta.py` and the header `nukta.h` of patch 0003) carry `SPDX-License-Identifier: GPL-2.0-or-later`.
+ - The `corp_*` text files of `Romenagri/` come from Wikipedia and are, as `Romenagri/LEGAL` says, "usually" under CC BY-SA 3.0; the terms are those of the original articles. The package changes none of them.
+-- The five files that patch 0001 changes (`acii.h`, `unicode.h`, `aciihin.h`, `acii2hin.c`, `rmn2acii.c`) and the new files carry the line `Copyright (C) 1993-2026 Abhishek Choudhary`. Patch 0002 changes one more file of the code, `rmn2acii.c` again, and this document. Files that the patches do not touch keep the notices they have.
++- The five files that patch 0001 changes (`acii.h`, `unicode.h`, `aciihin.h`, `acii2hin.c`, `rmn2acii.c`) and the new files carry the line `Copyright (C) 1993-2026 Abhishek Choudhary`. Patch 0002 changes one more file of the code, `rmn2acii.c` again, and this document. Patch 0003 changes `uni2acii.c`, `acii2uni.c` and the Makefile (their notice now reads 1993-2026 as well), adds `nukta.h`, and changes this document. Files that the patches do not touch keep the notices they have.
+ - Each changed file has an entry for each patch that changed it in its own "Modifications" log (`rmn2acii.c` has two). The entries name the alias `<obonac>` and mark the work "(prepared with Claude)"; the mark can be removed without affecting anything else.
+ 
+ ## 13. Running the checks
+@@ -1147,7 +1156,7 @@ ISCII-91 leaves the bytes `80`-`9F` unassigned (`iscii_map.csv` has no row there
+ ### 13.2 Commands
+ 
+ ```
+-tests/run_all.sh                 quick run: builds the three trees under build/ (old, unpatched; mid, patch 0001; new, both patches), runs every check
++tests/run_all.sh                 quick run: builds the three trees under build/ (old, unpatched; mid, patch 0001; new, all three patches), runs every check
+ tests/run_all.sh --full          the exhaustive run: many minutes in all, so it is meant to be run in pieces (below)
+ tests/run_all.sh --full --resume                  the same run, restartable: a step that passed on the same sources is not run again
+ tests/run_all.sh --full --resume --only <steps>   only the named steps (comma-separated: `build`, or the names that the summary prints)
+@@ -1159,18 +1168,20 @@ python3 tools/gen_doc_tables.py --check Romenagri  fail if a generated block of
+ python3 tools/gen_doc_tables.py --write Romenagri  refresh the generated blocks
+ python3 -I tools/apply_sanskrit.py <pristine Romenagri>    repeats the edits of patch 0001 (not the document) on a clean tree
+ python3 -I tools/apply_guards.py <Romenagri with patch 0001>    repeats the edits of patch 0002 to rmn2acii.c (not the document)
++python3 -I tools/apply_nukta.py <Romenagri with patches 0001 and 0002>    repeats the edits of patch 0003 to uni2acii.c, acii2uni.c and the Makefile and writes nukta.h (not the document)
+ patch -p1 < patches/0001-add-missing-sanskrit-characters.patch     the same as patch 0001, from the directory that holds Romenagri/
+ patch -p1 < patches/0002-apply-underscore-guards.patch             then patch 0002 (the C parser and this document)
++patch -p1 < patches/0003-add-nukta-layer.patch                     then patch 0003 (the nukta layer and this document)
+ ```
+ 
+-The environment variables of `tests/run_all.sh`: `RMN_BUILD` (where to build), `RMN_BASELINE` (a `Romenagri` directory to use as the old tree instead of "the patched tree with every patch taken off"; the mid tree is always "the patched tree with the last patch taken off"), `RMN_CORPUS` (more Hindi text files for the corpus test, separated by `:`), `RMN_SKIP_HANDWRITTEN=1` (leave out the hand-written parser in the differential test), `RMN_GRAMMAR=<file>` (read the grammar block of another copy of this document), `HINDAWI_SRC` (the `Hindawi/` directory of the repository, for rebuilding the shailis in the end-to-end test).
++The environment variables of `tests/run_all.sh`: `RMN_BUILD` (where to build), `RMN_BASELINE` (a `Romenagri` directory to use as the old tree instead of "the patched tree with every patch taken off"; the mid tree is always "the patched tree with every patch but the first taken off", that is, with patch 0001 only), `RMN_CORPUS` (more Hindi text files for the corpus test, separated by `:`), `RMN_SKIP_HANDWRITTEN=1` (leave out the hand-written parser in the differential test), `RMN_GRAMMAR=<file>` (read the grammar block of another copy of this document), `HINDAWI_SRC` (the `Hindawi/` directory of the repository, for rebuilding the shailis in the end-to-end test).
+ 
+-**Long runs in pieces.** The exhaustive run is long (the check of section 14 alone reads more than a million strings through each build), so `tests/run_all.sh` runs that check as nine steps, `underscore_U1` to `underscore_U9`, one for each of U1 to U9, and every step writes, besides its log `build/logs/<step>.log`, a marker `build/logs/<step>.rc` (exit status, seconds, time of the end). With `--resume` a step whose marker says that it passed is not run again, and the three trees are not built again, as long as the files of `Romenagri/`, `patches/`, `tools/` and `tests/` and the settings are the same as when `build/logs/stamp` was written (otherwise the script says so and stops). `--only` takes the names of the steps: `build` (the three trees and the harnesses), `table_lint_new`, `unicode`, `saral`, `parser_vs_model`, `roundtrip`, `corpus`, `recipes`, `limitations`, `underscore_U1` to `underscore_U9` (`underscore` stands for all nine), `reserved_keys`, `doc_tables_in_sync` and `e2e_new`. After `build` the steps do not depend on one another, so they can be run by several commands at the same time, and a run that is interrupted loses at most the steps that were running:
++**Long runs in pieces.** The exhaustive run is long (the check of section 14 alone reads more than a million strings through each build), so `tests/run_all.sh` runs that check as nine steps, `underscore_U1` to `underscore_U9`, one for each of U1 to U9, and every step writes, besides its log `build/logs/<step>.log`, a marker `build/logs/<step>.rc` (exit status, seconds, time of the end). With `--resume` a step whose marker says that it passed is not run again, and the three trees are not built again, as long as the files of `Romenagri/`, `patches/`, `tools/` and `tests/` and the settings are the same as when `build/logs/stamp` was written (otherwise the script says so and stops). `--only` takes the names of the steps: `build` (the three trees and the harnesses), `table_lint_new`, `unicode`, `nukta`, `saral`, `parser_vs_model`, `roundtrip`, `corpus`, `recipes`, `limitations`, `underscore_U1` to `underscore_U9` (`underscore` stands for all nine), `reserved_keys`, `doc_tables_in_sync` and `e2e_new`. After `build` the steps do not depend on one another, so they can be run by several commands at the same time, and a run that is interrupted loses at most the steps that were running:
+ 
+ ```
+ tests/run_all.sh --full --resume --only build
+ printf '%s\n' underscore_U7 underscore_U1 parser_vs_model roundtrip underscore_U5 underscore_U6 underscore_U8 underscore_U9 \
+-  underscore_U4 underscore_U2 underscore_U3 corpus limitations recipes unicode saral table_lint_new reserved_keys \
++  underscore_U4 underscore_U2 underscore_U3 corpus limitations recipes unicode nukta saral table_lint_new reserved_keys \
+   doc_tables_in_sync e2e_new | xargs -P 2 -I{} tests/run_all.sh --full --resume --only {}
+ tests/run_all.sh --full --resume         # runs whatever is still missing, then prints every step and the summary
+ ```
+@@ -1181,6 +1192,7 @@ tests/run_all.sh --full --resume         # runs whatever is still missing, then
+ |---|---|---|---|
+ | table lint | `tools/check_tables.py` | T1-T8 of section 3.5 on the three tables; `--free` prints the free bytes | A1-A5 |
+ | Unicode conversion | `tests/test_unicode.py` | (a) the new code points convert both ways and the old build does not; (b) the old rows convert exactly as before; (c) a mixed text survives; (d) the unmapped Devanagari code points are classified as in section 10.4; (e) everyday characters outside Devanagari and ASCII do not reach a new byte | A8 |
++| nukta layer | `tests/test_nukta.py` | the eleven letters of `nukta.h` against Python's `unicodedata`; `uni2acii` and `acii2uni` in the three forms (and how the form is chosen) against a model of the rule on random and on exhaustive streams, and against Python's NFC and NFD as independent oracles; the warning layer; no change to the other 65,525 code units of the BMP; the edge cases; the whole chain; the challenges of section 15.7, each asserted (section 15.8) | A11 |
+ | saral | `tests/test_acii2hin.py` | the new rows render as section 7.5 says, and every old byte and byte pair renders as before | |
+ | parser against the grammar | `tests/diff_parser.py` | the C parser of each of the three builds agrees with the grammar of section 5.3 (the rules tagged `+` and `!` select the build) and with the hand-written parser on all short strings and on random long ones; every string whose result changed between old and mid contains a new token, and every one whose result changed between mid and new has had a guard rule applied; the grammar with the guards never reads past the end | A6, A9 |
+ | round trip | `tests/rt_filters.py` | (1) no regression on the old repertoire, except the repaired avagraha; (2) every sequence with a new byte behaves like its analogue with an old byte; (3) the models of the decoder and of the filter pair agree with the C programs; (4) well-formed texts of section 9.2 round-trip exactly, and the guards of patch 0002 do not change the reading of any of them (all sequences of up to three bytes of `W`) | A7 |
+@@ -1443,6 +1455,242 @@ Patch 0001 alone had a fourth: eleven rules read an underscore or the terminator
+ | crash-resilience of the C code of this package | **true except for three reasons** that do not involve the underscore (missing rows, fixed buffers, the decoder's empty stack); false for patch 0001 alone, for a fourth (U8) |
+ | a machine-checked proof (Coq, Lean) of any of this | **open**; the models are small enough that it could be done |
+ 
++## 15. The nukta layer (patch 0003)
++
++Patch 0003 adds a layer to the two Unicode converters, `uni2acii` and `acii2uni`. It has three parts, which are kept apart:
++
++- the **rule**: a letter with a nukta is a consonant and a nukta, however it arrives. `uni2acii` writes the eleven precomposed nukta letters of Unicode that way. The rule is not an option;
++- the **form**: what the two converters write for the letters of this family, as one code point or as two. That is the Unicode layer, and it belongs to the user: `asis` (the default, which is what the converters always wrote), `nfc` or `nfd`, chosen on the command line, in the environment, when the converter is compiled, or by a function call;
++- the **warning**: `uni2acii -w` reports each code point that it writes as a low byte, among them the é that collides with the nukta. It is off unless it is asked for.
++
++No row of any table changes, and neither the decoder nor the parser is touched. The design is the one that the author decided on, case by case, on 8 November (section 15.7). The first form of this patch, which rebuilt the pairs by default and was steered by a macro, is gone (section 15.6). The statements below are of the three kinds of section 1: *defined* (the table and the rules, which are `nukta.h` and the two programs), *observed* (each names the part of `tests/test_nukta.py` that measures it) and *cited* (section 12.1).
++
++### 15.1 What was missing
++
++ACII writes a letter with a nukta as two bytes, the consonant and `E9`, which is U+093C (R7 of section 6 gives its key: the stem, `z`, `a`). Unicode has eleven letters that are such a pair in one code point. `unicode.h` had a row for two of them, U+0929 and U+0931 (`C7` and `D0`), and none for the other nine. For those, `uni2acii` fell back to the low byte of the code point (section 3.1): U+095C became `5C`, a backslash, and U+0934 became the digit `4` (section 11.6). The damage does not stop at the letter. The decoder takes `5C` for an ordinary character, and a halant behind it takes that character off again (the rule of section 11.5 for a halant where the grammar does not allow one): `5C E8 D4` is written `wa`, so the cluster ड़्व of section 11.3, written with the single code point U+095C, came back as व alone (test (k), C6). Section 10.4 used to advise a normalisation to NFD before `uni2acii`. That works, but it asks every pipeline to do it, and it fails silently where someone forgets.
++
++The other direction produced correct Unicode, but it wrote a consonant and `E9` as two code points. Whether the text that comes back should be in normalisation form C, in form D, or in neither is not for a converter to say: it depends on what reads the text next. So the layer makes it a choice (section 15.2), and the default stays what it was.
++
++### 15.2 The design
++
++| File | Change |
++|---|---|
++| `nukta.h` | **new.** The table `nukta_hin`, eleven rows `{low, high, base low, base high, nfc}` (section 15.3); `NUKTA_BYTE`, the byte of U+093C (`E9`); the forms `NUKTA_ASIS`, `NUKTA_NFC`, `NUKTA_NFD` and the macro `NUKTA_FORM`, the default form (`NUKTA_ASIS`); the variable `nukta_form` and the function `nukta_set_form()`; the function `nukta_options()`, which reads the environment and the flags of the two converters; and the helpers `nukta_acii_of` and `nukta_row_of`. It is included after `unicode.h`. |
++| `uni2acii.c` | the rule, the form, the options `-f` and `-w`, and the warning layer |
++| `acii2uni.c` | the table lookup moved, unchanged, into a function `put`; the form; the option `-f` |
++| `Makefile` | `nukta.h` is a prerequisite of the `unicode` target, and is installed and removed with `unicode.h` |
++| `TRANSLITERATION.md` | this document |
++
++**The rule.** Unicode did not apply one rule to the letters with a nukta. Some of them were given a code point of their own and the others were not, and of those that were, three are composed by NFC and eight are not (section 15.3). The layer is uniform where Unicode is not: inside, a letter with a nukta is a consonant and a nukta, as ACII writes it, whether it arrives as the single code point, as two code points, as the ACII bytes (`BF E9`) or as Romenagri (`_rda`). So `uni2acii` writes a code point that `unicode.h` has no row for and that `nukta.h` lists (the eight of U+0958 to U+095F, and U+0934) as the byte of its consonant, then `E9`. This is how the sound of the modified consonant is found, and it is always done: it is what makes the cluster ड़्व with the single code point U+095C work (section 15.7, C1 and C6).
++
++**Level 1.** The parser maps a consonant at its first stage, `level1` (the state L1 of section 5.1), and what attaches to the consonant (the halant, an adjunct consonant, a vowel sign) at its second stage, `level2a`, `level2b`, `level2c` and `matra`. The author's decision is that a nukta letter is broken into its base sound and the nukta at the first stage, before anything is bound at the second; otherwise the sound of the modified consonant could not be mapped. The converters stand in front of the parser in every chain that starts with Unicode, so the rule is applied earlier still, where the text enters: when `uni2acii` has written the consonant and `E9`, the decoder, the parser and the filters never meet a precomposed letter, and what they bind a halant, an adjunct consonant or a vowel sign to is a consonant with its nukta. The parser (`rmn2acii.c`) is not changed, and it needs no rule for a cluster of such a letter.
++
++**The form** is the Unicode layer, and it is kept apart from the rule. The rule fixes what a nukta letter is inside; the form fixes how the two converters write the family at the Unicode end (and, for `uni2acii`, at the byte end), as one code point or as two:
++
++- `asis`, the **default**, is what the converters always wrote. The byte of a row of `unicode.h` is used as it is (U+0929 is `C7` and `C7` is U+0929), and a consonant and a nukta that arrive as two code points, or as two bytes, stay two. The one change is the nine letters that `unicode.h` has no row for, which are no longer written as a low byte;
++- `nfc` is Unicode's normalisation form C. Where NFC composes a consonant and a nukta they are one code point (`acii2uni`: `C6 E9`, `CF E9` and `D2 E9` are U+0929, U+0931 and U+0934), or the one byte that `unicode.h` has for the letter (`uni2acii`: U+0928 U+093C is `C7`, U+0930 U+093C is `D0`). The eight letters that NFC leaves decomposed stay a consonant and a nukta;
++- `nfd` is form D: all eleven letters are a consonant and a nukta in both programs (`acii2uni` writes `C7` as U+0928 U+093C and `D0` as U+0930 U+093C; `uni2acii` writes U+0929 as `C6 E9` and U+0931 as `CF E9`).
++
++What each form writes (a real run of the built converters; `tests/test_nukta.py`, parts (b), (d) and (h)):
++
++| | `asis` (default) | `nfc` | `nfd` |
++|---|---|---|---|
++| **`acii2uni`**, ACII in, Unicode out | | | |
++| `C7` | ऩ (`U+0929`) | ऩ (`U+0929`) | ऩ (`U+0928 U+093C`) |
++| `D0` | ऱ (`U+0931`) | ऱ (`U+0931`) | ऱ (`U+0930 U+093C`) |
++| `C6 E9` | ऩ (`U+0928 U+093C`) | ऩ (`U+0929`) | ऩ (`U+0928 U+093C`) |
++| `CF E9` | ऱ (`U+0930 U+093C`) | ऱ (`U+0931`) | ऱ (`U+0930 U+093C`) |
++| `D2 E9` (ळ and a nukta) | ऴ (`U+0933 U+093C`) | ऴ (`U+0934`) | ऴ (`U+0933 U+093C`) |
++| `BF E9` (and the other seven) | ड़ (`U+0921 U+093C`) | ड़ (`U+0921 U+093C`) | ड़ (`U+0921 U+093C`) |
++| **`uni2acii`**, Unicode in, ACII out | | | |
++| ऩ (`U+0929`) | `C7` | `C7` | `C6 E9` |
++| ऱ (`U+0931`) | `D0` | `D0` | `CF E9` |
++| न + nukta (`U+0928 U+093C`) | `C6 E9` | `C7` | `C6 E9` |
++| र + nukta (`U+0930 U+093C`) | `CF E9` | `D0` | `CF E9` |
++| ऴ (`U+0934`) | `D2 E9` | `D2 E9` | `D2 E9` |
++| ड़ (`U+095C`), and ड + nukta | `BF E9` | `BF E9` | `BF E9` |
++
++No form writes the eight letters of U+0958 to U+095F as single code points: that is the one thing that the first version of the patch could do (section 15.6) and no longer does.
++
++**Choosing the form.** The same choice can be made at four levels. Where more than one is given, the later row of this table wins:
++
++| Level | How | Example |
++|---|---|---|
++| the build | the macro `NUKTA_FORM`, given when a converter is compiled; it sets the default form of that build | `make unicode CFLAGS="-Wall -Wno-unused -DNUKTA_FORM=NUKTA_NFC"` |
++| the environment (a pipeline, an integration that starts the converters) | the variable `ROMENAGRI_NUKTA_FORM` | `ROMENAGRI_NUKTA_FORM=nfc iconv -futf8 -tutf16 \| uni2acii` |
++| the command line | `-f FORM` or `--form=FORM`, on both converters | `acii2uni -f nfd in.acii out.utf16` |
++| a function call | a program that includes `nukta.h` calls `nukta_set_form ("nfc")`, or sets `nukta_form`; `nukta_options()` reads the environment and the flags for it | `if (nukta_set_form (argv[1]) < 0) ...` |
++
++The names are read in lower or upper case. An empty `ROMENAGRI_NUKTA_FORM` counts as not set. A name that is not a form, a flag without its value, and an option that the converter does not know are errors: a message on stderr, the usage line on stdout, exit status 1, and nothing is converted. `nukta_set_form` returns 0, or -1 for a name that is not a form and then changes nothing. The options come before the file names (`--` ends them), and the two file names are still given together or not at all. Tested in part (c).
++
++**The warning layer.** `uni2acii` writes the low byte of a code point that `unicode.h` has no row for. Every converter of this kind does this, and it is a known bug of them (section 11.6): the low byte of U+00E9, an e with an acute accent, is `E9`, the nukta, so that नé is read back as a न with a nukta. The converter does not try to mend it: a character that has no ACII byte is a normal character, and what has been consumed as Unicode is not carried on in a mixed state. What the layer adds is a way to see it. With `-w` (or `--warn`), or with `ROMENAGRI_NUKTA_WARN=1` in the environment, `uni2acii` reports each such code point once, on stderr, with a note about the known bug and a count at the end (a character above U+FFFF is reported as its two UTF-16 units). Nothing is reported by default, the bytes written are the same with and without it, and `acii2uni` has no such option. For the text of C5 below, `uni2acii -w` writes:
++
++```
++uni2acii: note: a code point that unicode.h has no row for is written as its low byte, which ACII reads as another character; every converter of this kind does this (TRANSLITERATION.md, section 11.6)
++uni2acii: warning: U+00E9 has no ACII byte and is written as its low byte E9, the nukta byte
++uni2acii: 1 code point with no ACII byte was written as its low byte (0 further occurrences not listed)
++```
++
++**Writing (`uni2acii`).** For a code unit:
++
++1. if the form is `nfd` and `nukta.h` lists it as a letter, write the byte of its consonant and `E9`;
++2. otherwise, if `unicode.h` has a row for it, write the byte of the row. The table comes first: U+0929 stays `C7` and U+0931 stays `D0`, and a row that someone adds for one of the other nine, as recipe A does for U+0934, wins too. In the form `nfc` a row byte that is the consonant of a letter that has a byte of its own (`C6` for U+0928, `CF` for U+0930) waits for the next code unit: if that is U+093C, the byte of the letter is written (`C7`, `D0`) and the nukta is not, and otherwise the held byte is written as it always was; a newline and the end of the input end the wait. Only a byte that came from a row waits, so that a character that fell back to its low byte (Æ, U+00C6, whose low byte is `C6`) is never made into a nukta letter by the byte that it happens to share;
++3. otherwise, if `nukta.h` lists it and its consonant has a byte in `unicode.h`, write that byte and `E9`;
++4. otherwise write the low byte, as before (and report it, if the warning layer is on and the code unit is not an ASCII character).
++
++**Reading (`acii2uni`).** A byte is written by its row in `unicode.h` or, if it has none, as the byte modulo 128, as it always was. In the form `nfd` a code point that `nukta.h` lists as a letter (the rows `C7` and `D0` give U+0929 and U+0931) is written as its consonant and U+093C. In the form `nfc` a byte is *held back* if it is the byte of the consonant of a letter that NFC composes (`C6`, `CF`, `D2`). The next byte decides. If it is `E9`, the converter writes the one code point of the letter and nothing for the `E9`. If it is anything else, the converter writes the held byte exactly as it always did and goes on with the new byte, which may itself be held back. A newline and the end of the input also end the wait. In the form `asis` there is no state at all.
++
++The converters keep no other state and look at most one byte (or one code unit) ahead. Nothing is added to `unicode.h`: a nukta letter takes no byte of the free list of section 10.1.
++
++### 15.3 The eleven letters
++
++<!-- BEGIN GENERATED nukta-table -->
++
++| Letter | Code point | Name | = | ACII of the pair | `uni2acii` before, after (default form) | Unicode NFC |
++|---|---|---|---|---|---|---|
++| ऩ | U+0929 | nnna | न + ◌़ | `C6 E9` | `C7`, `C7` | composes it |
++| ऱ | U+0931 | rra | र + ◌़ | `CF E9` | `D0`, `D0` | composes it |
++| ऴ | U+0934 | llla | ळ + ◌़ | `D2 E9` | `34` (the low byte: corruption), `D2 E9` | composes it |
++| क़ | U+0958 | qa | क + ◌़ | `B3 E9` | `58` (the low byte: corruption), `B3 E9` | leaves it decomposed (composition exclusion) |
++| ख़ | U+0959 | khha | ख + ◌़ | `B4 E9` | `59` (the low byte: corruption), `B4 E9` | leaves it decomposed (composition exclusion) |
++| ग़ | U+095A | ghha | ग + ◌़ | `B5 E9` | `5A` (the low byte: corruption), `B5 E9` | leaves it decomposed (composition exclusion) |
++| ज़ | U+095B | za | ज + ◌़ | `BA E9` | `5B` (the low byte: corruption), `BA E9` | leaves it decomposed (composition exclusion) |
++| ड़ | U+095C | dddha | ड + ◌़ | `BF E9` | `5C` (the low byte: corruption), `BF E9` | leaves it decomposed (composition exclusion) |
++| ढ़ | U+095D | rha | ढ + ◌़ | `C0 E9` | `5D` (the low byte: corruption), `C0 E9` | leaves it decomposed (composition exclusion) |
++| फ़ | U+095E | fa | फ + ◌़ | `C9 E9` | `5E` (the low byte: corruption), `C9 E9` | leaves it decomposed (composition exclusion) |
++| य़ | U+095F | yya | य + ◌़ | `CD E9` | `5F` (the low byte: corruption), `CD E9` | leaves it decomposed (composition exclusion) |
++
++`NUKTA_BYTE` is `E9`, the byte of U+093C in `unicode.h`; the default `NUKTA_FORM` is 0 (asis).
++
++<!-- END GENERATED nukta-table -->
++
++The last column is not read from `nukta.h`. `tools/gen_doc_tables.py` takes it from Python's `unicodedata` (Unicode 15.1), and `tests/test_nukta.py`, part (a), requires that the `nfc` mark of every row (1 for the letters that NFC composes, 0 for the eight that it does not) agrees with it, and that the rows are exactly the code points of the Devanagari block whose NFD is a consonant and U+093C. The eight are what the Unicode Standard calls *composition exclusions*: precomposed characters that NFC does not produce (cited, section 12.1). The two rows that have a byte of their own in `unicode.h` keep it, so ऩ and ऱ have two spellings in ACII, the byte (`C7`, `D0`) and the pair (`C6 E9`, `CF E9`), and in the form `asis` they come out of `acii2uni` as they went in, one as the single code point and one as the pair. In the forms `nfc` and `nfd` the two spellings come out alike.
++
++### 15.4 What does not change
++
++- **`uni2acii` writes the same bytes as before for every other code unit of the BMP, in every form.** Observed on all 65,525 code units but the eleven letters (test (g)). The nine were the low byte before and are two bytes now; the two with a row are unchanged in `asis` and `nfc` and two bytes in `nfd`.
++- **The default `acii2uni` writes what it wrote before,** byte for byte: on 30,000 random streams, on all 64,516 pairs `x y`, on all 64,516 triples `x E9 y` and on all 64,516 triples `x y E9` of bytes other than CR and LF (test (d)). The form `nfc` differs from it in the three pairs `C6 E9`, `CF E9` and `D2 E9` only (of the 64,516 pairs `x y`, these three), and the form `nfd` in the 1,012 pairs that hold `C7` or `D0`.
++- **The default `uni2acii` differs from the converter of patch 0001 in the nine letters only.** Text that contains none of the nine single code points is converted exactly as before.
++- **Nothing else reads `nukta.h`.** The decoder, the parser, the filters and the saral table are as before. Text that contained one of the nine single code points used to be damaged before it reached the filters; now it is not.
++- **The extension recipes still work.** Recipe A gives U+0934 a byte of its own, and in the forms `asis` and `nfc` the table wins over the layer (section 8.2); in the form `nfd` the layer writes the pair.
++
++### 15.5 Where the layer stops
++
++1. **It does not reorder.** NFC and NFD move a nukta (combining class 7) in front of a halant (class 9) or an accent (class 220 or 230). The converters never reorder anything, and the layer does not start: ऩ् (U+0928 U+094D U+093C, bytes `C6 E8 E9`) comes back as it went in, in every form, where NFC writes U+0929 U+094D. A layer that folded across the halant would also have to tell a nukta from ISCII's soft halant, which is written `E8 E9` as well (conflict C8 of section 10.5). No decision was taken (C3). Observed (test (f), quick run): of 30,000 random streams, 28,981 have their marks in canonical order, and on those `nfc` equals Python's NFC and `nfd` equals its NFD of what the default converter writes, without an exception; the other 1,019 (1,009 of them with a nukta after a halant or an accent) have marks that NFC and NFD would reorder, and on every one of them they differ from the layer.
++2. **The round trip is exact only up to canonical equivalence.** ड़ (U+095C) goes in and U+0921 U+093C comes out, in every form. The two look the same on a screen and are the same text for Unicode, but a byte comparison, or a search for one, does not find the other.
++3. **Romenagri is not extended.** The decoder reads the pair as before, and `acii2rmn` still crashes on a halant followed by a nukta (`C6 E8 E9` ends with signal 11, section 11.4). The fifteen reserved keys (section 11.3) are untouched: ऱ्ह and ल्ह have always passed through the chain from Unicode, and the typed forms `lh`, `_rrh`, `_rdvr` and the others still crash `rmn2acii`.
++4. **The low-byte problem remains for everything else.** U+00E9 (e with an acute accent) is written as `E9`, which is the nukta, and an `E9` after the byte of न, र or ळ is read as a nukta: नé comes back as न and a nukta (as ऩ in the form `nfc`), exactly as it did before the layer. Neither is the letter that went in. The warning layer makes it visible (C5); the cure is the one that section 11.6 names: deal with the characters that are not in the tables before `uni2acii`.
++5. **The joiners are not handled.** ZWJ and ZWNJ still fall back to `0D` and `0C` (section 10.4).
++
++### 15.6 What replaced `NUKTA_REBUILD`
++
++The first form of this patch (zip no. 4) rebuilt `C6 E9`, `CF E9` and `D2 E9` as single code points by default, and chose the output by a macro, `NUKTA_REBUILD`, with three levels. It is gone, for three reasons that the author gave on 8 November: the output form is the user's to choose and not the policy of a build; the default must be what the converters always wrote; and Unicode's normalisation is a layer of its own that must not be mixed with the rule. Compiling with `-DNUKTA_REBUILD` stops the compiler with a message that names `NUKTA_FORM`.
++
++| First form | Now |
++|---|---|
++| `NUKTA_REBUILD=0`: always two code points | the default, `asis` (also `-f asis`) |
++| `NUKTA_REBUILD=1`, the old default: NFC | `-f nfc` (also `NUKTA_FORM=NUKTA_NFC`, and `ROMENAGRI_NUKTA_FORM=nfc`) |
++| `NUKTA_REBUILD=2`: all eleven as single code points | none. Any normaliser splits the eight again, and the rule keeps one writing for a letter; a fourth form would be a table row away if it were wanted |
++| (none: `uni2acii` ignored the level) | `-f nfd`, new, for both converters |
++
++### 15.7 The challenges, in Devanagari, and what was decided
++
++Each case below is a place where the layer, or the standard that it follows, asked for a decision or left a limit. The author decided each on 8 November; the decision stands first. Each is printed by `tests/test_nukta.py`, part (k), from a real run of the converters and the two filters, and each is asserted there: the tables quote that output, with the input and the output as Devanagari and as code points. A row says "all three" when the three forms give the same line; otherwise a row of its own is given for the forms that differ.
++
++**C1. One letter in two spellings, and the eight composition exclusions.** ड़ can be typed as the single code point U+095C or as ड and a nukta (U+0921 U+093C); the same holds for क़ ख़ ग़ ज़ ढ़ फ़ and य़. Both spellings give `BF E9`. *Decision:* the output is not fixed to NFC, and Unicode is not to be confused with the emission layers: it keeps a layer of its own, the form (section 15.2). The decomposition is not left as an "or" either. It is done explicitly at level 1, because otherwise the sound of the modified consonant cannot be mapped: level 1 is where the consonants are mapped to their original sounds, before level 2 attaches the vowel signs. So the rule writes the consonant and the nukta, always, and no form writes the eight as single code points.
++
++| Case | In | Form | ACII | Romenagri | Out |
++|---|---|---|---|---|---|
++| the single code point | ड़ (`U+095C`) | all three | `BF E9` | `_rda` | ड़ (`U+0921 U+093C`) |
++| a letter and a nukta, as a keyboard types it | ड़ (`U+0921 U+093C`) | all three | `BF E9` | `_rda` | ड़ (`U+0921 U+093C`) |
++| all eight, as single code points | क़ख़ग़ज़ड़ढ़फ़य़ (`U+0958 U+0959 U+095A U+095B U+095C U+095D U+095E U+095F`) | all three | `B3 E9 B4 E9 B5 E9 BA E9 BF E9 C0 E9 C9 E9 CD E9` | `kzakhzagzajza_rda_rdhaphzayza` | क़ख़ग़ज़ड़ढ़फ़य़ (`U+0915 U+093C U+0916 U+093C U+0917 U+093C U+091C U+093C U+0921 U+093C U+0922 U+093C U+092B U+093C U+092F U+093C`) |
++
++**C2. ऩ ऱ ऴ against their pairs.** Unicode gave a code point of its own to some letters with a nukta and none to others, with no uniform rule, and that is the root of the problem. *Decision:* the layer is uniform inside: for all eleven, a character and a nukta. Nothing more is decided for this case (none). What comes out is the business of the form: ऩ and ऱ have two spellings in ACII (`C7` and `C6 E9`, `D0` and `CF E9`), and `acii2uni` reads each as before in `asis`, both as the single code point in `nfc` and both as the pair in `nfd`.
++
++| Case | In | Form | ACII | Romenagri | Out |
++|---|---|---|---|---|---|
++| the single code points | ऩऱऴ (`U+0929 U+0931 U+0934`) | asis | `C7 D0 D2 E9` | `_nza_rralvrza` | ऩऱऴ (`U+0929 U+0931 U+0933 U+093C`) |
++|  |  | nfc | `C7 D0 D2 E9` | `_nza_rralvrza` | ऩऱऴ (`U+0929 U+0931 U+0934`) |
++|  |  | nfd | `C6 E9 CF E9 D2 E9` | `nzarzalvrza` | ऩऱऴ (`U+0928 U+093C U+0930 U+093C U+0933 U+093C`) |
++| consonant and nukta, three times | ऩऱऴ (`U+0928 U+093C U+0930 U+093C U+0933 U+093C`) | asis, nfd | `C6 E9 CF E9 D2 E9` | `nzarzalvrza` | ऩऱऴ (`U+0928 U+093C U+0930 U+093C U+0933 U+093C`) |
++|  |  | nfc | `C7 D0 D2 E9` | `_nza_rralvrza` | ऩऱऴ (`U+0929 U+0931 U+0934`) |
++
++**C3. A nukta after a halant.** NFC would move the nukta in front of the halant and compose it (U+0929 U+094D), and `E8 E9` is also how ISCII writes a soft halant, which made `acii2rmn` crash on it before the layer (section 11.4). *Decision:* none taken. The layer leaves the sequence alone in every form (section 15.5, item 1).
++
++| Case | In | Form | ACII | Romenagri | Out |
++|---|---|---|---|---|---|
++| न + halant + nukta (NFC: U+0929 U+094D) | ऩ् (`U+0928 U+094D U+093C`) | all three | `C6 E8 E9` | (acii2rmn crashes) | ऩ् (`U+0928 U+094D U+093C`) |
++
++**C4. A nukta that does not follow a consonant directly.** After a vowel sign, after a space, at the start of a line: there is nothing to rebuild, and NFC agrees, because a vowel sign has combining class 0 and blocks the composition. *Decision:* no fixed format is locked in. The choice of NFC or NFD for what comes out is a user option, as a command-line flag, an environment variable, a build macro or a function call (section 15.2); the default stays aligned with what the converters did, and users and integrators have full control at every level.
++
++| Case | In | Form | ACII | Romenagri | Out |
++|---|---|---|---|---|---|
++| न + sign I + nukta (NFC does not compose it either) | नि़ (`U+0928 U+093F U+093C`) | all three | `C6 DB E9` | (not run) | नि़ (`U+0928 U+093F U+093C`) |
++| न + space + nukta | न ़ (`U+0928 U+0020 U+093C`) | all three | `C6 20 E9` | (not run) | न ़ (`U+0928 U+0020 U+093C`) |
++
++**C5. The letter é is written as the nukta.** `uni2acii` writes U+00E9 as `E9`, its low byte, and `E9` is the nukta (section 11.6). After न, र or ळ the byte is read as a nukta, as it was before the layer, and in the form `nfc` the pair is composed. *Decision:* encodings are not mixed. Once Unicode, or any other input encoding, has been consumed, it does not survive in a mixed state: the é is a normal character that has no ACII byte and is treated like every other, so the question of Unicode mixing with it does not arise. What is added is a warning layer, which notes this known bug of such converters, off by default and enabled only by a flag or by the call that integrates the converter (section 15.2).
++
++| Case | In | Form | ACII | Romenagri | Out |
++|---|---|---|---|---|---|
++| न + é: the é was never a nukta | नé (`U+0928 U+00E9`) | asis, nfd | `C6 E9` | `nza` | ऩ (`U+0928 U+093C`) |
++|  |  | nfc | `C6 E9` | `nza` | ऩ (`U+0929`) |
++
++**C6. The cluster ड़्व with the single code point.** Without the layer `uni2acii` wrote the low byte, `5C`, and `acii2rmn` lost it together with the halant behind it (section 15.1). *Decision:* it is not a case of its own and gets no special rule, no fix that names a cluster. It is resolved by the rule of C1: the precomposed consonant is broken into its base sound and the nukta before the halant and the adjunct consonant are bound at level 2, so the formation of clusters is general. The test passes the fifteen clusters of section 11.3 through the chain in all three forms (part (j)).
++
++| Case | In | Form | ACII | Romenagri | Out |
++|---|---|---|---|---|---|
++| with the layer: the single code point | ड़्व (`U+095C U+094D U+0935`) | all three | `BF E9 E8 D4` | `_rdwa` | ड़्व (`U+0921 U+093C U+094D U+0935`) |
++| with the layer: ड + nukta | ड़्व (`U+0921 U+093C U+094D U+0935`) | all three | `BF E9 E8 D4` | `_rdwa` | ड़्व (`U+0921 U+093C U+094D U+0935`) |
++| patch 0001 alone: what it did before | ड़्व (`U+095C U+094D U+0935`) | asis | `5C E8 D4` | `wa` | व (`U+0935`) |
++
++**C7. ऴ has no byte of its own.** ISCII's `D3` is free; recipe A of section 8.2 would use it. *Decision:* nothing is assigned or mapped into `D3`, and no slot is made for it. Every internal representation keeps the one rule, a character and a nukta: ळ and the nukta, `D2 E9`. Recipe A stays a tested recipe that is not shipped (section 10.4).
++
++| Case | In | Form | ACII | Romenagri | Out |
++|---|---|---|---|---|---|
++| alone | ऴ (`U+0934`) | asis, nfd | `D2 E9` | `lvrza` | ऴ (`U+0933 U+093C`) |
++|  |  | nfc | `D2 E9` | `lvrza` | ऴ (`U+0934`) |
++| in a word | कऴन (`U+0915 U+0934 U+0928`) | asis, nfd | `B3 D2 E9 C6` | `kalvrzana` | कऴन (`U+0915 U+0933 U+093C U+0928`) |
++|  |  | nfc | `B3 D2 E9 C6` | `kalvrzana` | कऴन (`U+0915 U+0934 U+0928`) |
++
++**C8. Extended clusters: ऱ्ह, ल्ह and the like.** *Decision:* they are managed strictly as code point to code point mappings. The layer makes no assumption about how a font shapes them and takes nothing from the behaviour of an external transliteration; it adds nothing of its own to them, and they are mapped cleanly and deterministically, at the level of the architecture. The fifteen reserved keys of section 11.3 stay untouched; the author is working on them himself.
++
++| Case | In | Form | ACII | Romenagri | Out |
++|---|---|---|---|---|---|
++| ऱ्ह and ल्ह | ऱ्हल्ह (`U+0931 U+094D U+0939 U+0932 U+094D U+0939`) | asis, nfc | `D0 E8 D8 D1 E8 D8` | `_rr_hal_ha` | ऱ्हल्ह (`U+0931 U+094D U+0939 U+0932 U+094D U+0939`) |
++|  |  | nfd | `CF E9 E8 D8 D1 E8 D8` | `rz_hal_ha` | ऱ्हल्ह (`U+0930 U+093C U+094D U+0939 U+0932 U+094D U+0939`) |
++
++### 15.8 What is tested
++
++`tests/test_nukta.py` is the step `nukta` of `tests/run_all.sh`; `--full` raises the number of random streams from 30,000 to 200,000.
++
++| Part | Establishes |
++|---|---|
++| (a) | the table against Python's `unicodedata`: the eleven rows are exactly the code points of U+0900-U+097F whose NFD is a consonant and U+093C; the `nfc` mark is 1 if and only if NFC composes the pair; `NUKTA_BYTE` is the byte of U+093C; the default form is `asis`; `D3` is not a byte of `unicode.h` |
++| (b) | `uni2acii` in the three forms: what each of the eleven letters, and each consonant and nukta, is written as; patch 0001 alone wrote the low byte of the nine |
++| (c) | how the form is chosen: the flag, the environment variable, the macro (builds compiled with `-DNUKTA_FORM`, without a warning under `-Wall -Wextra`), `nukta_set_form()` in a program that includes `nukta.h`, which of them wins, the error cases, and the old macro `NUKTA_REBUILD`, which stops the compiler |
++| (d) | `acii2uni` in the three forms against a model of the rule, written in Python on top of what the unpatched converter writes for each byte, on random streams and on the exhaustive pairs and triples; `asis` equals the unpatched converter |
++| (e) | `uni2acii` in the three forms against a model of the rule, on random streams and on the exhaustive pairs and triples of a set of code units that includes the low-byte characters (é, Æ) |
++| (f) | Python's NFC and NFD as independent oracles for both converters, on streams whose marks are in canonical order, with negative controls and the measured limit of section 15.5 |
++| (g) | `uni2acii` on the other 65,525 code units of the BMP: unchanged in every form; `D3` is never written |
++| (h) | the edge cases of both converters in every form: the held byte at the end of a stream, before a newline and before a consonant; `E9 E9`; a halant or a vowel sign between; the empty input; the usage lines |
++| (i) | the warning layer: nothing by default, each code point once under `-w`, `--warn` and `ROMENAGRI_NUKTA_WARN=1`, and the bytes unchanged |
++| (j) | the whole chain in every form, on the eleven letters in both spellings and in three contexts, and on the fifteen clusters of section 11.3 (16 strings), with negative controls on patch 0001 alone and on the unpatched build |
++| (k) | the cases of section 15.7, each asserted and printed |
++
++The tests remove `ROMENAGRI_NUKTA_FORM` and `ROMENAGRI_NUKTA_WARN` from the environment of every call, so that a setting of the person who runs them cannot change a result. `tests/test_unicode.py`, part (d), classifies the unmapped code points as section 10.4 does and checks that the nine come out of the chain as a consonant and a nukta (and as NFC and NFD write them, with `-f`), and `tests/test_limitations.py` holds the one measurement of section 11.6 that changed (U+0934).
++
++### 15.9 Decided, and left to the reader
++
++Decided on 8 November and closed (section 15.7): the form is a user option and the default is what the converters always wrote (C1, C4); the rule is uniform, a character and a nukta, and is applied before anything is bound (C1, C2, C6); `ऴ` takes no byte of its own, `D3` is not assigned (C7); the clusters get no special cases (C6, C8); a mixed encoding is not repaired, only reported, on request (C5); no decision on a nukta after a halant (C3); the fifteen reserved keys are not touched (C8).
++
++Left to the reader:
++
++1. **The form for a pipeline.** The default is `asis`. A pipeline that compares or stores text in NFC sets `nfc` on both converters (`ROMENAGRI_NUKTA_FORM=nfc` does it for a whole script); one that wants every nukta letter as a pair sets `nfd`. The two converters should be given the same form, or a letter changes spelling on its way through.
++2. **Reordering** (section 15.5, item 1): folding a nukta that follows a halant needs a decision between a nukta and ISCII's soft halant, which the converters do not make.
++3. **A fourth form,** all eleven letters as single code points, is a table row and a few lines away. Any normaliser would split the eight again.
++4. **The converters as functions.** The conversion loops are in the `main` of each program. `nukta_set_form()` and `nukta_options()` give a program that includes `nukta.h` the form and the options; if the loops themselves are to be called as functions, they would have to be moved out of `main`, which this patch does not do.
++5. **Folding this patch into patch 0001.** Patch 0003 changes none of the code files that patch 0001 changes, so its code can move into patch 0001 as it is. This document and patch 0002 change with it, and would have to be generated again.
++
+ ## Appendix A: the complete table
+ 
+ Every row of `acii.h`, in table order: row number, Romenagri key, ACII bytes, Unicode code points, meaning, the spelling in `aciihin.h` ("saral"), and which translator uses the row (section 11.2). Rows added by patch 0001, the Sanskrit characters, are marked **new**. This block is generated.
+diff --git a/Romenagri/acii2uni.c b/Romenagri/acii2uni.c
+index f77757e..da7c0ec 100644
+--- a/Romenagri/acii2uni.c
++++ b/Romenagri/acii2uni.c
+@@ -1,5 +1,5 @@
+ /*
+-Copyright (C) 2003,2004,2005,2006 Abhishek Choudhary
++Copyright (C) 1993-2026 Abhishek Choudhary
+ This file is part of the Romenagri Transliteration System.
+ 
+ The Romenagri Transliteration System is free software; 
+@@ -27,6 +27,17 @@ Modifications: (Please maintain reverse chronological order)
+                         Name of modifier <alias>,
+ 			email adress of modifier
+ 
++	08-Nov-2026, The forms (asis, nfc, nfd): -f, ROMENAGRI_NUKTA_FORM, -DNUKTA_FORM; the default is the old output, see TRANSLITERATION.md, section 15;
++	              asis, the default, is what the converter always wrote; nfc and nfd are Unicode's two forms; a nukta letter is a consonant and
++	              a nukta in every form; NUKTA_REBUILD is gone, see TRANSLITERATION.md, section 15,
++                        Abhishek Choudhary <obonac> (prepared with Claude),
++                        a.choudhary@ieee.org
++
++	05-Nov-2026, The nukta layer: a consonant byte followed by the nukta byte can be written as the one code point that nukta.h lists
++	              (new header nukta.h), see TRANSLITERATION.md, section 15,
++                        Abhishek Choudhary <obonac> (prepared with Claude),
++                        a.choudhary@ieee.org
++
+ 	19-Jan-2006, Added the modifications section,
+                         Abhishek Choudhary <hi_pedler>,
+ 			choudhary@indicybers.net
+@@ -38,39 +49,80 @@ End of modifications.
+ #include <fcntl.h>
+ 
+ #include "unicode.h"
++#include "nukta.h"
++
++static void
++usage (void)
++{
++  printf ("Usage: acii2uni [-f asis|nfc|nfd] [<ISCII_filename> <UNICODE_filename>]\n");
++  printf ("  -f FORM, --form=FORM   how a letter with a nukta is written: asis (the default), nfc or nfd\n");
++  printf ("The environment variable ROMENAGRI_NUKTA_FORM does the same; a flag wins.\n");
++}
++
++/* writes the byte t as this converter always has: the code point of its row in unicode.h, else t mod 128 as an ASCII character;
++   in the form nfd a letter of nukta.h (C7 and D0 have a row) goes out as its consonant and U+093C */
++static void
++put (unsigned char t, FILE * fout)
++{
++  int i, j;
++
++  for (i = 0; i < UNI_LEN; i++)
++    if (t == unicode_hin[i][2])
++      {
++	if (nukta_form == NUKTA_NFD && (j = nukta_row_of (unicode_hin[i][0], unicode_hin[i][1])) >= 0)
++	  {
++	    fputc (nukta_hin[j][2], fout);
++	    fputc (nukta_hin[j][3], fout);
++	    fputc (NUKTA_SIGN_LOW, fout);
++	    fputc (NUKTA_SIGN_HIGH, fout);
++	    return;
++	  }
++	fputc (unicode_hin[i][0], fout);
++	fputc (unicode_hin[i][1], fout);
++	return;
++      }
++  fputc (t % 128, fout);
++  fputc (0, fout);
++}
+ 
+ int
+ main (int argc, char *argv[])
+ {
+   FILE *fin, *fout;
+   unsigned char t;
+-  int i = 0, flag = 0;
++  int i = 0, j, a, held = -1, fold[256];	/* held: a consonant byte that waits for a nukta (form nfc) */
+ 
+ #ifdef __DJGPP
+   _fmode = O_BINARY;
+ #endif
+ 
+-  if (argc < 2)
++  if ((a = nukta_options ("acii2uni", argc, argv, NULL)) < 0)
++    {
++      usage ();
++      return 1;
++    }
++
++  if (argc - a < 1)
+     {
+       fin = stdin;
+       fout = stdout;
+     }
+   else
+     {
+-      if (argc < 3)
++      if (argc - a < 2)
+ 	{
+-	  printf ("Usage: acii2uni <ISCII_filename> <UNICODE_filename>\n");
++	  usage ();
+ 	  return 1;
+ 	}
+ 
+ 
+-      if ((fin = fopen (argv[1], "r+")) == NULL)
++      if ((fin = fopen (argv[a], "r+")) == NULL)
+ 	{
+ 	  fprintf (stderr, "Cannot open input file, using stdin.\n");
+ 	  fin = stdin;
+ 	}
+ 
+-      if ((fout = fopen (argv[2], "w")) == NULL)
++      if ((fout = fopen (argv[a + 1], "w")) == NULL)
+ 	{
+ 	  fprintf (stderr, "Cannot open output file, using stdout.\n");
+ 	  fout = stdout;
+@@ -80,11 +132,32 @@ main (int argc, char *argv[])
+   //byte order marker for utf16
+   fputc (255, fout);
+   fputc (254, fout);
++
++  /* form nfc: fold[b] is the row of nukta_hin that the byte b of a consonant followed by NUKTA_BYTE becomes, if NFC composes the pair, or -1 */
++  for (i = 0; i < 256; i++)
++    fold[i] = -1;
++  if (nukta_form == NUKTA_NFC)
++    for (j = 0; j < NUKTA_LEN; j++)
++      if (nukta_hin[j][4] == 1 && (i = nukta_acii_of (nukta_hin[j][2], nukta_hin[j][3])) >= 0)
++	fold[i] = j;
++
+   while (!feof (fin))
+     {
+       t = fgetc (fin);
+       if (feof (fin))
+ 	break;
++      if (held >= 0)
++	{
++	  if (t == NUKTA_BYTE)
++	    {
++	      fputc (nukta_hin[fold[held]][0], fout);
++	      fputc (nukta_hin[fold[held]][1], fout);
++	      held = -1;
++	      continue;
++	    }
++	  put (held, fout);	/* no nukta follows: the consonant goes out as it always did */
++	  held = -1;
++	}
+       if (t == '\n')
+ 	{
+ 	  fputc (13, fout);
+@@ -93,26 +166,15 @@ main (int argc, char *argv[])
+ 	  fputc (0, fout);
+ 	  continue;
+ 	}
+-      flag = 0;
+-      for (i = 0; i < UNI_LEN; i++)
+-	{
+-	  if (t == unicode_hin[i][2])
+-	    {
+-	      flag = 1;
+-	      break;
+-	    }
+-	}
+-      if (flag == 1)
+-	{
+-	  fputc (unicode_hin[i][0], fout);
+-	  fputc (unicode_hin[i][1], fout);
+-	}
+-      else
++      if (fold[t] >= 0)
+ 	{
+-	  fputc (t % 128, fout);
+-	  fputc (0, fout);
++	  held = t;		/* wait for the next byte: is it the nukta? */
++	  continue;
+ 	}
++      put (t, fout);
+     }
++  if (held >= 0)
++    put (held, fout);
+ 
+   fclose (fin);
+   fclose (fout);
+diff --git b/Romenagri/nukta.h b/Romenagri/nukta.h
+new file mode 100644
+index 0000000..0526d5b
+--- /dev/null
++++ b/Romenagri/nukta.h
+@@ -0,0 +1,235 @@
++/*
++Copyright (C) 1993-2026 Abhishek Choudhary
++This file is part of the Romenagri Transliteration System.
++
++The Romenagri Transliteration System is free software; 
++you can redistribute it and/or modify it under the terms of the 
++GNU General Public License as published by the 
++Free Software Foundation; either version 2 of the License, or 
++(at your option) any later version.
++
++The Romenagri Transliteration System is distributed in the hope 
++that it will be useful, but WITHOUT ANY WARRANTY; without 
++even the implied warranty of MERCHANTABILITY or FITNESS FOR 
++A PARTICULAR PURPOSE. See the GNU General Public License for 
++more details.
++
++You should have received a copy of the GNU General Public
++License along with this file; see the file COPYING. If
++not, write to the Free Software Foundation,
++51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++*/
++
++/*
++Modifications: (Please maintain reverse chronological order)
++
++	dd-mmm-yyyy, Nature of modification,
++                        Name of modifier <alias>,
++			email adress of modifier
++
++	08-Nov-2026, Reworked: the forms (asis, nfc, nfd), the options -f and -w, the environment variables, nukta_set_form();
++	              a nukta letter is a consonant and a nukta in every form; NUKTA_REBUILD is gone, section 15.6,
++                        Abhishek Choudhary <obonac> (prepared with Claude),
++                        a.choudhary@ieee.org
++
++	05-Nov-2026, Created: the table and the helper of the nukta layer of uni2acii and acii2uni,
++	              see TRANSLITERATION.md, section 15,
++                        Abhishek Choudhary <obonac> (prepared with Claude),
++                        a.choudhary@ieee.org
++
++End of modifications.
++*/
++
++/* The nukta layer.  Include this file after unicode.h.
++
++   The rule.  ACII writes a letter with a nukta as two bytes: the consonant, then NUKTA_BYTE.  Unicode has eleven letters that are such
++   a pair in one code point, and gave a code point of its own to some letters with a nukta and not to others.  The layer does not follow
++   that: a letter with a nukta is a consonant and a nukta, however it arrives.  So uni2acii writes a code point that unicode.h has no
++   row for and that is listed here (the eight of U+0958 to U+095F, and U+0934) as the byte of its consonant, then NUKTA_BYTE.  This is
++   not an option.  It is how the sound of the modified consonant is found before a halant, an adjunct consonant or a vowel sign is
++   attached to it (in the parser: level1 before level2).  Two of the eleven have a row of their own in unicode.h (U+0929 and U+0931,
++   with the bytes C7 and D0); of the other nine uni2acii used to write the low byte (U+095C, for example, became a backslash).
++
++   The form.  What the converters write for the letters of this family, as one code point or as two, is the form.  The form is the
++   Unicode layer, and is kept apart from the rule.  There are three:
++     asis  (the default) what the converters always wrote: a row of unicode.h is used as it is (C7 is U+0929, and U+0929 is C7); a
++           consonant and a nukta that arrive as two code points, or as two bytes, stay two
++     nfc   as Unicode's normalisation form NFC: where NFC composes a consonant and a nukta (U+0928, U+0930 or U+0933 and U+093C) they are
++           one code point (acii2uni), or the one byte that unicode.h has for the letter (uni2acii: C7 and D0); the eight letters that
++           NFC leaves decomposed (the composition exclusions, U+0958 to U+095F) stay a consonant and a nukta
++     nfd   as NFD: all eleven letters are a consonant and a nukta, in both converters (C7 and D0 as well)
++   The form is chosen, the last of these winning, by the macro NUKTA_FORM when a converter is compiled (cc -DNUKTA_FORM=NUKTA_NFD), by the
++   environment variable ROMENAGRI_NUKTA_FORM, and by the flag -f.  A program that includes this file sets nukta_form, or calls
++   nukta_set_form(), before it converts.
++
++   The warning.  uni2acii writes the low byte of a code point that unicode.h has no row for.  Every converter of this kind does, and the
++   low byte of U+00E9 (an e with an acute accent) is the nukta byte.  With the flag -w, or ROMENAGRI_NUKTA_WARN=1, uni2acii reports each
++   such code point once, on stderr.  Nothing is reported by default, and the bytes written are the same.
++
++   tests/test_nukta.py compares this table with Python's unicodedata.
++*/
++
++#ifndef __NUKTA_H__
++#define __NUKTA_H__
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++
++#ifdef __cplusplus
++extern "C"
++{
++#endif
++
++
++#define NUKTA_BYTE 0xE9		/* the ACII byte of U+093C DEVANAGARI SIGN NUKTA: its row in unicode.h */
++#define NUKTA_SIGN_LOW 0x3C	/* U+093C as the two bytes of a UTF-16LE code unit */
++#define NUKTA_SIGN_HIGH 0x09
++
++#define NUKTA_ASIS 0		/* the forms */
++#define NUKTA_NFC 1
++#define NUKTA_NFD 2
++
++#ifdef NUKTA_REBUILD
++#error "NUKTA_REBUILD is gone: choose the form with NUKTA_FORM (NUKTA_ASIS, NUKTA_NFC or NUKTA_NFD); see TRANSLITERATION.md, section 15.6"
++#endif
++
++#ifndef NUKTA_FORM
++#define NUKTA_FORM NUKTA_ASIS
++#endif
++
++#if NUKTA_FORM < 0 || NUKTA_FORM > 2
++#error "NUKTA_FORM is NUKTA_ASIS (0), NUKTA_NFC (1) or NUKTA_NFD (2)"
++#endif
++
++#define NUKTA_LEN 11
++
++/* {low, high} of the precomposed letter, {low, high} of its consonant, 1 if Unicode's NFC composes the pair and 0 if it does not */
++  unsigned char nukta_hin[NUKTA_LEN][5] = {
++    {0x29, 9, 0x28, 9, 1}, /* U+0929 LETTER NNNA  = U+0928 NA  + NUKTA; has the byte C7 in unicode.h */
++    {0x31, 9, 0x30, 9, 1}, /* U+0931 LETTER RRA   = U+0930 RA  + NUKTA; has the byte D0 in unicode.h */
++    {0x34, 9, 0x33, 9, 1}, /* U+0934 LETTER LLLA  = U+0933 LLA + NUKTA */
++    {0x58, 9, 0x15, 9, 0}, /* U+0958 LETTER QA    = U+0915 KA  + NUKTA */
++    {0x59, 9, 0x16, 9, 0}, /* U+0959 LETTER KHHA  = U+0916 KHA + NUKTA */
++    {0x5A, 9, 0x17, 9, 0}, /* U+095A LETTER GHHA  = U+0917 GA  + NUKTA */
++    {0x5B, 9, 0x1C, 9, 0}, /* U+095B LETTER ZA    = U+091C JA  + NUKTA */
++    {0x5C, 9, 0x21, 9, 0}, /* U+095C LETTER DDDHA = U+0921 DDA + NUKTA */
++    {0x5D, 9, 0x22, 9, 0}, /* U+095D LETTER RHA   = U+0922 DDHA + NUKTA */
++    {0x5E, 9, 0x2B, 9, 0}, /* U+095E LETTER FA    = U+092B PHA + NUKTA */
++    {0x5F, 9, 0x2F, 9, 0}  /* U+095F LETTER YYA   = U+092F YA  + NUKTA */
++  };
++
++/* the form in force: NUKTA_FORM, then what nukta_options reads from the environment and the flags; a program that includes this file may set it */
++  static int nukta_form = NUKTA_FORM;
++
++/* the ACII byte of a code point, or -1 if unicode.h has no row for it */
++  static int nukta_acii_of (unsigned char low, unsigned char high)
++  {
++    int k;
++    for (k = 0; k < UNI_LEN; k++)
++      if (low == unicode_hin[k][0] && high == unicode_hin[k][1])
++	return unicode_hin[k][2];
++    return -1;
++  }
++
++/* the row of nukta_hin whose precomposed letter is the code point (low, high), or -1 */
++  static int nukta_row_of (unsigned char low, unsigned char high)
++  {
++    int j;
++    for (j = 0; j < NUKTA_LEN; j++)
++      if (low == nukta_hin[j][0] && high == nukta_hin[j][1])
++	return j;
++    return -1;
++  }
++
++/* the form that a name stands for (asis, nfc or nfd, in lower or upper case), or -1 */
++  static int nukta_form_named (const char *name)
++  {
++    static const char *const names[3] = { "asis", "nfc", "nfd" };
++    int k;
++    const char *p, *q;
++
++    for (k = 0; k < 3; k++)
++      {
++	for (p = name, q = names[k]; *q != 0 && (*p | 32) == *q; p++, q++)
++	  ;
++	if (*q == 0 && *p == 0)
++	  return k;
++      }
++    return -1;
++  }
++
++/* sets nukta_form to the form that a name stands for: 0, or -1 (and nothing changes) if the name is not a form */
++  static int nukta_set_form (const char *name)
++  {
++    int f = nukta_form_named (name);
++
++    if (f < 0)
++      return -1;
++    nukta_form = f;
++    return 0;
++  }
++
++/* The options of the two converters: -f FORM and --form=FORM and, if warn is not NULL, -w and --warn (which set *warn).  The environment
++   is read first (ROMENAGRI_NUKTA_FORM; ROMENAGRI_NUKTA_WARN=1), so that a flag wins over it.  Returns the index of the first argument that
++   is not an option (after "--", or the first that does not begin with a minus sign, or is a minus sign alone), or -1 after a message on stderr. */
++  static int nukta_options (const char *prog, int argc, char *argv[], int *warn)
++  {
++    int a = 1;
++    const char *e;
++
++    if ((e = getenv ("ROMENAGRI_NUKTA_FORM")) != NULL && *e != 0 && nukta_set_form (e) < 0)
++      {
++	fprintf (stderr, "%s: ROMENAGRI_NUKTA_FORM is \"%s\", which is not a form: use asis, nfc or nfd\n", prog, e);
++	return -1;
++      }
++    if (warn != NULL && (e = getenv ("ROMENAGRI_NUKTA_WARN")) != NULL && e[0] == '1')
++      *warn = 1;
++    while (a < argc && argv[a][0] == '-' && argv[a][1] != 0)
++      {
++	if (strcmp (argv[a], "--") == 0)
++	  {
++	    a++;
++	    break;
++	  }
++	if (warn != NULL && (strcmp (argv[a], "-w") == 0 || strcmp (argv[a], "--warn") == 0))
++	  {
++	    *warn = 1;
++	    a++;
++	    continue;
++	  }
++	if (strcmp (argv[a], "-f") == 0)
++	  {
++	    if (a + 1 >= argc)
++	      {
++		fprintf (stderr, "%s: -f needs a form: asis, nfc or nfd\n", prog);
++		return -1;
++	      }
++	    e = argv[++a];
++	  }
++	else if (strncmp (argv[a], "--form=", 7) == 0)
++	  e = argv[a] + 7;
++	else
++	  {
++	    fprintf (stderr, "%s: unknown option %s\n", prog, argv[a]);
++	    return -1;
++	  }
++	if (nukta_set_form (e) < 0)
++	  {
++	    fprintf (stderr, "%s: \"%s\" is not a form: use asis, nfc or nfd\n", prog, e);
++	    return -1;
++	  }
++	a++;
++      }
++    return a;
++  }
++
++
++#ifdef __cplusplus
++}
++#endif
++
++
++
++#endif
+diff --git a/Romenagri/uni2acii.c b/Romenagri/uni2acii.c
+index f20d800..54af493 100644
+--- a/Romenagri/uni2acii.c
++++ b/Romenagri/uni2acii.c
+@@ -1,5 +1,5 @@
+ /*
+-Copyright (C) 2003,2004,2005,2006 Abhishek Choudhary
++Copyright (C) 1993-2026 Abhishek Choudhary
+ This file is part of the Romenagri Transliteration System.
+ 
+ The Romenagri Transliteration System is free software; 
+@@ -27,6 +27,17 @@ Modifications: (Please maintain reverse chronological order)
+                         Name of modifier <alias>,
+ 			email adress of modifier
+ 
++	08-Nov-2026, The forms (asis, nfc, nfd) and the warning layer: -f, ROMENAGRI_NUKTA_FORM, -w, see TRANSLITERATION.md, section 15;
++	              asis, the default, is what the converter always wrote; nfc and nfd are Unicode's two forms; a nukta letter is a consonant and
++	              a nukta in every form; NUKTA_REBUILD is gone, see TRANSLITERATION.md, section 15,
++                        Abhishek Choudhary <obonac> (prepared with Claude),
++                        a.choudhary@ieee.org
++
++	05-Nov-2026, The nukta layer: a precomposed nukta letter that unicode.h has no row for is written as its consonant
++	              and the nukta byte (new header nukta.h), see TRANSLITERATION.md, section 15,
++                        Abhishek Choudhary <obonac> (prepared with Claude),
++                        a.choudhary@ieee.org
++
+ 	19-Jan-2006, Added the modifications section,
+                         Abhishek Choudhary <hi_pedler>,
+ 			choudhary@indicybers.net
+@@ -38,13 +49,81 @@ End of modifications.
+ #include <fcntl.h>
+ 
+ #include "unicode.h"
++#include "nukta.h"
++
++#define KIND_ROW 0		/* the bytes are the byte of a row of unicode.h */
++#define KIND_NUKTA 1		/* the bytes are a consonant and the nukta byte (nukta.h) */
++#define KIND_LOW 2		/* unicode.h has no row and nukta.h no letter: the low byte of the code unit */
++
++static unsigned char seen[8192];	/* the warning layer: one bit for each code unit that it has reported */
++static int reported = 0, repeated = 0;
++
++static void
++usage (void)
++{
++  printf ("Usage: uni2acii [-f asis|nfc|nfd] [-w] [<UNICODE_filename> <ISCII_filename>]\n");
++  printf ("  -f FORM, --form=FORM   how a letter with a nukta is written: asis (the default), nfc or nfd\n");
++  printf ("  -w, --warn             report each code point that has no ACII byte and is written as its low byte\n");
++  printf ("The environment variables ROMENAGRI_NUKTA_FORM and ROMENAGRI_NUKTA_WARN=1 do the same; a flag wins.\n");
++}
++
++/* the warning layer: a code point that unicode.h has no row for is written as its low byte, which ACII reads as another character
++   (the low byte of U+00E9 is the nukta byte).  Reported once for each code point, on stderr; the bytes written do not change. */
++static void
++report (unsigned char t1, unsigned char t2)
++{
++  int u = t2 * 256 + t1;
++
++  if (seen[u >> 3] & (1 << (u & 7)))
++    {
++      repeated++;
++      return;
++    }
++  if (reported == 0)
++    fprintf (stderr, "uni2acii: note: a code point that unicode.h has no row for is written as its low byte, which ACII reads as another "
++	     "character; every converter of this kind does this (TRANSLITERATION.md, section 11.6)\n");
++  seen[u >> 3] |= 1 << (u & 7);
++  reported++;
++  fprintf (stderr, "uni2acii: warning: U+%04X has no ACII byte and is written as its low byte %02X%s\n", u, t1,
++	   t1 == NUKTA_BYTE ? ", the nukta byte" : "");
++}
++
++/* the bytes of the code unit (t1, t2): the byte of its row in unicode.h; or a consonant and the nukta byte, for a letter of nukta.h that
++   has no row (in the form nfd also for the two that have one: C7 and D0 become C6 E9 and CF E9); or else the low byte, "presuming 0 to
++   127".  Returns the number of bytes; *kind says which of the three it was. */
++static int
++bytes_of (unsigned char t1, unsigned char t2, unsigned char out[2], int *kind)
++{
++  int i, j, b;
++
++  for (i = 0; i < UNI_LEN; i++)
++    if (t1 == unicode_hin[i][0] && t2 == unicode_hin[i][1])	/*match */
++      break;
++  j = nukta_row_of (t1, t2);
++  if (j >= 0 && (i == UNI_LEN || nukta_form == NUKTA_NFD) && (b = nukta_acii_of (nukta_hin[j][2], nukta_hin[j][3])) >= 0)
++    {
++      out[0] = b;
++      out[1] = NUKTA_BYTE;
++      *kind = KIND_NUKTA;
++      return 2;
++    }
++  if (i < UNI_LEN)
++    {
++      out[0] = unicode_hin[i][2];
++      *kind = KIND_ROW;
++      return 1;
++    }
++  out[0] = t1;			/*presuming 0 to 127 */
++  *kind = KIND_LOW;
++  return 1;
++}
+ 
+ int
+ main (int argc, char *argv[])
+ {
+   FILE *fin, *fout;
+-  unsigned char t1, t2, tmp[4];
+-  int i = 0, flag = 0;
++  unsigned char t1, t2, tmp[4], out[2];
++  int i, j, k, n, a, kind, held = -1, join[256], warn = 0;	/* held: the byte of a consonant that waits for a nukta (form nfc) */
+ 
+ #ifdef __DJGPP
+   _fmode = O_BINARY;
+@@ -55,33 +134,48 @@ main (int argc, char *argv[])
+   tmp[2] = 0;
+   tmp[3] = 0;
+ 
+-  if (argc < 2)
++  if ((a = nukta_options ("uni2acii", argc, argv, &warn)) < 0)
++    {
++      usage ();
++      return 1;
++    }
++
++  if (argc - a < 1)
+     {
+       fin = stdin;
+       fout = stdout;
+     }
+   else
+     {
+-      if (argc < 3)
++      if (argc - a < 2)
+ 	{
+-	  printf ("Usage: uni2acii <UNICODE_filename> <ISCII_filename>\n");
++	  usage ();
+ 	  return 1;
+ 	}
+ 
+ 
+-      if ((fin = fopen (argv[1], "r+")) == NULL)
++      if ((fin = fopen (argv[a], "r+")) == NULL)
+ 	{
+ 	  fprintf (stderr, "Cannot open input file, using stdin.\n");
+ 	  fin = stdin;
+ 	}
+ 
+-      if ((fout = fopen (argv[2], "w")) == NULL)
++      if ((fout = fopen (argv[a + 1], "w")) == NULL)
+ 	{
+ 	  fprintf (stderr, "Cannot open output file, using stdout.\n");
+ 	  fout = stdout;
+ 	}
+     }
+ 
++  /* form nfc: join[b] is the byte of the letter that the byte b of a consonant and a nukta make, where unicode.h has a row for the letter
++     (C6 and a nukta are C7, CF and a nukta are D0), or -1 */
++  for (i = 0; i < 256; i++)
++    join[i] = -1;
++  for (j = 0; j < NUKTA_LEN; j++)
++    if (nukta_hin[j][4] == 1 && (i = nukta_acii_of (nukta_hin[j][2], nukta_hin[j][3])) >= 0
++	&& (k = nukta_acii_of (nukta_hin[j][0], nukta_hin[j][1])) >= 0)
++      join[i] = k;
++
+   while (!feof (fin))
+     {
+       t1 = fgetc (fin);
+@@ -102,24 +196,35 @@ main (int argc, char *argv[])
+       tmp[2] = t1;
+       tmp[3] = t2;
+ 
+-      flag = 0;
+-      for (i = 0; i < UNI_LEN; i++)
++      if (held >= 0)
+ 	{
+-	  if (t1 == unicode_hin[i][0] && t2 == unicode_hin[i][1])	/*match */
++	  if (t1 == NUKTA_SIGN_LOW && t2 == NUKTA_SIGN_HIGH)
+ 	    {
+-	      flag = 1;
+-	      break;
++	      fputc (join[held], fout);	/* the consonant and the nukta: one byte */
++	      held = -1;
++	      continue;
+ 	    }
++	  fputc (held, fout);	/* no nukta follows: the consonant goes out as it always did */
++	  held = -1;
+ 	}
+-      if (flag == 1)
+-	{
+-	  fputc (unicode_hin[i][2], fout);
+-	}
+-      else
++
++      n = bytes_of (t1, t2, out, &kind);
++      if (kind == KIND_LOW && warn && (t2 != 0 || t1 > 127))
++	report (t1, t2);
++      if (nukta_form == NUKTA_NFC && kind == KIND_ROW && join[out[0]] >= 0)
+ 	{
+-	  fputc (t1, fout);	/*presuming 0 to 127 */
++	  held = out[0];	/* wait for the next code unit: is it the nukta? */
++	  continue;
+ 	}
++      for (i = 0; i < n; i++)
++	fputc (out[i], fout);
+     }
++  if (held >= 0)
++    fputc (held, fout);
++  if (warn && reported > 0)
++    fprintf (stderr, "uni2acii: %d code point%s with no ACII byte %s written as %s (%d further occurrence%s not listed)\n", reported,
++	     reported == 1 ? "" : "s", reported == 1 ? "was" : "were", reported == 1 ? "its low byte" : "low bytes", repeated,
++	     repeated == 1 ? "" : "s");
+ 
+   fclose (fin);
+   fclose (fout);

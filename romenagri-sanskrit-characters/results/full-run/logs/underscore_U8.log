@@ -1,0 +1,14 @@
+
+U8  case folding and mutations of the environment  (section 14.8)
+  U8  tr A-Z a-z is idempotent, fixes `_`, and keeps every run of underscores (the lengths of the runs, in order) on 20000 random strings ok
+  U8  tr A-Z a-z is a monoid homomorphism (phi(uv) = phi(u) phi(v)) but not injective: A and a go to a                 ok
+  U8  capital letters are inert: P(s) and P(s with every capital replaced by Q) agree up to that replacement, on 20000 random strings (19360 defined) ok
+  U8  but the fold can create a key letter: the escaped `C_f` keeps its underscore (C 5F f), the folded `c_f` loses it in the parser without the guards and keeps it in the parser with them ok
+  U8  ... on the C filters too: patch 0001 alone writes B8 E8 66 for `c__f`, this package writes 63 5F 66, and both write 43 5F 66 for `C__f` ok
+  U8  59091 random mutations of valid spellings (truncate, case, insert, delete, replace, escape, concatenate)         (informational) grammar without the guards: {'ok': 57476, 'overrun': 1455, 'missing': 160}; with the guards: {'ok': 58944, 'overrun': 0, 'missing': 147}; C parser without the guards: 57 crashes in 20000; with the guards: 48
+  U8  the grammar with the guards and the completed table is defined on every mutation (no read past the end, no missing row) ok
+  U8  the parser without the guards is not: it reads past the end or asks for a row that is missing on some mutations  ok
+  U8  the C parser of this package crashes on a mutation exactly when the grammar asks for a row that is missing (48 of the 20000), and on no other ok
+      (8s)
+
+RESULT: PASS   (8 s)   [only U8]

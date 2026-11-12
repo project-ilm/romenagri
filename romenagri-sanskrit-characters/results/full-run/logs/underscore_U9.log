@@ -1,0 +1,16 @@
+
+U9  joiners and operators  (section 14.9)
+  U9  rmn2acii changes 16 of the 95 printable ASCII bytes: the 15 letters `bdgjklmnprstwxy` and `_` (patch 0001 alone changes 17: a lone `c` reads past the end of the string and becomes CHA; the guard of section 14.7 keeps it the letter c) ok
+  U9  acii2cf and acii2pcf change none of them: operators, digits, quotes and the underscore pass through              ok
+  U9  acii2rmn wraps every ASCII letter and the underscore (53 bytes) as "e_x"; the 31 other punctuation marks pass    ok
+  U9  the parser's alphabet [a-z_] meets the 31 other ASCII punctuation marks of a host language in no character at all ok
+  U9  ZWJ and ZWNJ have no row: uni2acii writes their low bytes 0D and 0C (section 11.6)                               ok
+  U9  the ISCII explicit halant (E8 E8) is eaten by the decoder (KA disappears) and the soft halant (E8 E9) crashes it ok
+  U9  yet `k_` and `x_` write E8 E8: a final underscore is a halant, and the consonant has one already                 ok
+  U9  acii2cf is a projection: the Devanagari letter KA and the Latin word `ka` both come out as `ka`                  ok
+  U9  adding the two joiners _zwj and _zwn takes 2 rules, 0 states and no longer guard (5 states, longest guard 4)     ok
+  U9  ...creates no new place where an underscore can be read unseen (the 12 of section 14.6 remain without the guards, none with them) ok
+  U9  ...and the run law holds for them: a joiner after an odd run is the joiner, after an even run it is the plain letters z w j ok
+      (1s)
+
+RESULT: PASS   (2 s)   [only U9]

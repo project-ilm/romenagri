@@ -1,0 +1,28 @@
+<h1 class="page">Characters</h1>
+<p class="lead">The twelve characters that patch 0001 added to ACII, and the eleven letters with a nukta that patch 0003 teaches the Unicode converters to carry. Both tables are generated from the headers of <code>Romenagri/</code>.</p>
+
+<h2 id="twelve">The twelve characters added to ACII</h2>
+<p>Twelve characters of the Devanagari block that Sanskrit and Vedic text needs had no ACII byte. Each got one byte, one Romenagri string and one saral spelling. The saral column is what <code>acii2hin</code> writes: a one-way, lossy rendering in which several letters share a spelling and the accents vanish.</p>
+{{twelve_table}}
+<h3>Why these bytes</h3>
+<ul>
+<li>ISCII-91 assigns nothing to the bytes <code>80</code> to <code>9F</code> and ASCII does not reach them, and the first extension of ACII, U+0979 at <code>80</code>, already used that block. The twelve continue it in a fixed order: three vowels, three signs, the double danda, four accents, OM.</li>
+<li><strong>OM is not at <code>A0</code></strong>, though that looks natural. <code>uni2acii</code> writes the low byte of every code point that it has no row for, and the low byte of U+00A0 NO-BREAK SPACE is <code>A0</code>. With OM there, every no-break space in a text would become {{u:0950}}.</li>
+<li><strong>One byte each, not ISCII's two-byte sequences.</strong> ISCII-91 as ICU and Apple implement it writes OM as <code>A1 E9</code>, and vocalic L as <code>A6 E9</code>, a code and the nukta. <code>uni2acii</code> is a table of one byte per code point, and the decoder handles a nukta only after a consonant.</li>
+</ul>
+<h3>Why these strings</h3>
+<ul>
+<li>An independent vowel is <code>_</code> and its spelling (<code>_li</code>, <code>_lee</code>, <code>_ree</code>, next to the existing <code>_ri</code>); its sign is <code>^</code> and the spelling, and the <code>_</code> stays, as in <code>^_ri</code>, because the parser reads a <code>_</code> after <code>^</code> as the start of such a key.</li>
+<li>The double danda and the four accents are a new family, <code>_v</code>, for verse and Vedic signs: <code>_vd</code> and <code>_vua</code>, <code>_vna</code>, <code>_vga</code>, <code>_vca</code> (the udatta, anudatta, grave and acute). A mark that attaches to the letter before it ends in <code>a</code>, like the nukta (<code>kza</code>), so that the decoder's rule &ldquo;a following sign pops the <code>a</code>&rdquo; works for it unchanged.</li>
+<li>OM extends the family <code>_o</code>, which already held the O vowels: <code>_om</code>. Without the underscore, <code>om</code> would be Latin text.</li>
+<li>Each string was checked three ways: that no existing text changes meaning (a differential test of the parser before and after), that the new string does not extend an old token, and that the decoder gives the string back.</li>
+</ul>
+
+<h2 id="eleven">The eleven letters with a nukta</h2>
+<p>Unicode gave a code point of its own to eleven letters that are a consonant and a nukta, and none to the others, with no uniform rule. ACII writes every one as two bytes. In the table, <em>before patch 0003</em> is what <code>uni2acii</code> wrote for the single code point: for nine of the eleven the low byte of the code point, which ACII reads as another character (U+095C became <code>5C</code>). The three columns of forms are what the compiled converter writes now. The last column is Unicode's, read from Python's <code>unicodedata</code>: NFC composes the pair for U+0929, U+0931 and U+0934 only, and the other eight are Unicode's composition exclusions.</p>
+{{nukta_table}}
+<p>Two of the eleven have a byte of their own in <code>unicode.h</code>, so U+0929 and U+0931 have two spellings in ACII, the byte (<code>C7</code>, <code>D0</code>) and the pair (<code>C6 E9</code>, <code>CF E9</code>). In the form <code>asis</code> each comes out of <code>acii2uni</code> as it went in; in <code>nfc</code> and <code>nfd</code> the two spellings come out alike. U+0934 has no byte of its own: ISCII's <code>D3</code> is free, but nothing is assigned or mapped into it, and every internal representation keeps the one rule, a character and a nukta: {{u:0933}} and the nukta, <code>D2 E9</code>.</p>
+
+<h2 id="forms">What each form writes</h2>
+<p>For the same letters, in the other direction and in the three forms:</p>
+{{forms_table}}

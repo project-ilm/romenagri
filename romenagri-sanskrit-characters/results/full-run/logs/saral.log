@@ -1,0 +1,15 @@
+OM                 8c           -> b'om'      ok   (old build: b'\x8c')
+vocalic L          81           -> b'lri'     ok   (old build: b'\x81')
+vocalic LL         82           -> b'lri'     ok   (old build: b'\x82')
+vocalic RR         83           -> b'ri'      ok   (old build: b'\x83')
+KA + sign L        b384         -> b'klri'    ok   (old build: b'ka\x84')
+KA + sign LL       b385         -> b'klri'    ok   (old build: b'ka\x85')
+KA + sign RR       b386         -> b'kri'     ok   (old build: b'ka\x86')
+double danda       87           -> b'||'      ok   (old build: b'\x87')
+KA + udatta        b388         -> b'ka'      ok   (old build: b'ka\x88')
+KA + anudatta      b389         -> b'ka'      ok   (old build: b'ka\x89')
+KA + grave         b38a         -> b'ka'      ok   (old build: b'ka\x8a')
+KA + acute         b38b         -> b'ka'      ok   (old build: b'ka\x8b')
+OM bhur (mixed)    8c20cbe9cf   -> b'om bhara' ok   (old build: b'\x8c bhara')
+old-repertoire inputs (312) rendering differently in the new build: 0
+RESULT: PASS

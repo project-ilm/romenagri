@@ -1,0 +1,21 @@
+gcc -Wall -Wno-unused -o rmn2acii.o -c rmn2acii.c
+gcc -Wall -Wno-unused -o acii2rmn.o -c acii2rmn.c
+gcc -Wall -Wno-unused -o acii2hin.o -c acii2hin.c
+gcc -Wall -Wno-unused -o stack.o -c stack.c
+ar -cr librmnagri.a rmn2acii.o acii2rmn.o acii2hin.o stack.o 
+flex -8 -olexyy.c acii2cf.lex
+gcc -Wall -Wno-unused -o acii2cf lexyy.c -lfl -lrmnagri -L ./
+flex -8 -olexyy.c acii2pcf.lex
+gcc -Wall -Wno-unused -o acii2pcf lexyy.c -lfl -lrmnagri -L ./
+flex -8 -olexyy.c acii2hin.lex
+gcc -Wall -Wno-unused -o acii2hin lexyy.c -lfl -lrmnagri -L ./
+flex -8 -olexyy.c acii2rmn.lex
+gcc -Wall -Wno-unused -o acii2rmn lexyy.c -lfl -lrmnagri -L ./
+flex -8 -olexyy.c fixuninum.lex
+gcc -Wall -Wno-unused -o fixuninum lexyy.c -lfl -lrmnagri -L ./
+flex -8 -olexyy.c rmn2acii.lex
+gcc -Wall -Wno-unused -o rmn2acii lexyy.c -lfl -lrmnagri -L ./
+gcc -Wall -Wno-unused -o main.o -c main.c
+gcc -o testme main.o -lrmnagri -L ./
+gcc -Wall -Wno-unused -o acii2uni acii2uni.c
+gcc -Wall -Wno-unused -o uni2acii uni2acii.c

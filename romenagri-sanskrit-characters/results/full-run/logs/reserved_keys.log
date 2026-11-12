@@ -1,0 +1,23 @@
+<package>/Romenagri: the grammar can ask for 102 keys; 15 have no row in acii.h
+
+typed    asks for  what the C parser does with the typed form
+_dvr     _dvra     crash (SEGV): nothing is written
+_rdvr    _rdvra    crash (SEGV): nothing is written
+_rrh     _rrha     crash (SEGV): nothing is written
+_rrvr    _rrvra    crash (SEGV): nothing is written
+_tvr     _tvra     crash (SEGV): nothing is written
+bvr      bvra      crash (SEGV): nothing is written
+chvr     chvra     crash (SEGV): nothing is written
+dvr      dvra      crash (SEGV): nothing is written
+gvr      gvra      crash (SEGV): nothing is written
+jvr      jvra      crash (SEGV): nothing is written
+kvr      kvra      crash (SEGV): nothing is written
+lh       lha       crash (SEGV): nothing is written
+pvr      pvra      crash (SEGV): nothing is written
+svr      svra      crash (SEGV): nothing is written
+tvr      tvra      crash (SEGV): nothing is written
+
+the rows of the same shape that do exist:
+lvr      lvra      D2(lvra) E8(^)
+
+20440 strings of at most three letters over a-z and _: the C parser and the grammar agree on 20179; both reach a missing row on 261; 0 read past the end of the input (undefined, not compared); they disagree on 0

@@ -1,0 +1,94 @@
+Romenagri/corp_hi.txt
+    lines 102 | restored exactly: old 71, new 72 | crashed lines: old 0, new 0 | old != new: 2  {'line contains a new character': 2, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 1 that the old did not, and fails on 0 that the old restored
+      e.g. '    मेरा रँग दे बसन्ती चोला। माय रँग दे बसन्ती चोला॥'
+           old -> '    मेरा रँग दे बसन्ती चोला| माय रँग दे बसन्ती चोलाe'
+           new -> '    मेरा रँग दे बसन्ती चोला| माय रँग दे बसन्ती चोला॥'
+      e.g. '    सारा जहाँ अदू सही, आओ! मुक़ाबला करें॥'
+           old -> '    सारा जहाँ अदू सही, आओ! मुक़ाबला करेंe'
+           new -> '    सारा जहाँ अदू सही, आओ! मुक़ाबला करें॥'
+Romenagri/test_hi.txt
+    lines 102 | restored exactly: old 1, new 1 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/guru/c2h.uhin
+    lines 370 | restored exactly: old 1, new 1 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/guru/h2c.uhin
+    lines 371 | restored exactly: old 1, new 1 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/kritrima/h2j.uhin
+    lines 232 | restored exactly: old 36, new 36 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/kritrima/j2h.uhin
+    lines 232 | restored exactly: old 37, new 37 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/praatha/b2h.uhin
+    lines 131 | restored exactly: old 131, new 131 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/praatha/h2b.uhin
+    lines 205 | restored exactly: old 205, new 205 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/samples/HindiASM.uhin
+    lines 17 | restored exactly: old 12, new 12 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/samples/HindiBASIC.uhin
+    lines 23 | restored exactly: old 17, new 17 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/samples/HindiBASICgraphics.uhin
+    lines 12 | restored exactly: old 4, new 4 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/samples/HindiC++.uhin
+    lines 50 | restored exactly: old 43, new 43 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/samples/HindiC.uhin
+    lines 15 | restored exactly: old 14, new 14 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/samples/HindiJAVA.uhin
+    lines 8 | restored exactly: old 8, new 8 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/samples/HindiLEX.uhin
+    lines 7 | restored exactly: old 7, new 7 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/samples/HindiYACC.uhin
+    lines 60 | restored exactly: old 60, new 60 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/shabda/h2l.uhin
+    lines 50 | restored exactly: old 36, new 36 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/shabda/l2h.uhin
+    lines 51 | restored exactly: old 36, new 36 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/shraeni/cpp2h.uhin
+    lines 434 | restored exactly: old 36, new 36 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/shraeni/h2cpp.uhin
+    lines 927 | restored exactly: old 927, new 927 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/soochee/h2py.uhin
+    lines 232 | restored exactly: old 36, new 36 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/soochee/py2h.uhin
+    lines 232 | restored exactly: old 37, new 37 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/wyaaka/h2yacc.uhin
+    lines 68 | restored exactly: old 36, new 36 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/wyaaka/yacc2h.uhin
+    lines 66 | restored exactly: old 36, new 36 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/yantra/h2y.uhin
+    lines 575 | restored exactly: old 575, new 575 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/Hindawi/yantra/y2h.uhin
+    lines 391 | restored exactly: old 391, new 391 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/HindawiUI/hinhelp.uhin
+    lines 2111 | restored exactly: old 2042, new 2042 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/RomenagriMail/dakhelp.uhin
+    lines 57 | restored exactly: old 29, new 29 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+../../../../../../../../home/claude/hindawiai/chintamani/RomenagriUI/rmnhelp.uhin
+    lines 118 | restored exactly: old 88, new 88 | crashed lines: old 0, new 0 | old != new: 0  {'line contains a new character': 0, 'line contains avagraha': 0, 'unexplained': 0}
+    of the differing lines the new build restores 0 that the old did not, and fails on 0 that the old restored
+RESULT: PASS

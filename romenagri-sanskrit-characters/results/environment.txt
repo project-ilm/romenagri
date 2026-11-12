@@ -1,0 +1,56 @@
+Environment of the recorded runs (8 November 2026)
+
+os:        Linux 6.18.44-fc-v310 x86_64
+cpus:      2; memory: 8 GB (the container's memory limit killed a 6.1 GB process on 3 November: see README.md, "Checking it")
+gcc:       gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+flex:      flex 2.6.4
+make:      GNU Make 4.3
+patch:     GNU patch 2.7.6
+python3:   Python 3.13.16  (unicodedata: Unicode 15.1.0)
+java:      javac 21.0.12.1
+iconv:     iconv (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39
+
+end-to-end test (tests/e2e): hincc and the Hindawi converters were built from hindawiai/chintamani commit 3ad87785a75dc2b18438a8b068807103cb920c81
+  in this container. The Hindawi scripts call 'gawk'; this container has only mawk, so /usr/bin/gawk is a link to /usr/bin/mawk.
+  The end-to-end test passed with that setup; it has not been run with GNU awk.
+
+runs (all on the same files of Romenagri/, patches/, tools/ and tests/; the stamp of a run depends on its settings:
+quick 9a65e4103300ba56, full 4847d62c939339e3, extended 552fd3a166974615):
+  quick-run/           tests/run_all.sh                                     21 steps, all PASS    119 s   (23:41:44 - 23:43:43 UTC)
+  full-run/            tests/run_all.sh --full --resume, in pieces: --only build, then one pool of two workers over all 21 steps (xargs -P 2),
+                       then one last --full --resume
+                       21 steps, all PASS; build started 23:43:49 UTC, last step finished 23:47:09 UTC: 3 min 20 s in all; the steps took 375 s together
+                       console.log = the last command (it prints every step from its log and marker); pool.out = what the pool printed
+  full-run-extended/   RMN_CORPUS=<the 27 *.uhin files of the repository> HINDAWI_SRC=<chintamani>/Hindawi tests/run_all.sh --full --resume --only corpus,e2e_new
+                       the two steps that read those variables, on a build of their own: both PASS, 9 s in all, the build of the three trees included (23:47:59 - 23:48:08 UTC)
+  each folder: console.log = what the script printed; logs/ = the log and the marker (.rc: exit status, seconds, time of the end) of every step,
+  the build logs, and stamp (a hash of the files of Romenagri/, patches/, tools/ and tests/ and of the settings)
+  quick-run/ holds the console output and time.txt only
+  the path of the work area, where the build directory was, is shown as <build>, <package> or <work> in these files
+
+seconds per step in the full run:
+    corpus                 0 s
+    doc_tables_in_sync     2 s
+    e2e_new                3 s
+    limitations            2 s
+    nukta                  18 s
+    parser_vs_model        126 s
+    recipes                2 s
+    reserved_keys          0 s
+    roundtrip              55 s
+    saral                  1 s
+    table_lint_new         1 s
+    underscore_U1          37 s
+    underscore_U2          0 s
+    underscore_U3          0 s
+    underscore_U4          10 s
+    underscore_U5          20 s
+    underscore_U6          1 s
+    underscore_U7          85 s
+    underscore_U8          8 s
+    underscore_U9          2 s
+    unicode                2 s
+
+site check (romenagri-site/build_site.py --check, 39 checks, all ok; the record is site-check.txt, in this folder):
+  11 November 2026, 01:02:58 - 01:03:46 UTC, 48 s, on the kernel 6.18.44-fc-v378 (the container image is the one of the runs above: python3 3.13.16, gcc 13.3.0, flex 2.6.4; node v22.22.0),
+  against the programs built from the same files of Romenagri/ as the runs above. nbformat is not installed in the image, so the notebook was checked for its structure only.

@@ -1,0 +1,882 @@
+diff --git a/Romenagri/TRANSLITERATION.md b/Romenagri/TRANSLITERATION.md
+index da92619..36402c5 100644
+--- a/Romenagri/TRANSLITERATION.md
++++ b/Romenagri/TRANSLITERATION.md
+@@ -4,8 +4,9 @@ Copyright (C) 1993-2026 Abhishek Choudhary. Licensed under the GNU General Publi
+ version; see the file `COPYING`. SPDX-License-Identifier: GPL-2.0-or-later.
+ 
+ This is `Romenagri/TRANSLITERATION.md`. It describes the `Romenagri/` directory of the hindawiai/chintamani repository as it was at
+-commit `3ad87785a75dc2b18438a8b068807103cb920c81`, plus `patches/0001-add-missing-sanskrit-characters.patch`, which adds this file.
+-The scripts named below (`tools/...`, `tests/...`) belong to the package that carries the patch. They read the files of `Romenagri/`; they are not part of it.
++commit `3ad87785a75dc2b18438a8b068807103cb920c81`, plus two patches: `patches/0001-add-missing-sanskrit-characters.patch`, which adds the twelve Sanskrit
++characters and the first version of this file, and `patches/0002-apply-underscore-guards.patch`, which adds twelve guards to the parser and brings this file up to date (section 14.7).
++The scripts named below (`tools/...`, `tests/...`) belong to the package that carries the patches. They read the files of `Romenagri/`; they are not part of it.
+ 
+ **Contents**
+ 
+@@ -37,13 +38,13 @@ This document does five things.
+    resolved, and what to do about sounds that have no spelling yet (sections 8 and 10).
+ 4. It lists what does not work, so that nobody has to rediscover it (section 11).
+ 5. It answers three formal questions about the underscore, the one character that is both a letter of the script and an escape (runs of
+-   any length, case folding and mutated input, joiners next to the operators of a host language), and states twelve guard rules that make
+-   the parser's reading of underscores exact (section 14).
++   any length, case folding and mutated input, joiners next to the operators of a host language), and records the twelve guard rules, added to
++   the parser by the second patch, that make its reading of underscores exact (section 14).
+ 
+ **How the document is kept true.** Statements here are of three kinds.
+ 
+-- *Defined*: the tables (generated from the headers), the grammar of section 5.3 and the guard block of section 14.7. `tools/gen_doc_tables.py --check` fails when a
+-  generated block is out of date, and `tests/diff_parser.py` runs the grammar against the C parser (and against a second,
++- *Defined*: the tables (generated from the headers) and the grammar of section 5.3, which includes the guards of section 14.7. `tools/gen_doc_tables.py --check` fails when a
++  generated block is out of date, and `tests/diff_parser.py` runs the grammar against the C parser of each of the three builds (and against a second,
+   hand-written parser) on more than a million inputs. If the grammar printed here were wrong, a test would fail.
+ - *Observed*: a behaviour that was measured, with the test or experiment named next to it (mostly in section 11).
+ - *Cited*: a fact about an outside standard or implementation, with its source in section 12.
+@@ -62,6 +63,8 @@ This document does five things.
+ | halant | the virama, U+094D, ACII `E8`; written in Romenagri only by what follows a consonant, and as `^` |
+ | nukta | the dot below, U+093C, ACII `E9`; written `z` after a consonant stem |
+ | family | the keys that share their letter after `_`: `_li` and `_lee` are the `_l` family |
++| guard | two senses, told apart by the context (section 5.2): the part of a rule of the grammar before `->`, the condition under which it applies; and a *guard rule*, one of the twelve rules tagged `!` (patch 0002), which stands in front of a rule that jumps over a character it has not tested and sends an underscore or the end of the string to the right place instead (section 14.7) |
++| old, mid, new | the three builds that the tests compile and compare: the unpatched Romenagri; Romenagri with patch 0001 (the Sanskrit characters: *mid*); and this package's Romenagri, with patch 0002 (the guards) as well (*new*) |
+ | Hindawi | the programming system whose language styles (shailis) are built on these tools; it is not part of Romenagri |
+ 
+ ## 2. The three layers and the programs
+@@ -225,17 +228,19 @@ The parser in `rmn2acii.c` is five mutually recursive C functions, `level1`, `le
+ calls the corresponding states L1, L2a, L2b, L2c and M. A string is read once from the left, with no backtracking, and the output is a sequence of table rows and raw characters.
+ 
+ - **L1, the start of a unit.** The next character says what begins. A consonant that can stand alone (`n m y w x r`) is written as its row (`na`, `ma`, ...) and the parser goes to L2a.
+-  A consonant that may take an aspirate (`g t d p b s l k j`, and `c`, which is really `ch`) goes to L2b, which looks for an `h`. `_` opens a family (L2c); `^` opens a dependent sign (M);
++  A consonant that may take an aspirate (`g t d p b s l k j`, and `c`, which is really `ch`) goes to L2b, which looks for an `h`; a `c` is read as `ch` whatever letter follows it, except an underscore or the end of the string, where it is the plain letter `c` (a guard rule, section 14.7). `_` opens a family (L2c); `^` opens a dependent sign (M);
+   `|` is the danda. **Anything else is copied to the output unchanged**: digits, punctuation, upper-case letters, and also the letters `a e h i o u f q v z` when they start a unit.
+   This is why a vowel always needs its `_`, and why `h` can only be written after a letter that takes it.
+ - **L2a, after a consonant row.** The parser has written the consonant *with its inherent vowel*. If the string ends, or the next character starts a new unit, it appends a halant (this is how a bare consonant,
+   a conjunct or a final dead consonant is written; the comment above `level2a` says "Schwa deletion is not supported for phonetic accuracy"). Otherwise a vowel follows: state M.
+-- **L2b(stem).** A stem has been read (`k`, or `_t`, ...). An `h` asks for the aspirate row (`kha`, `_tha`), a `v` for the row *stem* + `vra` (only `lvra`, the letter `ळ`, exists; for every other stem the row is missing, section 11.3), and anything else for the plain row (`ka`); all three go to L2a.
++- **L2b(stem).** A stem has been read (`k`, or `_t`, ...). An `h` asks for the aspirate row (`kha`, `_tha`), a `v` for the row *stem* + `vra` (only `lvra`, the letter `ळ`, exists; for every other stem the row is missing, section 11.3), and anything else for the plain row (`ka`); all three go to L2a. A `v` that is followed by an underscore or by the end of the string does not ask for `vra`: the stem gets its plain row and the `v` is text (a guard rule).
+ - **L2c, after `_`.** The letter after `_` selects a family: homophones and letters that have no plain spelling. `_t`, `_d`, `_rd`, `_rr` re-enter L2b with a longer stem.
+ - **M, a vowel sign** after a consonant or after an explicit `^`. `a` alone means "the consonant keeps its inherent vowel" and is dropped; `aa ae aee ai ao au i u e(e) oo ow oa ou`, `z` (the nukta) and `_ri` `_li` `_lee` `_ree` write the signs.
+ 
+ The inherent vowel is therefore always written. In Romenagri `ka` is क, `k` is क् (a bare consonant), `ki` is कि, `kaa` is का, and `raama` is राम.
+ 
++**Letters that need a partner.** Eleven branches of the parser read a letter and then jump over, or keep as text, the next character without looking at it: the `h` of `ch`, the `r` of `vra`, the second `e` of `_ee` and of `^ee`, the `n` of `_yna`, the two letters of `^_ri`, and the character after an unknown `_o`, `_n`, `_r`, `_j` or `^o` (section 5.4). Patch 0002 puts a test in front of each of them: if the character that would be jumped over is an underscore or the end of the string, the branch is not taken, and the letter is written as plain text, like any other letter that the parser does not know. These tests are the rules tagged `!` in the grammar; section 14.7 says why they are needed and what they establish.
++
+ The recursion is only apparent. Every call in `rmn2acii.c` is the last thing its branch does, so the parser is a loop over five states, not a pushdown machine. `main.c` calls the parser "LA(1)"; the grammar shows that it looks at up to four characters at once (section 5.4).
+ 
+ ### 5.2 Notation
+@@ -257,13 +262,17 @@ The grammar is a list of states; each state is a *decision list* of rules, and t
+ | `vocalic 'I' 'D'` | if the output so far ends with the halant byte: remove it and emit row D; otherwise emit row I |
+ | `skip N` | move the cursor N characters on **without looking at them** |
+ | `goto S [E]`, `accept` | continue in state S, giving it E as its stem; or stop |
+-| `+` before a rule | the rule was added by the Sanskrit patch; the unpatched parser is the grammar without these rules |
++| `+` before a rule | the rule was added by patch 0001, the Sanskrit characters; the unpatched parser is the grammar without the `+` and `!` rules |
++| `!` before a rule | the rule is a *guard rule*, added by patch 0002 (section 14.7); the parser of patch 0001 alone is the grammar without the `!` rules, and the parser of this package is the whole grammar |
++| `witness: S` in the comment of a `!` rule | the shortest string that shows what the guard rule is for: without the rule, the pairing law of section 14.2 fails on S (checked by `tests/test_underscore.py`, U7) |
++
++The word *guard* has two senses here, and the context tells them apart: the part of a rule before `->`, the condition under which the rule applies; and, for the twelve rules tagged `!`, a *guard rule*, a rule that guards another rule against an underscore or the end of the string. The section titles use the second sense.
+ 
+-A guard that reads beyond the end of the string stops at the NUL byte, so rules are safe there; a `skip` that jumps over the NUL is not (section 5.4).
++A guard (the first sense) that reads beyond the end of the string stops at the NUL byte, so rules are safe there; a `skip` that jumps over the NUL is not, unless a guard rule has seen to it (section 5.4).
+ 
+ ### 5.3 The grammar
+ 
+-This block is the single place where the parser is defined. `tests/spec_model.py` reads it from this file and runs it; `tests/diff_parser.py` compares its output with the C parser (old and new build) and with the hand-written parser.
++This block is the single place where the parser is defined. `tests/spec_model.py` reads it from this file and runs it; `tests/diff_parser.py` compares its output with the C parser of the three builds (old, mid and new: section 13) and with the hand-written parser; the tags `+` and `!` select the version of the parser that each build is.
+ **When the parser changes, change this block and `rmn2acii.c` together, in the same commit.**
+ 
+ ```rmn2acii-grammar
+@@ -271,7 +280,8 @@ This block is the single place where the parser is defined. `tests/spec_model.py
+ # rmn2acii: the Romenagri -> ACII translator, as a table of decision lists.
+ #
+ #   state NAME [(param)]     a decision list; the rules are tried from the top, the first whose guard matches applies
+-#   +  rule                  a rule added by the Sanskrit patch (the unpatched parser is this grammar without the '+' rules)
++#   +  rule                  a rule added by patch 0001, the Sanskrit characters (the unpatched parser is this grammar without the '+' and '!' rules)
++#   !  rule                  a guard added by patch 0002 (section 14.7); the parser of patch 0001 alone is this grammar without the '!' rules
+ #   guard  -> actions        guard items, matched left to right at the cursor:  $  end of input (the NUL byte)
+ #                                                                                .  any character, including the NUL
+ #                                                                                'ab'  the characters a, b, in that order
+@@ -290,6 +300,7 @@ state L1                                                    # the start of a uni
+   '|'                     -> emit '|' ; skip 1 ; goto L1
+   [n m y w x r]           -> emit c 'a' ; skip 1 ; goto L2a
+   [g t d p b s l k j]     -> skip 1 ; goto L2b c
++! 'c' [_ $]               -> raw c ; skip 1 ; goto L1             # no 'h' to skip: the letter c; witness: c__
+   'c'                     -> skip 2 ; goto L2b 'ch'         # the letter after the c is skipped unseen (it is the h of "ch")
+   '_'                     -> skip 1 ; goto L2c
+   '^'                     -> skip 1 ; goto M
+@@ -303,6 +314,7 @@ state L2a                                                   # a consonant has ju
+ state L2b(stem)                                             # a consonant stem has been read; aspirate or "vra"?
+   $                       -> emit stem 'a' ; halant ; accept
+   'h'                     -> emit stem 'ha' ; skip 1 ; goto L2a
++! 'v' [_ $]               -> emit stem 'a' ; goto L2a             # no 'r' to skip: the stem keeps its 'a'; witness: lv__
+   'v'                     -> emit stem 'vra' ; skip 2 ; goto L2a    # only "lvra" is a row; the r is skipped unseen
+   .                       -> emit stem 'a' ; goto L2a
+ 
+@@ -312,7 +324,9 @@ state L2c                                                   # after '_': the let
+   'u'                     -> emit '_u' ; skip 1 ; goto L1
+   'm'                     -> emit '_m' ; skip 1 ; goto L1
+   'i'                     -> emit '_i' ; skip 1 ; goto L1
++! 'e' [_ $]               -> raw c ; skip 1 ; goto L1             # no second 'e' to skip: the letter e; witness: _e__
+   'e'                     -> emit '_ee' ; skip 2 ; goto L1  # the second e is skipped unseen
++! 'y' [_ $]               -> raw c ; skip 1 ; goto L1             # no 'n' to skip: the letter y; witness: _y__
+   'y'                     -> emit '_yna' ; skip 2 ; goto L2a
+   't'                     -> skip 1 ; goto L2b '_t'
+   'd'                     -> skip 1 ; goto L2b '_d'
+@@ -323,16 +337,19 @@ state L2c                                                   # after '_': the let
+   'oa'                    -> emit '_oa' ; skip 2 ; goto L1
+   'ou'                    -> emit '_ou' ; skip 2 ; goto L1
+ + 'om'                    -> emit '_om' ; skip 2 ; goto L1
++! 'o' [_ $]               -> raw c ; skip 1 ; goto L1             # nothing to keep as text: the letter o; witness: _o_
+   'o' .                   -> raw d ; skip 2 ; goto L1       # an unknown "_o?": the o is dropped, the next character kept
+   'na'                    -> emit '_na' ; skip 2 ; goto L1
+   'nn'                    -> emit '_nna' ; skip 2 ; goto L2a
+   'ng'                    -> emit '_nga' ; skip 2 ; goto L2a
+   'nz'                    -> emit '_nza' ; skip 2 ; goto L2a
++! 'n' [_ $]               -> raw c ; skip 1 ; goto L1             # nothing to keep as text: the letter n; witness: _n_
+   'n' .                   -> raw d ; skip 2 ; goto L1
+   'ri'                    -> vocalic '_ri' '^_ri' ; skip 2 ; goto L1
+   'rd'                    -> skip 2 ; goto L2b '_rd'
+   'rr'                    -> skip 2 ; goto L2b '_rr'
+ + 'ree'                   -> vocalic '_ree' '^_ree' ; skip 3 ; goto L1
++! 'r' [_ $]               -> raw c ; skip 1 ; goto L1             # nothing to keep as text: the letter r; witness: _r_
+   'r' .                   -> raw d ; skip 2 ; goto L1
+   'a' [UNIT $]            -> emit '_a' ; skip 1 ; goto L1
+   'aa'                    -> emit '_aa' ; skip 2 ; goto L1
+@@ -343,6 +360,7 @@ state L2c                                                   # after '_': the let
+   'au'                    -> emit '_au' ; skip 2 ; goto L1
+   'a' .                   -> raw d ; skip 2 ; goto L1
+   'jz'                    -> emit '_jza' ; skip 2 ; goto L2a
++! 'j' [_ $]               -> raw c ; skip 1 ; goto L1             # nothing to keep as text: the letter j; witness: _j_
+   'j' .                   -> raw d ; skip 2 ; goto L1
+ + 'li'                    -> vocalic '_li' '^_li' ; skip 2 ; goto L1
+ + 'lee'                   -> vocalic '_lee' '^_lee' ; skip 3 ; goto L1
+@@ -357,16 +375,20 @@ state M                                                     # a vowel sign: afte
+   $                       -> halant ; accept
+   'i'                     -> emit '^i' ; skip 1 ; goto L1
+   'u'                     -> emit '^u' ; skip 1 ; goto L1
++! 'e' [_ $]               -> raw c ; skip 1 ; goto L1             # no second 'e' to skip: the letter e; witness: je__
+   'e'                     -> emit '^ee' ; skip 2 ; goto L1  # the second e is skipped unseen
+   'z'                     -> emit '^za' ; skip 1 ; goto L2a # the nukta; an 'a' (or a vowel) follows
+ + '_li'                   -> emit '^_li' ; skip 3 ; goto L1
+ + '_lee'                  -> emit '^_lee' ; skip 4 ; goto L1
+ + '_ree'                  -> emit '^_ree' ; skip 4 ; goto L1
++! '_' [_ $]               -> goto L1                              # no "ri" to skip: no sign, the '_' is read again in L1; witness: ^__a
++! '_' . [_ $]             -> goto L1                              # the same, one character later; witness: ^_^__
+   '_'                     -> emit '^_ri' ; skip 3 ; goto L1       # "_ri": the two letters after the '_' are skipped unseen
+   'oo'                    -> emit '^oo' ; skip 2 ; goto L1
+   'ow'                    -> emit '^ow' ; skip 2 ; goto L1
+   'oa'                    -> emit '^oa' ; skip 2 ; goto L1
+   'ou'                    -> emit '^ou' ; skip 2 ; goto L1
++! 'o' [_ $]               -> raw c ; skip 1 ; goto L1             # nothing to keep as text: the letter o; witness: jo_
+   'o' .                   -> raw d ; skip 2 ; goto L1
+   'a' [UNIT $]            -> skip 1 ; goto L1               # the inherent 'a': the consonant keeps its vowel
+   'aa'                    -> emit '^aa' ; skip 2 ; goto L1
+@@ -385,13 +407,13 @@ state M                                                     # a vowel sign: afte
+ 
+ - `acii.h` 96 rows, `unicode.h` 85 rows, `aciihin.h` 87 rows
+ - ACII bytes in use: 86 of the 128 bytes `80`-`FF`; free: 42
+-- parser grammar (section 5.3): 5 states, 83 rules (12 of them added for the Sanskrit characters), longest guard 4 characters
++- parser grammar (section 5.3): 5 states, 95 rules (12 of them added for the Sanskrit characters, 12 guards against the underscore and the end of the string), longest guard 4 characters
+ - keys the grammar can look up: 102; of these, 15 have no row in `acii.h` (section 11.3)
+ 
+ <!-- END GENERATED stats -->
+ 
+ - **Deterministic, ordered.** Every state is a decision list; there is no backtracking. The order of the rules is part of the definition: in L2c the rule `'om'` must come before `'o' .`, which would otherwise swallow it,
+-  and in M the rules for `'_li'`, `'_lee'` and `'_ree'` must come before the generic `'_'`, which jumps over two characters without looking at them.
++  and in M the rules for `'_li'`, `'_lee'` and `'_ree'` must come before the generic `'_'`, which jumps over two characters without looking at them. A guard rule (tag `!`) stands directly in front of the rule that it guards.
+ - **Bounded look-ahead.** The longest guard is four characters (`'_lee'` and `'_ree'` in M). The comment in `main.c` that calls the parser LA(1) was true of a smaller scheme.
+ - **Finite-state.** All control is in the state and the cursor. The one action that reads what has already been written is `vocalic`, and it asks only whether the last byte is the halant. Among the rows that the grammar emits, only the halant itself
+   (`^`) ends in the halant byte, so the answer is "yes" exactly when the unit before ended with a halant that L2a wrote because a `_` followed: one bit of extra state. The parser is a finite-state transducer, although the C code is written as mutually recursive functions.
+@@ -412,10 +434,10 @@ state M                                                     # a vowel sign: afte
+ 
+ <!-- END GENERATED unchecked-skips -->
+ 
+-The parser trusts that the rest of the key follows: the `h` of `ch`, the `r` of `vra`, the second `e` of `_ee` and of `^ee`, the `n` of `_yna`, the two letters after the `_` of `^_ri`. So `_ex` is read as `_ee`, `lvx` as `lvr`, and `^_ro` as `^_ri`. If the string ends before them the jump leaves the buffer;
+-in C that is undefined behaviour, in the executable grammar it raises `Overrun`, and the tests leave such inputs out (section 11.4).
++The parser trusts that the rest of the key follows: the `h` of `ch`, the `r` of `vra`, the second `e` of `_ee` and of `^ee`, the `n` of `_yna`, the two letters after the `_` of `^_ri`. So `_ex` is read as `_ee`, `lvx` as `lvr`, and `^_ro` as `^_ri`.
++Before patch 0002 the jump could also swallow an underscore, or leave the string and read what lies beyond its end: undefined behaviour in C, `Overrun` in the executable grammar, and the tests left such strings out (section 11.4). With the guard rules of section 14.7 in front of these rules, they are not taken when the character that they would jump over is an underscore or the end of the string; the grammar of this package never raises `Overrun`, and the grammar without the `!` rules (patch 0001 alone) still does.
+ 
+-**Wildcard rules.** Five more rules have the wildcard `.` as the second item of their guard: the rules for an unknown key `_o?`, `_n?`, `_r?` and `_j?` in L2c and `^o?` in M. They drop the letter and keep the character after it as plain text, whatever it is. At the end of the input the wildcard matches the terminator, the rule steps over it, and the parser reads past the end exactly as the six rules above do. Together the eleven rules are the ones that section 14.6 lists; there they matter for a second reason, because a character that they take unseen can be an underscore.
++**Wildcard rules.** Five more rules have the wildcard `.` as the second item of their guard: the rules for an unknown key `_o?`, `_n?`, `_r?` and `_j?` in L2c and `^o?` in M. They drop the letter and keep the character after it as plain text, whatever it is. Without a guard rule, the wildcard matches the terminator at the end of the input, the rule steps over it, and the parser reads past the end exactly as the six rules above do. Together the eleven rules are the ones that section 14.6 lists; there they matter for a second reason, because a character that they take unseen can be an underscore. Each of them has a guard rule in front of it (section 14.7).
+ 
+ ### 5.5 Worked examples
+ 
+@@ -534,7 +556,7 @@ Twelve characters of the Devanagari block that Sanskrit and Vedic text needs had
+ <!-- END GENERATED table-new -->
+ 
+ None of the twelve has a canonical decomposition in Unicode, so normalisation cannot help (contrast the nukta consonants, section 10.4): each needs a byte of its own.
+-The files that change, besides the three tables, are those that had to learn the new rows:
++The files that patch 0001 changes, besides the three tables, are those that had to learn the new rows:
+ 
+ | File | Change |
+ |---|---|
+@@ -545,7 +567,7 @@ The files that change, besides the three tables, are those that had to learn the
+ | `rmn2acii.c` | the helper `vocalic()` and the twelve rules that are marked `+` in the grammar of section 5.3 |
+ | `TRANSLITERATION.md` | this document |
+ 
+-The decoder, the Unicode converters, the lexers and the Makefile are untouched. The parser keeps its five states and its decision lists; it gained branches, not a new mechanism.
++The decoder, the Unicode converters, the lexers and the Makefile are untouched. The parser keeps its five states and its decision lists; it gained branches, not a new mechanism. Patch 0002 changes only `rmn2acii.c` and this document, and adds twelve tests in front of existing branches, again with no new state (section 14.7).
+ 
+ **The avagraha.** Byte `EB` (U+093D) was written `_3` by the decoder. That string cannot come back: the lexical layer gives the parser only letters and `_`, so `_3` reaches it as `_`, which writes a halant, followed by a plain `3`
+ (measured on the unpatched build: `EB` through `acii2rmn | rmn2acii` gives `E8 33`). Meanwhile the parser's own branch for avagraha, written in the source as `case 's': //avagraha _s`, asks for a row `_s` that did not exist, and `rmn2acii` crashed on the input `_s`.
+@@ -559,8 +581,8 @@ The policy is section 10.3. Applied here:
+ |---|---|---|
+ | `81`-`8C` | vocalic L, LL, RR; their three signs; double danda; the four accents; OM | ACII's first extension, U+0979 at `80`, already used the block `80`-`9F`. ISCII-91 assigns nothing there and ASCII does not reach it. The twelve characters continue the block in a fixed order: three vowels, three signs, double danda, four accents, OM. |
+ 
+-**Why OM is not at `A0`.** `A0` looks like the natural byte: it is "Sign OM" in this repository's own `iscii_map.csv`, and ACII did not use it. An earlier draft of this patch put OM there, and a test showed that this is wrong.
+-`uni2acii` writes the *low byte* of every code point it has no row for (section 3.1), and the low byte of U+00A0 NO-BREAK SPACE is `A0`. Before the patch that byte meant nothing: `acii2uni` folded it to a space (`A0` mod 128 is `20`). With OM there, every no-break space in a text
++**Why OM is not at `A0`.** `A0` looks like the natural byte: it is "Sign OM" in this repository's own `iscii_map.csv`, and ACII did not use it. An earlier draft of patch 0001 put OM there, and a test showed that this is wrong.
++`uni2acii` writes the *low byte* of every code point it has no row for (section 3.1), and the low byte of U+00A0 NO-BREAK SPACE is `A0`. Before patch 0001 that byte meant nothing: `acii2uni` folded it to a space (`A0` mod 128 is `20`). With OM there, every no-break space in a text
+ (word processors and web pages produce them freely) would have become ॐ. `tests/test_unicode.py`, part (e), now asserts that none of the common characters outside Devanagari and ASCII reaches one of the new bytes, and `tools/check_tables.py --free` keeps `A0` out of the free list.
+ The ICU converter points the same way: it reads `A0` as no-break space; Apple's table leaves `A0` unused. Both write OM as the two bytes `A1 E9` (section 12; the conflict is discussed in section 10.5).
+ 
+@@ -579,7 +601,7 @@ Each string follows the conventions of section 6; the second column says which.
+ | ॑ ॒ ॓ ॔ | `_vua` `_vna` `_vga` `_vca` | the same family: u(datta), (a)n(udatta), g(rave), c(acute). R7: an accent attaches to the letter before it, so it is written like the nukta, with an explicit `a` at the end. |
+ | ॐ | `_om` | the family `_o` already held the O vowels (`_oo`, `_ow`, `_oa`, `_ou`); `_om` extends it. Without `_` the string `om` would be Latin text (section 5.1, L1). |
+ 
+-Three things could have gone wrong and were checked. (1) *Existing text changes meaning.* Before the patch `_l`, `_v` and `_om` were garbage: `_li` read as the plain text `li` with the `_` lost. `tests/diff_parser.py` compares the old and the new parser on more than a million strings
++Three things could have gone wrong and were checked. (1) *Existing text changes meaning.* Before patch 0001 `_l`, `_v` and `_om` were garbage: `_li` read as the plain text `li` with the `_` lost. `tests/diff_parser.py` compares the old and the mid parser (the parser of patch 0001 alone) on more than a million strings
+ and requires that every string whose reading changed contains one of the new tokens. (2) *The new string extends an old token.* Lint check T7 tries, for every consonant C and every letter X, the sequences C + halant + X and X + C. (3) *The decoder must give the string back.* T6 checks both directions for every key.
+ 
+ ### 7.4 What the parser does with them
+@@ -588,7 +610,7 @@ The twelve new rules are three kinds, and they are the three recipes of section
+ 
+ - **Independent vowel or sign that stands alone** (`_om`, `_vd`): emit the row, go to L1.
+ - **A vowel with a sign form** (`_li`, `_lee`, `_ree`): `vocalic`. After a consonant the parser has already written the halant, because it saw `_` and a new unit began; `vocalic` replaces that halant by the sign. So `k_li` is क + ॢ and `k` + `_li` cannot be क + ् + ऌ.
+-  This is how `_ri` has always worked (`k_ri` is कृ; the code is inline in `level2c`, and the patch leaves it as it was). The new vowels copy it in the helper `vocalic()`; the grammar writes all four with the same action.
++  This is how `_ri` has always worked (`k_ri` is कृ; the code is inline in `level2c`, and patch 0001 leaves it as it was). The new vowels copy it in the helper `vocalic()`; the grammar writes all four with the same action.
+   The explicit form `^_li` is a sign that stands alone, at the start of a line for instance, where no consonant is before it (the decoder writes a sign with its `^` when its stack is empty). It reaches state M, which has a rule for each of the three new signs.
+ - **A mark that attaches** (`_vua` and the other accents): emit the row and go to L2a, which expects the `a` that the key ends in and then an optional vowel sign.
+ 
+@@ -607,8 +629,8 @@ Worked traces for `k_lip_ta` (क + ॢ + प् + त) and `ka_vuu` (क + udat
+ 2. **Choose the byte** by the policy of section 10.3 and confirm with `python3 tools/check_tables.py Romenagri --free`.
+ 3. **Choose the string** by the conventions of section 6.
+ 4. **Edit the three tables.** Append one row to `unicode.h` (`{low, high, '\xNN'}`, the code point split into its low and high byte), one to `acii.h` (`{"key", "\xNN"}`) and one to `aciihin.h` (`{"saral", "\xNN"}`; an empty string is allowed). Raise `UNI_LEN`, `ACII_LEN` and `ACII_HIN_LEN`. **Append, never reorder or delete:** both translators take the first row that matches (section 3.2), so row order is part of the meaning.
+-   The three headers use CRLF line endings and contain raw 8-bit bytes. An editor that converts them to UTF-8 or to LF corrupts the tables; write new bytes as `\xNN` escapes, as the patch does.
+-5. **Run the lint** (`python3 tools/check_tables.py Romenagri`). No complaint means the parser already reads the string as one token: recipe A, nothing more to do in the parser. `T6 key '...' parses to ...` means it reads the string as something else: write a rule, by recipe B, C, D or E, and change the grammar of section 5.3 and `rmn2acii.c` in the same commit. Mirror the rule in `tests/handwritten_parser.py`, or run the differential test with `RMN_SKIP_HANDWRITTEN=1`.
++   The three headers use CRLF line endings and contain raw 8-bit bytes. An editor that converts them to UTF-8 or to LF corrupts the tables; write new bytes as `\xNN` escapes, as patch 0001 does.
++5. **Run the lint** (`python3 tools/check_tables.py Romenagri`). No complaint means the parser already reads the string as one token: recipe A, nothing more to do in the parser. `T6 key '...' parses to ...` means it reads the string as something else: write a rule, by recipe B, C, D or E, and change the grammar of section 5.3 and `rmn2acii.c` in the same commit. Mirror the rule in `tests/handwritten_parser.py`, or run the differential test with `RMN_SKIP_HANDWRITTEN=1`. If the rule jumps over characters that it has not looked at, it also needs a guard rule (recipe B, step 3).
+ 6. **Regenerate the document's tables:** `python3 tools/gen_doc_tables.py --write Romenagri`; describe the character in sections 7 and 10.
+ 7. **Run the tests** (section 13). `tests/rt_filters.py` asserts the exact list of new bytes and lists the analogue of each (`NEWB` and `PHI`): add yours. To compare against a baseline other than the unpatched sources, name its `Romenagri` directory in `RMN_BASELINE`.
+ 
+@@ -626,7 +648,7 @@ Worked traces for `k_lip_ta` (क + ॢ + प् + त) and `ka_vuu` (क + udat
+ /* aciihin.h */  {"lha", "\xD3"}
+ ```
+ 
+-Result, as measured by the test: `lha` gives `D3`, `lh` gives `D3 E8`, `lhaa` gives `D3 DA`, `kalha` gives `B3 D3`; the filter pair restores `D3`, `D1 D3`, `B3 E8 D3` and `D3 DB D1`; `uni2acii` writes `D3` for U+0934 and `acii2uni` reads it back; and of all strings up to length 3 and all table keys, only those containing `lh` change their result. Before the edit the patched parser crashes on `lha` and `lh`.
++Result, as measured by the test: `lha` gives `D3`, `lh` gives `D3 E8`, `lhaa` gives `D3 DA`, `kalha` gives `B3 D3`; the filter pair restores `D3`, `D1 D3`, `B3 E8 D3` and `D3 DB D1`; `uni2acii` writes `D3` for U+0934 and `acii2uni` reads it back; and of all strings up to length 3 and all table keys, only those containing `lh` change their result. Before the edit the parser of this package crashes on `lha` and `lh`.
+ 
+ ### 8.3 Recipe B: a new key that needs a parser rule
+ 
+@@ -635,10 +657,11 @@ Result, as measured by the test: `lha` gives `D3`, `lh` gives `D3 E8`, `lhaa` gi
+ 1. **Find the state.** A key that starts with `_` is a rule of L2c (the letter after `_` is its guard). A new plain letter at the start of a unit is a rule of L1, and then the letter must also be added to the class `UNIT` of the grammar and to the string `lev1` of `rmn2acii.c`: both mean "this letter starts a unit", and L2a decides between "halant" and "vowel follows" by them. A sign after a consonant is a rule of M.
+ 2. **Place the rule.** Rules are tried from the top. A rule whose guard is longer than that of another rule with the same beginning goes first (`'om'` before `'o' .`, `'ree'` before `'r' .`), and the catch-all `.` stays last. Nothing that an existing rule reads properly may reach the new rule: that is what the differential test checks.
+ 3. **Write the actions.** `emit K ; skip N ; goto S`, where N counts every character of the key after the cursor (the guard, and any characters the rule trusts to follow); S is L1 for a complete unit, L2a if an `a` or a vowel sign may follow, L2b with a stem if an `h` may follow.
++   **If N is larger than the number of characters that the guard matched, the rule trusts a character to follow, and it needs a guard rule** (section 14.7): the same rule with `[_ $]` in the place of the trusted character, tagged `!`, placed directly in front of it, with a `witness:` in its comment, and with the action `raw c ; skip 1 ; goto L1` (the letter is plain text), or the rule's own action cut short where the plain-text reading is not the right one (the guards of L2b `v` and of M `_`). Without it an underscore that follows the key is swallowed, the pairing of `__` (section 14.2) is lost, and at the end of the string the parser reads beyond it.
+ 4. **Mirror it in C**, in the function of the same state, in the form of its neighbours: `strcat (msg, lookup ("key")); tok += N; level1 (tok); break;`. Every call stays the last thing its branch does.
+-5. **Run `tests/diff_parser.py`.** It compares the grammar with the C parser (old and new build) and lists every string whose reading changed; each must contain a new token. An unexplained change is a rule that stole an old input.
++5. **Run `tests/diff_parser.py`.** It compares the grammar with the C parser (old, mid and new build) and lists every string whose reading changed; each must contain a new token, or the grammar must have applied a guard rule. An unexplained change is a rule that stole an old input. Then run `tests/test_underscore.py`: its test U7 fails, and names the rule, for every rule that takes an underscore or the end of the string unseen and has no guard rule.
+ 
+-*Example, from the patch:* `_li`. L2c gets `+ 'li' -> vocalic '_li' '^_li' ; skip 2 ; goto L1`, and `rmn2acii.c` gets `case 'l':` with the branches shown in the diff. M gets `+ '_li' -> emit '^_li' ; skip 3 ; goto L1` for the explicit sign, placed before the generic `'_'` rule.
++*Example, from patch 0001:* `_li`. L2c gets `+ 'li' -> vocalic '_li' '^_li' ; skip 2 ; goto L1`, and `rmn2acii.c` gets `case 'l':` with the branches shown in the diff. M gets `+ '_li' -> emit '^_li' ; skip 3 ; goto L1` for the explicit sign, placed before the generic `'_'` rule.
+ 
+ ### 8.4 Recipe C: a mark that attaches to the letter before it
+ 
+@@ -674,7 +697,7 @@ A row that nothing uses (section 11.2) can stay: it costs nothing and deleting i
+ 
+ ### 9.1 The statement
+ 
+-Let `W` be the set of ACII texts defined by the grammar below. For every text in `W`, `acii2rmn` followed by `rmn2acii` (with filter semantics: the second program sees every run of `[A-Za-z_]` separately) returns the same bytes. This holds for the patched build; the unpatched build satisfies it for the old repertoire except at the avagraha.
++Let `W` be the set of ACII texts defined by the grammar below. For every text in `W`, `acii2rmn` followed by `rmn2acii` (with filter semantics: the second program sees every run of `[A-Za-z_]` separately) returns the same bytes. This holds for the mid and the new build, and the guards of patch 0002 are invisible on `W`: every sequence of up to three bytes of `W` gives the same result on both and round-trips on the new one (section 14.7, `tests/rt_filters.py`). The unpatched build satisfies the contract for the old repertoire except at the avagraha.
+ `tests/rt_filters.py`, part (4), generates random members of `W` and requires every one to round-trip. At the Unicode end, every code point that `unicode.h` maps survives `uni2acii` and `acii2uni` (`tests/test_unicode.py`).
+ 
+ ### 9.2 Well-formed ACII
+@@ -888,7 +911,7 @@ A *conflict* is a case where two sources that the project has to respect say dif
+ | none | udatta, grave, acute | `88`, `8A`, `8B` |
+ | `E8 E8`, `E8 E9` | explicit halant (U+094D U+200C), soft halant (U+094D U+200D) | none: ACII has no byte for ZWNJ or ZWJ (C8) |
+ 
+-Without the rewrite, measured on the patched build with `acii2rmn | rmn2acii`: `A1 E9` comes back as `C7` (NNNA, because the decoder reads candrabindu + nukta as "N + nukta"), `A6 E9` as the ASCII text `za`, `EA EA` as two ASCII bars `7C 7C`, and `EA E9` crashes `acii2rmn` (a nukta after a danda, section 11.4). Only `F0 B8` survives, by accident: the decoder passes the unknown byte `F0` through, and `B8` is read as the letter CA and written back as itself. The pairs of C8 have nothing to be rewritten to: `B3 E8 E8 B4` comes out as `kha`, and `B3 E8 E9 B4` crashes (section 11.5).
++Without the rewrite, measured on the new build with `acii2rmn | rmn2acii` (the mid build gives the same): `A1 E9` comes back as `C7` (NNNA, because the decoder reads candrabindu + nukta as "N + nukta"), `A6 E9` as the ASCII text `za`, `EA EA` as two ASCII bars `7C 7C`, and `EA E9` crashes `acii2rmn` (a nukta after a danda, section 11.4). Only `F0 B8` survives, by accident: the decoder passes the unknown byte `F0` through, and `B8` is read as the letter CA and written back as itself. The pairs of C8 have nothing to be rewritten to: `B3 E8 E8 B4` comes out as `kha`, and `B3 E8 E9 B4` crashes (section 11.5).
+ 
+ **How to settle a new conflict.**
+ 
+@@ -924,10 +947,11 @@ A change to the tables (and, if needed, to the parser) is admissible when all of
+ | A7 | Well-formed ACII over the repertoire, with the new character in the generator, survives `acii2rmn | rmn2acii` | `tests/rt_filters.py` |
+ | A8 | The character survives `uni2acii` and `acii2uni`; no everyday character is moved to the new byte | `tests/test_unicode.py` |
+ | A9 | The grammar printed in section 5.3 and `rmn2acii.c` describe the same parser | `tests/diff_parser.py`, and the generated tables of this document: `tools/gen_doc_tables.py --check` |
++| A10 | No rule of the parser consumes an underscore, or steps over the end of the input, without having looked at it: a rule that jumps over a character it has not tested has its guard rule (section 14.7) | `tests/test_underscore.py` (U7) |
+ 
+ ## 11. Known limitations and quirks
+ 
+-Everything in this section was observed on the build of this package (gcc, x86-64 Linux), and `tests/test_limitations.py` repeats the measurements on the unpatched and the patched build. Where the unpatched build behaves the same, the text says "both builds" or "pre-existing". The patch introduces one change of exposure, in section 11.6; nothing else here is caused by it. Exact crash thresholds depend on how the compiler lays out memory; the defects behind them (fixed-size buffers, unchecked reads) are undefined behaviour everywhere.
++Everything in this section was observed on the builds of this package (gcc, x86-64 Linux), and `tests/test_limitations.py` repeats the measurements on all three: *old*, the unpatched sources; *mid*, with patch 0001, the Sanskrit characters; *new*, with patch 0002 as well, the guards (section 13). Where the old build behaves the same, the text says "all builds" or "pre-existing". Patch 0001 introduces one change of exposure, in section 11.6; nothing else here is caused by it. Patch 0002 closes the unchecked reads of section 11.4 and changes nothing else in this section. Exact crash thresholds depend on how the compiler lays out memory; the defects behind them (fixed-size buffers, unchecked reads) are undefined behaviour everywhere.
+ 
+ ### 11.1 The lexical layer: what the translators never see
+ 
+@@ -969,34 +993,34 @@ One state of the parser, L2b, builds its keys from a parameter. After one of fou
+ 
+ | stem (typed) | plain: stem + `a` | aspirate: stem + `ha` | stem + `vra` |
+ |---|---|---|---|
+-| `b` | `ba` CA | `bha` CB | **no row**: `bv` crashes |
+-| `d` | `da` BF | `dha` C0 | **no row**: `dv` crashes |
+-| `g` | `ga` B5 | `gha` B6 | **no row**: `gv` crashes |
+-| `j` | `ja` BA | `jha` BB | **no row**: `jv` crashes |
+-| `k` | `ka` B3 | `kha` B4 | **no row**: `kv` crashes |
++| `b` | `ba` CA | `bha` CB | **no row**: `bvr` crashes |
++| `d` | `da` BF | `dha` C0 | **no row**: `dvr` crashes |
++| `g` | `ga` B5 | `gha` B6 | **no row**: `gvr` crashes |
++| `j` | `ja` BA | `jha` BB | **no row**: `jvr` crashes |
++| `k` | `ka` B3 | `kha` B4 | **no row**: `kvr` crashes |
+ | `l` | `la` D1 | **no row**: `lh` crashes | `lvra` D2 |
+-| `p` | `pa` C8 | `pha` C9 | **no row**: `pv` crashes |
+-| `s` | `sa` D7 | `sha` D5 | **no row**: `sv` crashes |
+-| `t` | `ta` BD | `tha` BE | **no row**: `tv` crashes |
+-| `ch` | `cha` B8 | `chha` B9 | **no row**: `chv` crashes |
+-| `_d` | `_da` C4 | `_dha` C5 | **no row**: `_dv` crashes |
+-| `_rd` | `_rda` BFE9 | `_rdha` C0E9 | **no row**: `_rdv` crashes |
+-| `_rr` | `_rra` D0 | **no row**: `_rrh` crashes | **no row**: `_rrv` crashes |
+-| `_t` | `_ta` C2 | `_tha` C3 | **no row**: `_tv` crashes |
++| `p` | `pa` C8 | `pha` C9 | **no row**: `pvr` crashes |
++| `s` | `sa` D7 | `sha` D5 | **no row**: `svr` crashes |
++| `t` | `ta` BD | `tha` BE | **no row**: `tvr` crashes |
++| `ch` | `cha` B8 | `chha` B9 | **no row**: `chvr` crashes |
++| `_d` | `_da` C4 | `_dha` C5 | **no row**: `_dvr` crashes |
++| `_rd` | `_rda` BFE9 | `_rdha` C0E9 | **no row**: `_rdvr` crashes |
++| `_rr` | `_rra` D0 | **no row**: `_rrh` crashes | **no row**: `_rrvr` crashes |
++| `_t` | `_ta` C2 | `_tha` C3 | **no row**: `_tvr` crashes |
+ 
+ <!-- END GENERATED reserved-keys -->
+ 
+-When the parser asks for a missing key, `lookup()` returns `NULL` and the next `strcat` crashes. Measured on both builds, the filter exits with status 139 (SIGSEGV) and writes nothing for the typed forms of the table, and `tests/test_limitations.py` repeats the measurement for every one of them; `lvr` (ळ) works, because `lvra` is a row. Typed text can reach every one of the fifteen (section 11.1); the decoder cannot, because it never writes an `h` or a `v` straight after a consonant stem, so the round trip of section 9 is not touched.
++When the parser asks for a missing key, `lookup()` returns `NULL` and the next `strcat` crashes. Measured on all three builds, the filter exits with status 139 (SIGSEGV) and writes nothing for the typed forms of the table, and `tests/test_limitations.py` repeats the measurement for every one of them; `lvr` (ळ) works, because `lvra` is a row. Typed text can reach every one of the fifteen (section 11.1); the guard rule of L2b changes only the two endings of a run: a `v` that is the last character of a run, or is followed by an underscore, no longer asks for the row (`kv` crashed before patch 0002 and now gives `ka` and the letter `v`, as `nv` always gave `na` and the letter `v`; `kv_` gives the same and a halant). Every typed form of the table has a letter after the `v`, so each of them still crashes. The decoder cannot reach them, because it never writes an `h` or a `v` straight after a consonant stem, so the round trip of section 9 is not touched.
+ 
+ **The fifteen are not fifteen missing characters.** They are two things of different kinds.
+ 
+-*Thirteen `vra` keys: the Latin letter `v` after a consonant.* `v` is not a letter of Romenagri: व is `w` (`swar`, `dwaar`, `jwaala`, `kwaath` work). The one spelling in which the parser accepts a `v` is that of ळ, `lvra`: after the stem `l` the letter `v` selects the key `lvra` and the parser jumps over the letter after it unseen (it expects the `r`; section 11.4). That code is shared by all stems, so every stem followed by `v` asks for a `...vra` key, and only `lvra` exists. The other thirteen would be letters that no script has (क, ग, ज... "with vra"). The input that reaches them is typing a व as `v`, as ITRANS, IAST and Harvard-Kyoto do: `svar`, `dvaar`, `tvam`, `kvaath`, `jvaala`, `gvaal` all crash the filter; with `w` instead of `v` they work.
++*Thirteen `vra` keys: the Latin letter `v` after a consonant.* `v` is not a letter of Romenagri: व is `w` (`swar`, `dwaar`, `jwaala`, `kwaath` work). The one spelling in which the parser accepts a `v` is that of ळ, `lvra`: after the stem `l` the letter `v` selects the key `lvra` and the parser jumps over the letter after it without looking at it (it expects the `r`; section 11.4), unless that letter is an underscore or the end of the string (a guard rule, section 14.7). That code is shared by all stems, so every stem followed by `v` asks for a `...vra` key, and only `lvra` exists. The other thirteen would be letters that no script has (क, ग, ज... "with vra"). The input that reaches them is typing a व as `v`, as ITRANS, IAST and Harvard-Kyoto do: `svar`, `dvaar`, `tvam`, `kvaath`, `jvaala`, `gvaal` all crash the filter; with `w` instead of `v` they work.
+ 
+ *Two aspirate keys, `lha` and `_rrha`: conjuncts typed as aspirates.* Devanagari has no letter for an aspirated `l` or an aspirated ऱ. Hindi and Marathi write those sounds as conjuncts with ह: ल्ह (दुल्हन, चूल्हा, कुल्हाड़ी, मल्हार, उल्हासनगर) and ऱ्ह (वऱ्हाड, Marathi). Romenagri's own way of writing them is `l_ha` and `_rr_ha`, because plain `h` is the aspirate marker and ह is `_ha`; the decoder always writes them so (LA, halant, HA, the bytes `D1 E8 D8`, come out as `l_ha`, and `D0 E8 D8` as `_rr_ha`; never as `lh` or `_rrh`). But `lh` is what a person at a keyboard types for ल्ह (`dulhan`, `ullhaas`), and today it crashes. The other sonorants do not crash on the same typing: `nh` and `mh` give NA or MA, a halant and the ASCII letter `h`, because their stems do not go through L2b.
+ 
+ *Why `lha` is not simply ऴ.* U+0934 ऴ (ISCII byte `D3`, "Consonant ZHA (Tamil & Malayalam)"; Unicode's note: "for transcribing Dravidian l") has no row, and `D3` is free. `lha` is the one of the fifteen keys that could name an existing character, and recipe A (section 8.2) adds it for that reason, to show the mechanism. But it would take the typed form `lh` away from ल्ह, which Hindi and Marathi need far more often than ऴ. A spelling that does not collide, a family key such as `_la`, needs a parser rule (recipe B).
+ 
+-**Ways to close them.** None is applied in this package; which one is right is the author's decision. Each of them leaves the decoder, and so the round trip, as it is.
++**Ways to close them.** None is applied in this package, except for the one corner of option A that the guard rule of L2b covers (a `v` that is followed by an underscore or by the end of the string, section 14.7); which one is right is the author's decision. Each of them leaves the decoder, and so the round trip, as it is.
+ 
+ | Option | Change | `kv` and the other twelve | `lh`, `_rrh` | Consequence |
+ |---|---|---|---|---|
+@@ -1013,13 +1037,15 @@ When the parser asks for a missing key, `lookup()` returns `NULL` and the next `
+ |---|---|---|
+ | decoder stack (`stack.c`, `char stack2[10240]`) | a stretch (section 11.1) may decode to at most 10,239 characters; at 10,240 the terminating NUL no longer fits | 5,119 bytes `B3` (`ka` each, 10,238 characters) plus one space work; plus two spaces (10,240) crashes, in both builds. Spaces and punctuation do not end a stretch; a newline does, so a text of many short lines is safe. |
+ | parser buffer (`rmn2acii.lex`, `hldtxt2[1024]`) | a run of more than 1,023 letters overflows | 1,023 and 1,024 letters work (the NUL of 1,024 lands one byte past the array); 1,025 crash |
+-| parser buffer, never cleared | the buffer is `static` and each run is copied over its start only, so after a short run the tail of an earlier, longer run is still behind the terminator. The eleven rules of section 5.4 (six unchecked skips, five wildcards) can read it | `kakakaka c` gives `B3 B3 B3 B3 20 B8 E8 B3 B3 B3`: the `c` of the second word borrows three `ka` from the first. In a fresh process `c` gives `B8 E8`. The same for `lv`, `ke`, `_e`, `_y`, and `_o`, `_n`, `_r`, `_j` (`kakakaka _n` gives `B3 B3 B3 B3 20 61 B3 B3`, where a fresh process writes nothing). Both builds. |
+-| parser, reads past the end | a string that ends inside a key makes the parser read past its terminator: `c`, `_e`, `_y`, `_o`, `_n`, `_r` or `_j` at the end of a run, the stem `l` followed by `v` (`lv`), a consonant followed by `e` (`ke`), and, through the library only, `^_` and `^o`. These are the eleven rules of section 5.4 | undefined behaviour in C; `Overrun` in the executable grammar. The differential test leaves these inputs out and counts them (section 11.7) |
++| parser buffer, never cleared | the buffer is `static` and each run is copied over its start only, so after a short run the tail of an earlier, longer run is still behind the terminator. In the old and mid builds the eleven rules of section 5.4 (six unchecked skips, five wildcards) can read it. In the new build the guards of section 14.7 stop every read at the terminator: the buffer is still not cleared, and nothing can see it | old and mid: `kakakaka c` gives `B3 B3 B3 B3 20 B8 E8 B3 B3 B3`: the `c` of the second word borrows three `ka` from the first. In a fresh process `c` gives `B8 E8`. The same for `lv`, `ke`, `_e`, `_y`, and `_o`, `_n`, `_r`, `_j` (`kakakaka _n` gives `B3 B3 B3 B3 20 61 B3 B3`, where a fresh process writes nothing). New: `kakakaka c` gives `B3 B3 B3 B3 20 63` and `kakakaka _n` gives `B3 B3 B3 B3 20 6E`, the same as in a fresh process: the last word is the plain letter. |
++| parser, reads past the end | a string that ends inside a key makes the parser read past its terminator: `c`, `_e`, `_y`, `_o`, `_n`, `_r` or `_j` at the end of a run, the stem `l` followed by `v` (`lv`), a consonant followed by `e` (`ke`), and, through the library only, `^_` and `^o`. These are the eleven rules of section 5.4. **Closed in the new build** by the twelve guards of section 14.7, each of which leaves its branch when the next character is the terminator | old and mid builds: undefined behaviour in C; `Overrun` in the executable grammar without the `!` rules. New build: `c`, `lv`, `ke`, `_e`, `_y`, `_o`, `_n`, `_r`, `_j` give the plain letter (`63`; `D1 76`; `B3 65`; `65`; `79`; `6F`; `6E`; `72`; `6A`), and neither the grammar nor the harness finds a read past the end (`tests/test_underscore.py`, U7). The differential test leaves the strings out for the old and mid builds and counts them (section 11.7) |
+ | decoder, nukta | a nukta with fewer than two characters below it pops an empty stack: `*pop(1)` is a null dereference | `E8 E9`, `EA E9` and `B3 E8 E9` crash `acii2rmn`. Real ISCII writes the avagraha as `EA E9` (section 10.5). |
+ | decoder, first byte | the test "the previous byte was `EF`" reads `tok[-1]` for the first byte of a stretch | undefined behaviour; the model assumes the byte is not `EF` |
+ 
+ The decoder and the parser both use static buffers and are not reentrant.
+ 
++**What can still crash the parser of the new build.** Two things only: a key that the table lacks (section 11.3), and a run of more than 1,024 letters (the parser-buffer row above). The measurement of section 14.8 shows it: of 14,762 strings made by mutating the grammar's own examples, the new build crashes on the 35 that ask for a missing key and on no other. The decoder rows (the stack, the nukta, the first byte) are as they were.
++
+ ### 11.5 What does not survive a round trip
+ 
+ Section 9 defines the text for which `acii2rmn | rmn2acii` returns its input. Outside it, the cases that are easy to meet:
+@@ -1053,16 +1079,16 @@ Section 9 defines the text for which `acii2rmn | rmn2acii` returns its input. Ou
+ | U+2190 LEFTWARDS ARROW | `90` | a control character |
+ | any character above U+FFFF (an emoji, a Brahmi letter) | the low byte of each of its two UTF-16 units | U+1F600 gives `3D 00`, an equals sign and a NUL |
+ 
+-The table lacks 43 code points of the Devanagari block itself (section 10.4). Ten of them are the digits, which `fixuninum` rewrites first; the others fall back this way. In the corpus of the repository the effect is visible in the double danda: "चोला॥" came back as "चोलाe", because U+0965 has the low byte `65`, the letter `e`; with the patch it comes back as it went in (`tests/test_corpus.py`, `Romenagri/corp_hi.txt`, two lines).
++The table lacks 43 code points of the Devanagari block itself (section 10.4). Ten of them are the digits, which `fixuninum` rewrites first; the others fall back this way. In the corpus of the repository the effect is visible in the double danda: "चोला॥" came back as "चोलाe", because U+0965 has the low byte `65`, the letter `e`; with patch 0001 it comes back as it went in (`tests/test_corpus.py`, `Romenagri/corp_hi.txt`, two lines).
+ 
+-**What the patch changes here.** The bytes `81`-`8C` were not in the table, so characters whose low byte is one of them came back as control characters. They now come back as the twelve new characters. Twelve of every 256 code points are affected: the block elements ▁ ▂ ▃ ▄ ▅ ▆ ▇ █ ▉ ▊ ▋ ▌ (U+2581-U+258C) become ऌ ॡ ॠ ॢ ॣ ॄ ॥ ॑ ॒ ॓ ॔ ॐ, and so on. None of the everyday characters of the list above is affected, which is what test (e) asserts. The fix for all of it is to deal with characters that are not in the tables before `uni2acii`, not to give every character a byte.
++**What patch 0001 changes here.** The bytes `81`-`8C` were not in the table, so characters whose low byte is one of them came back as control characters. They now come back as the twelve new characters. Twelve of every 256 code points are affected: the block elements ▁ ▂ ▃ ▄ ▅ ▆ ▇ █ ▉ ▊ ▋ ▌ (U+2581-U+258C) become ऌ ॡ ॠ ॢ ॣ ॄ ॥ ॑ ॒ ॓ ॔ ॐ, and so on. None of the everyday characters of the list above is affected, which is what test (e) asserts. The fix for all of it is to deal with characters that are not in the tables before `uni2acii`, not to give every character a byte.
+ 
+ ### 11.7 What the tests leave out
+ 
+ So that the claims of this document can be weighed:
+ 
+ - **Memory-layout thresholds are printed, not asserted.** The sizes at which the fixed buffers overflow (10,240 decoded characters, 1,025 letters) depend on how the compiler lays out memory; `tests/test_limitations.py` prints them for comparison and asserts only what does not depend on layout.
+-- **Undefined behaviour is excluded, not tested.** `tests/diff_parser.py` skips the strings on which the C parser reads past its terminator (section 11.4); it counts them and prints the count. The executable grammar raises `Overrun` for them.
++- **Undefined behaviour is excluded, not tested, for the old and mid builds.** `tests/diff_parser.py` skips the strings on which the C parser of those builds reads past its terminator (section 11.4); it counts them and prints the count. The executable grammar without the `!` rules raises `Overrun` for them. For the new build there is nothing to skip: the grammar with the guards never raises `Overrun`, and the test fails if it ever does. What stays outside the tests are the fixed buffers and the decoder's empty stack (section 11.4), where the behaviour depends on the memory layout.
+ - **Crashes are compared, not repaired.** Where both the grammar and the C parser crash (missing rows, section 11.3), that counts as agreement.
+ - **The round-trip generator is narrower than the code.** It generates only the text of section 9.2, so the cases of section 11.5 are described, not tested for success.
+ - **The end-to-end test needs `hincc`.** `tests/e2e/run_e2e.sh` compiles and runs a Hindi C program and a Hindi Java program with the new characters; it is skipped when `hincc` is not on the `PATH`.
+@@ -1086,7 +1112,7 @@ The three web sources were read on 19 October 2026 (Apple's table and ICU's sour
+ 
+ ### 12.2 How each source writes the characters of section 7
+ 
+-| Character | `iscii_map.csv` | Apple | ICU | ACII, this patch |
++| Character | `iscii_map.csv` | Apple | ICU | ACII, patch 0001 |
+ |---|---|---|---|---|
+ | OM, U+0950 | `A0` | `A1 E9` | `A1 E9` | `8C` |
+ | vocalic L, U+090C | `A6*` | `A6 E9` | `A6 E9` | `81` |
+@@ -1107,10 +1133,10 @@ ISCII-91 leaves the bytes `80`-`9F` unassigned (`iscii_map.csv` has no row there
+ 
+ ### 12.3 Licence and copyright
+ 
+-- The code of `Romenagri/` is free software under the GNU General Public License, version 2 or (at your option) any later version; its text is `Romenagri/copying`, and the package carries it as `COPYING`. The new files (this document, `tools/*`, `tests/*`) carry `SPDX-License-Identifier: GPL-2.0-or-later`.
++- The code of `Romenagri/` is free software under the GNU General Public License, version 2 or (at your option) any later version; its text is `Romenagri/copying`, and the package carries it as `COPYING`. The new files (this document, `tools/*`, `tests/*`, including `tools/apply_guards.py` and `tests/build_trees.sh` of patch 0002) carry `SPDX-License-Identifier: GPL-2.0-or-later`.
+ - The `corp_*` text files of `Romenagri/` come from Wikipedia and are, as `Romenagri/LEGAL` says, "usually" under CC BY-SA 3.0; the terms are those of the original articles. The package changes none of them.
+-- The five files that the patch changes (`acii.h`, `unicode.h`, `aciihin.h`, `acii2hin.c`, `rmn2acii.c`) and the new files carry the line `Copyright (C) 1993-2026 Abhishek Choudhary`. Files that the patch does not touch keep the notices they have.
+-- Each changed file has a new entry in its own "Modifications" log. The entries name the alias `<obonac>` and mark the work "(prepared with Claude)"; the mark can be removed without affecting anything else.
++- The five files that patch 0001 changes (`acii.h`, `unicode.h`, `aciihin.h`, `acii2hin.c`, `rmn2acii.c`) and the new files carry the line `Copyright (C) 1993-2026 Abhishek Choudhary`. Patch 0002 changes one more file of the code, `rmn2acii.c` again, and this document. Files that the patches do not touch keep the notices they have.
++- Each changed file has an entry for each patch that changed it in its own "Modifications" log (`rmn2acii.c` has two). The entries name the alias `<obonac>` and mark the work "(prepared with Claude)"; the mark can be removed without affecting anything else.
+ 
+ ## 13. Running the checks
+ 
+@@ -1121,18 +1147,33 @@ ISCII-91 leaves the bytes `80`-`9F` unassigned (`iscii_map.csv` has no row there
+ ### 13.2 Commands
+ 
+ ```
+-tests/run_all.sh                 quick run: builds the unpatched and the patched tree under build/, runs every check; under a minute
+-tests/run_all.sh --full          the exhaustive run; several minutes
++tests/run_all.sh                 quick run: builds the three trees under build/ (old, unpatched; mid, patch 0001; new, both patches), runs every check
++tests/run_all.sh --full          the exhaustive run: many minutes in all, so it is meant to be run in pieces (below)
++tests/run_all.sh --full --resume                  the same run, restartable: a step that passed on the same sources is not run again
++tests/run_all.sh --full --resume --only <steps>   only the named steps (comma-separated: `build`, or the names that the summary prints)
++tests/build_trees.sh             only the build of the three trees and of the harnesses, for ad-hoc work (what run_all.sh starts with)
+ python3 tools/check_tables.py Romenagri --free     lint the three tables and print the free bytes
+-python3 tests/test_underscore.py [--full|--deep]   the laws, tests and measurements of section 14 (needs the build/ of run_all.sh)
++python3 tests/test_underscore.py [--full|--deep] [--only U1,U7]   the laws, tests and measurements of section 14, all or the named checks (needs the build/ of run_all.sh)
+ python3 tools/reserved_keys.py Romenagri [--strict]  the keys of section 11.3, tried on the C parser in a scratch build
+ python3 tools/gen_doc_tables.py --check Romenagri  fail if a generated block of this document is out of date
+ python3 tools/gen_doc_tables.py --write Romenagri  refresh the generated blocks
+-python3 -I tools/apply_sanskrit.py <pristine Romenagri>    repeats the edits of the patch (not the document) on a clean tree
+-patch -p1 < patches/0001-add-missing-sanskrit-characters.patch     the same, as a patch, from the directory that holds Romenagri/
++python3 -I tools/apply_sanskrit.py <pristine Romenagri>    repeats the edits of patch 0001 (not the document) on a clean tree
++python3 -I tools/apply_guards.py <Romenagri with patch 0001>    repeats the edits of patch 0002 to rmn2acii.c (not the document)
++patch -p1 < patches/0001-add-missing-sanskrit-characters.patch     the same as patch 0001, from the directory that holds Romenagri/
++patch -p1 < patches/0002-apply-underscore-guards.patch             then patch 0002 (the C parser and this document)
+ ```
+ 
+-The environment variables of `tests/run_all.sh`: `RMN_BUILD` (where to build), `RMN_BASELINE` (a `Romenagri` directory to compare against instead of "the patched tree with the patches taken off"), `RMN_CORPUS` (more Hindi text files for the corpus test, separated by `:`), `RMN_SKIP_HANDWRITTEN=1` (leave out the hand-written parser in the differential test), `RMN_GRAMMAR=<file>` (read the grammar and guard blocks of another copy of this document), `HINDAWI_SRC` (the `Hindawi/` directory of the repository, for rebuilding the shailis in the end-to-end test).
++The environment variables of `tests/run_all.sh`: `RMN_BUILD` (where to build), `RMN_BASELINE` (a `Romenagri` directory to use as the old tree instead of "the patched tree with every patch taken off"; the mid tree is always "the patched tree with the last patch taken off"), `RMN_CORPUS` (more Hindi text files for the corpus test, separated by `:`), `RMN_SKIP_HANDWRITTEN=1` (leave out the hand-written parser in the differential test), `RMN_GRAMMAR=<file>` (read the grammar block of another copy of this document), `HINDAWI_SRC` (the `Hindawi/` directory of the repository, for rebuilding the shailis in the end-to-end test).
++
++**Long runs in pieces.** The exhaustive run is long (the check of section 14 alone reads more than a million strings through each build), so `tests/run_all.sh` runs that check as nine steps, `underscore_U1` to `underscore_U9`, one for each of U1 to U9, and every step writes, besides its log `build/logs/<step>.log`, a marker `build/logs/<step>.rc` (exit status, seconds, time of the end). With `--resume` a step whose marker says that it passed is not run again, and the three trees are not built again, as long as the files of `Romenagri/`, `patches/`, `tools/` and `tests/` and the settings are the same as when `build/logs/stamp` was written (otherwise the script says so and stops). `--only` takes the names of the steps: `build` (the three trees and the harnesses), `table_lint_new`, `unicode`, `saral`, `parser_vs_model`, `roundtrip`, `corpus`, `recipes`, `limitations`, `underscore_U1` to `underscore_U9` (`underscore` stands for all nine), `reserved_keys`, `doc_tables_in_sync` and `e2e_new`. After `build` the steps do not depend on one another, so they can be run by several commands at the same time, and a run that is interrupted loses at most the steps that were running:
++
++```
++tests/run_all.sh --full --resume --only build
++printf '%s\n' underscore_U7 underscore_U1 parser_vs_model roundtrip underscore_U5 underscore_U6 underscore_U8 underscore_U9 \
++  underscore_U4 underscore_U2 underscore_U3 corpus limitations recipes unicode saral table_lint_new reserved_keys \
++  doc_tables_in_sync e2e_new | xargs -P 2 -I{} tests/run_all.sh --full --resume --only {}
++tests/run_all.sh --full --resume         # runs whatever is still missing, then prints every step and the summary
++```
+ 
+ ### 13.3 What each check establishes
+ 
+@@ -1141,24 +1182,24 @@ The environment variables of `tests/run_all.sh`: `RMN_BUILD` (where to build), `
+ | table lint | `tools/check_tables.py` | T1-T8 of section 3.5 on the three tables; `--free` prints the free bytes | A1-A5 |
+ | Unicode conversion | `tests/test_unicode.py` | (a) the new code points convert both ways and the old build does not; (b) the old rows convert exactly as before; (c) a mixed text survives; (d) the unmapped Devanagari code points are classified as in section 10.4; (e) everyday characters outside Devanagari and ASCII do not reach a new byte | A8 |
+ | saral | `tests/test_acii2hin.py` | the new rows render as section 7.5 says, and every old byte and byte pair renders as before | |
+-| parser against the grammar | `tests/diff_parser.py` | the C parser, old and new, agrees with the grammar of section 5.3 and with the hand-written parser on all short strings and on random long ones; every string whose result changed contains a new token | A6, A9 |
+-| round trip | `tests/rt_filters.py` | (1) no regression on the old repertoire, except the repaired avagraha; (2) every sequence with a new byte behaves like its analogue with an old byte; (3) the models of the decoder and of the filter pair agree with the C programs; (4) well-formed texts of section 9.2 round-trip exactly | A7 |
+-| corpus | `tests/test_corpus.py` | Hindi text through the whole chain, old against new: no unexplained difference, and no line that the old build restored and the new one does not | A6 |
++| parser against the grammar | `tests/diff_parser.py` | the C parser of each of the three builds agrees with the grammar of section 5.3 (the rules tagged `+` and `!` select the build) and with the hand-written parser on all short strings and on random long ones; every string whose result changed between old and mid contains a new token, and every one whose result changed between mid and new has had a guard rule applied; the grammar with the guards never reads past the end | A6, A9 |
++| round trip | `tests/rt_filters.py` | (1) no regression on the old repertoire, except the repaired avagraha; (2) every sequence with a new byte behaves like its analogue with an old byte; (3) the models of the decoder and of the filter pair agree with the C programs; (4) well-formed texts of section 9.2 round-trip exactly, and the guards of patch 0002 do not change the reading of any of them (all sequences of up to three bytes of `W`) | A7 |
++| corpus | `tests/test_corpus.py` | Hindi text through the whole chain, old against mid and against new: no unexplained difference, and no line that the old build restored and the others do not | A6 |
+ | extension recipes | `tests/test_extension_recipes.py` | recipe A and the mistakes of section 8.1 step 5 behave as described (R1-R3) | A1-A5 |
+-| limitations | `tests/test_limitations.py` | the measurements of sections 10.6, 11.1, 11.3 (all fifteen missing keys, typed from the grammar), 11.4 (the stale buffer at each of its sites), 11.5 and 11.6 come out as stated, on the old and the new build; sizes that depend on memory layout are printed only | |
+-| underscore laws | `tests/test_underscore.py` | U1-U9 of section 14: the cut and run laws, closedness, parity (two states), the marker rule and the decoder, the escape, the eleven rules that read an underscore unseen, the twelve guards (no breaker left, no read past the end, each needed, none fires on decoder output), case folding and random mutations, joiners and operators | |
++| limitations | `tests/test_limitations.py` | the measurements of sections 10.6, 11.1, 11.3 (all fifteen missing keys, typed from the grammar), 11.4 (the stale buffer at each of its sites), 11.5 and 11.6 come out as stated, on the three builds; sizes that depend on memory layout are printed only | |
++| underscore laws | `tests/test_underscore.py` | U1-U9 of section 14 (`tests/run_all.sh` runs them as the nine steps `underscore_U1` to `underscore_U9`): the cut and run laws, closedness, parity (two states), the marker rule and the decoder, the escape, the eleven rules that read an underscore unseen, the twelve guards (no breaker left, no read past the end, each needed, none fires on decoder output), case folding and random mutations, joiners and operators | A10 |
+ | reserved keys | `tools/reserved_keys.py` | a tool, not a check: lists the keys of section 11.3, what the C parser does with each typed form, and where the C parser and the grammar differ; run it while fixing them. `tests/run_all.sh` runs it once as a smoke test | |
+ | document tables | `tools/gen_doc_tables.py --check` | every generated block of this document, including the counts, equals what the headers and the grammar give | A9 |
+ | end to end | `tests/e2e/run_e2e.sh` | Hindi C and Java programs with the new characters in identifiers, strings and comments compile through `hincc`, run, and print the Devanagari text that was written | |
+ 
+-The exit status of every script is 1 when an expectation fails. `tests/run_all.sh` prints a summary and exits with 1 if any check failed; the logs are in `build/logs`.
++The exit status of every script is 1 when an expectation fails. `tests/run_all.sh` prints a summary and exits with 1 if any check failed; the logs and the markers of the steps are in `build/logs`.
+ 
+ ### 13.4 After a change
+ 
+-1. Edit the tables (section 8.1 steps 1-4) and, if the lint says so, the grammar of section 5.3 and `rmn2acii.c` together.
++1. Edit the tables (section 8.1 steps 1-4) and, if the lint says so, the grammar of section 5.3 and `rmn2acii.c` together; a rule that jumps over a character it has not looked at needs its guard rule (section 8.3, step 3).
+ 2. `python3 tools/check_tables.py Romenagri --free`
+ 3. `python3 tools/gen_doc_tables.py --write Romenagri`, then describe the character in sections 7 and 10.
+-4. `tests/run_all.sh`, and `tests/run_all.sh --full` before a release.
++4. `tests/run_all.sh`, and `tests/run_all.sh --full --resume` (in pieces, if need be) before a release.
+ 
+ ## 14. Underscores: runs, escapes, case folding, joiners
+ 
+@@ -1183,13 +1224,13 @@ Some premises hold and some do not. This is what the code does with them.
+ 
+ **Short answers.**
+ 
+-- **Q1: yes, and the bound is small.** Reading a run needs a two-state automaton that works from left to right (the parity of the run so far). The language of runs is regular, so no context-free power is needed; the only lookahead is the character after the run, and only to say whether an odd run ends in a marker. Two states are also *necessary* (section 14.4). For well-formed ACII the decoder writes every literal underscore doubled and never writes a marker anywhere but as the last underscore of its run, so the two translators invert each other for runs of any length (section 14.5); ACII that is not well-formed can make it leave a lone underscore (section 14.3). The shipped parser keeps these laws except at eleven rules that read an underscore without looking at it (section 14.6); twelve guard rules close the gap, and with them the laws hold without exception (section 14.7). The guards are a proposal, checked on the executable grammar and not applied to `rmn2acii.c`.
+-- **Q2: the premise is false, and the answer splits in two.** The fold is a letter-by-letter map that fixes `_`, so it keeps every run, and capital letters are inert in the parser. But the fold is not a homomorphism of the translator: it can turn an inert capital into a key letter, and that can destroy an escaped underscore. Crash-resilience against arbitrary strings can be *proved* (by an induction on the rules plus an exhaustive check) for the repaired grammar with a complete table, where the parser is a total function. It is *false* for the shipped C code, for reasons that are listed in section 14.8.
++- **Q1: yes, and the bound is small.** Reading a run needs a two-state automaton that works from left to right (the parity of the run so far). The language of runs is regular, so no context-free power is needed; the only lookahead is the character after the run, and only to say whether an odd run ends in a marker. Two states are also *necessary* (section 14.4). For well-formed ACII the decoder writes every literal underscore doubled and never writes a marker anywhere but as the last underscore of its run, so the two translators invert each other for runs of any length (section 14.5); ACII that is not well-formed can make it leave a lone underscore (section 14.3). Before patch 0002 the parser kept these laws except at eleven rules that read an underscore without looking at it (section 14.6); the twelve guard rules of patch 0002 close the gap in the C parser, and with them the laws hold without exception (section 14.7).
++- **Q2: the premise is false, and the answer splits in two.** The fold is a letter-by-letter map that fixes `_`, so it keeps every run, and capital letters are inert in the parser. But the fold is not a homomorphism of the translator: it can turn an inert capital into a key letter, and that can destroy an escaped underscore. Crash-resilience against arbitrary strings can be *proved* (by an induction on the rules plus an exhaustive check) for the grammar with the guards and a complete table, where the parser is a total function. For the C code of this package it holds except for three reasons that have nothing to do with the underscore (fifteen missing rows, fixed buffers, the decoder's empty stack); patch 0001 alone had a fourth, the eleven rules (section 14.8).
+ - **Q3: two states, for one character.** The script alphabet that reaches the parser and the operator alphabet of a host language share the underscore and nothing else. Telling the underscore's roles apart is the parity automaton, two states. Everything else that separates script from host is decided by the lexers without memory. A joiner costs one parser rule and no state, if it follows the marker rule (section 14.9).
+ 
+ ### 14.2 Runs of underscores: the laws
+ 
+-**Notation.** `P(s)` is what the parser writes for the string `s` (the grammar of section 5.3, run by `tests/spec_model.py`). A string `u` is *closed* if the parse of `u` reaches the terminator in state L1, L2a or L2b: a consonant may be pending, but no marker is. `u _` then cannot be read as anything but the start of a unit. The empty string is closed.
++**Notation.** `P(s)` is what the parser writes for the string `s` (the grammar of section 5.3, run by `tests/spec_model.py`; with all its rules, unless a sentence says that the guards are left out). Laws 1 and 2 hold for the grammar with the guards and for the grammar without them alike (U1 checks both); the guards matter for Law 3 and for the strings that the two laws do not cover. A string `u` is *closed* if the parse of `u` reaches the terminator in state L1, L2a or L2b: a consonant may be pending, but no marker is. `u _` then cannot be read as anything but the start of a unit. The empty string is closed.
+ 
+ **What the parser makes of a run.** The generated table below gives the output for `_` repeated n times before `ta`, and after `k` at the end of the input. The bytes: `5F` is the literal underscore, `E8` the halant, `BD` TA, `C2` the family letter `_ta`.
+ 
+@@ -1221,7 +1262,7 @@ Read the left half from top to bottom. Every pair of underscores becomes one `5F
+ 
+ **One underscore is different, and only through the halant.** For n = 1 the underscore meets the halant of the consonant before it: `k_ri` is KA and the *sign* RI (`B3 DF`), because `vocalic` finds the halant and replaces it; `k___ri` is KA, halant, `5F`, and the independent vowel RI (`B3 E8 5F AA`), because after the pair `vocalic` finds `5F`. This is the only interaction (U1).
+ 
+-**Law 3 (count).** For every string `s` that the grammar reads, the output has exactly one byte `5F` for every pair of underscores of `s`, counted run by run: `#5F(P(s)) = sum over the maximal runs of floor(n/2)`. This follows from Law 2 where it applies. It is *not* true for the grammar of section 5.3 as it stands, because of eleven rules (section 14.6), and it is true without exception for the grammar with the guards of section 14.7.
++**Law 3 (count).** For every string `s` that the grammar reads, the output has exactly one byte `5F` for every pair of underscores of `s`, counted run by run: `#5F(P(s)) = sum over the maximal runs of floor(n/2)`. This follows from Law 2 where it applies. It is *not* true for the grammar without the guards (the parser of patch 0001 alone, and the unpatched one), because of eleven rules (section 14.6), and it is true without exception for the grammar of this package, with the guards of section 14.7.
+ 
+ ### 14.3 The marker rule: why a run has one reading
+ 
+@@ -1254,7 +1295,7 @@ This is a right-linear grammar with two non-terminals, `Run -> _ Odd | e`, `Odd
+ 
+ ### 14.5 The decoder, the escape, and the bijection
+ 
+-**The bijection.** Let `W` be the well-formed ACII texts of section 9.2, with any number of literal underscores (`5F`) between their syllables, and let `R` be the strings that the decoder `acii2rmn` writes for them. The decoder is injective on `W`, `rmn2acii` restricted to `R` is its inverse, and the underscore runs of the strings of `R` are the ones of section 14.3. So a run of N underscores in `R` stands for floor(N/2) literal underscores and, if N is odd, one marker, for every N; the correspondence needs no lookahead beyond the run. In the default run the test (U4) round-trips 5,000 random texts, some with runs of 21 underscores, through the models of both programs for the shipped grammar and for the repaired grammar, and 3,000 of them through the C library (`harness -f`).
++**The bijection.** Let `W` be the well-formed ACII texts of section 9.2, with any number of literal underscores (`5F`) between their syllables, and let `R` be the strings that the decoder `acii2rmn` writes for them. The decoder is injective on `W`, `rmn2acii` restricted to `R` is its inverse, and the underscore runs of the strings of `R` are the ones of section 14.3. So a run of N underscores in `R` stands for floor(N/2) literal underscores and, if N is odd, one marker, for every N; the correspondence needs no lookahead beyond the run. In the default run the test (U4) round-trips 5,000 random texts, some with runs of 21 underscores, through the models of both programs, for the grammar without the guards and for the grammar with them, and 3,000 of them through the C library of the mid and of the new build (`harness -f`).
+ 
+ **What it is not.** The inverse is partial: strings outside `R` have several spellings for the same bytes, so `acii2rmn(rmn2acii(r))` is a normalisation of `r`, not `r`. The filters (`acii2rmn.lex`) wrap every run of Latin letters and underscores in `"e_..."`, so a literal underscore of a Latin word never reaches the decoder; the bijection is a statement about the two library functions and the composition that the test harness calls the filter semantics.
+ 
+@@ -1264,10 +1305,12 @@ This is a right-linear grammar with two non-terminals, `Run -> _ Odd | e`, `Odd
+ P(E(s)) = P(x0) 5F^m1 P(x1) 5F^m2 P(x2) ...
+ ```
+ 
+-This follows from Law 1 applied once for every underscore. The condition "closed and defined" is not a technicality: a segment that ends in the letter `c`, or in `^`, lets the parser read the first underscore of the next pair as something else (section 14.6), and the law fails. In the default run the test (U5) checks the equation on 20,000 random strings with segments of one to six letters and on 5,000 of them in the C parser.
++This follows from Law 1 applied once for every underscore. The condition "closed and defined" is not a technicality: a segment that ends in `^` is not closed, and in the parser without the guards neither is a segment that ends in the letter `c` (or in `lv`, `_n` ...): the parser reads the first underscore of the next pair as something else (section 14.6), and the law fails. In the default run the test (U5) checks the equation, for the grammar without and with the guards, on 20,000 random strings with segments of one to six letters and on 5,000 of them in the C parser of each build.
+ 
+ ### 14.6 Where the laws fail: eleven rules that read an underscore unseen
+ 
++This section describes the parser before patch 0002: the unpatched parser and the parser of patch 0001 alone have the same eleven rules, and the analysis below is run on the grammar without the `!` rules. Section 14.7 is the repair.
++
+ A rule consumes the characters from the cursor up to its `skip` count. An underscore that is consumed as the *first* character of a unit, or as the second of a pair, is read as the grammar means. An underscore that is consumed in any other place is not looked at: either the guard has a wildcard `.` there, and the rule keeps the character as plain text, or the guard does not test the character at all and the rule jumps over it ("unseen"). Both break the count of Law 3, because a character that should have been the second half of a pair, or the start of the next unit, is swallowed. The same positions are the ones where a rule can step over the terminator and read the bytes that follow it (section 11.4). A static analysis of the grammar (`spec_model.sync_breakers`; U6) finds the eleven rules:
+ 
+ <!-- BEGIN GENERATED sync-breakers -->
+@@ -1286,66 +1329,72 @@ A rule consumes the characters from the cursor up to its `skip` count. An unders
+ | M | `'_' -> emit '^_ri' ; skip 3 ; goto L1` | jumps over 2 characters unseen | `^__a` |
+ | M | `'o' . -> raw d ; skip 2 ; goto L1` | keeps it as plain text (`.`) | `jo_` |
+ 
+-11 rules, 12 positions
++11 rules, 12 positions; with the guards: 0
+ 
+ <!-- END GENERATED sync-breakers -->
+ 
+ The twelfth position is the second skipped character of the rule of state M that reads `_ri`; it is part of the same rule. The rules for `_o`, `_n`, `_r`, `_j`, `^o` keep the next character as text ("an unknown `_o?`: the o is dropped, the next character kept"); the others jump over it.
+ 
+-**What happens.** The string with the smallest length that breaks the law through each rule is in the last column. On every one of them the C parser writes what the grammar writes (U6), so the table is a statement about the code and not only about the model. Three consequences are real in Hindawi's pipelines, which double every underscore of the translated program before they call the parser (twelve of the thirteen branches of `std2hin.awk`):
+-
+-- An identifier that has the letter `c` before an underscore loses the underscore. `tc_flag` reaches the parser as `tc__flag`; the filter writes `BD E8 B8 E8 66 D1 B5 E8`, which has no `5F`; the rule for `c` has swallowed the first underscore of the pair, and the second has become a marker in front of `f`. The escaped underscore is gone (U6).
+-- An identifier with `v` after one of the consonants that begin a stem asks for a row that does not exist (`tvra`): `tv_set` crashes the filter (section 11.3; U6).
+-- A rule that steps over the terminator reads whatever the buffer held before: `kakakaka _n` after another line gives different bytes depending on what came before (section 11.4).
+-
+-### 14.7 Twelve guards (a proposal, verified on the grammar, not applied to the C code)
+-
+-The repair adds twelve rules, each in front of one of the eleven rules above, each of the form *if the character that the rule would jump over unseen is `_` or the end of the input, do what the grammar would have done if the rule were not there*. The block is read by `tests/spec_model.py` (`load_repaired`), which puts each guard in front of its anchor rule. The last column is the shortest string that breaks the pairing law if that guard alone is left out.
+-
+-```rmn2acii-guards
+-# state | guard rule (put in front of the anchor rule) | anchor rule | shortest string that breaks the pairing law without this guard
+-L1  | 'c' [_ $]    -> raw c ; skip 1 ; goto L1       | 'c' -> skip 2 ; goto L2b 'ch'                   | c__
+-L2b | 'v' [_ $]    -> emit stem 'a' ; goto L2a       | 'v' -> emit stem 'vra' ; skip 2 ; goto L2a     | lv__
+-L2c | 'e' [_ $]    -> raw c ; skip 1 ; goto L1       | 'e' -> emit '_ee' ; skip 2 ; goto L1           | _e__
+-L2c | 'y' [_ $]    -> raw c ; skip 1 ; goto L1       | 'y' -> emit '_yna' ; skip 2 ; goto L2a         | _y__
+-L2c | 'o' [_ $]    -> raw c ; skip 1 ; goto L1       | 'o' . -> raw d ; skip 2 ; goto L1              | _o_
+-L2c | 'n' [_ $]    -> raw c ; skip 1 ; goto L1       | 'n' . -> raw d ; skip 2 ; goto L1              | _n_
+-L2c | 'r' [_ $]    -> raw c ; skip 1 ; goto L1       | 'r' . -> raw d ; skip 2 ; goto L1              | _r_
+-L2c | 'j' [_ $]    -> raw c ; skip 1 ; goto L1       | 'j' . -> raw d ; skip 2 ; goto L1              | _j_
+-M   | 'e' [_ $]    -> raw c ; skip 1 ; goto L1       | 'e' -> emit '^ee' ; skip 2 ; goto L1          | je__
+-M   | 'o' [_ $]    -> raw c ; skip 1 ; goto L1       | 'o' . -> raw d ; skip 2 ; goto L1              | jo_
+-M   | '_' [_ $]    -> goto L1                        | '_' -> emit '^_ri' ; skip 3 ; goto L1         | ^__a
+-M   | '_' . [_ $]  -> goto L1                        | '_' -> emit '^_ri' ; skip 3 ; goto L1         | ^_^__
+-```
++**What happens.** The string with the smallest length that breaks the law through each rule is in the last column. On every one of them the C parser of patch 0001 alone writes what the grammar writes (U6), so the table is a statement about the code and not only about the model. Three consequences were real in Hindawi's pipelines, which double every underscore of the translated program before they call the parser (twelve of the thirteen branches of `std2hin.awk`); the new build has none of them (U6):
++
++- An identifier that has the letter `c` before an underscore lost the underscore. `tc_flag` reaches the parser as `tc__flag`; the filter of patch 0001 alone writes `BD E8 B8 E8 66 D1 B5 E8`, which has no `5F`: the rule for `c` has swallowed the first underscore of the pair, and the second has become a marker in front of `f`. The escaped underscore is gone. The new build writes `BD E8 63 5F 66 D1 B5 E8`: the `c` is a plain letter, and the pair is one `5F`.
++- An identifier with `v` after one of the consonants that begin a stem asks for a row that does not exist (`tvra`): `tv_set`, which reaches the parser as `tv__set`, crashes the filter of patch 0001 alone (section 11.3). The new build does not ask for the row when the `v` is followed by an underscore or by the end of the string: it writes TA, the letter `v`, `5F` and the rest (`BD 76 5F D7 DC`).
++- A rule that steps over the terminator reads whatever the buffer held before: `kakakaka _n` after another line gave different bytes depending on what came before (section 11.4). The new build writes the letter `n`, whatever came before.
+ 
+-The last two guards test the two characters that the old rule for `_ri` jumps over; the explicit `^` that led to state M is dropped, as the rule `.` of M already drops it for other characters, and the underscore is read again in L1. A guard that sends the underscore to L1 never keeps it as text: a literal underscore comes only from a pair.
++### 14.7 Twelve guards (patch 0002)
++
++Patch 0002 adds twelve rules to the grammar of section 5.3 and the twelve matching tests to `rmn2acii.c`. Each guard stands in front of one of the eleven rules above and has the form *if the character that the rule would jump over unseen is `_` or the end of the input, do not take the rule: write the letter as plain text, as the parser does for any other letter that it does not know*. In the grammar they are the rules tagged `!`, and the comment of each names its witness. The table is generated from them; its last column is the shortest string that breaks the pairing law if that guard alone is left out.
++
++<!-- BEGIN GENERATED guards -->
++
++| state | guard (a rule tagged `!`) | the rule it stands in front of | shortest string that breaks the pairing law without this guard |
++|---|---|---|---|
++| L1 | `'c' [_ $] -> raw c ; skip 1 ; goto L1` | `'c' -> skip 2 ; goto L2b 'ch'` | `c__` |
++| L2b | `'v' [_ $] -> emit stem 'a' ; goto L2a` | `'v' -> emit stem 'vra' ; skip 2 ; goto L2a` | `lv__` |
++| L2c | `'e' [_ $] -> raw c ; skip 1 ; goto L1` | `'e' -> emit '_ee' ; skip 2 ; goto L1` | `_e__` |
++| L2c | `'y' [_ $] -> raw c ; skip 1 ; goto L1` | `'y' -> emit '_yna' ; skip 2 ; goto L2a` | `_y__` |
++| L2c | `'o' [_ $] -> raw c ; skip 1 ; goto L1` | `'o' . -> raw d ; skip 2 ; goto L1` | `_o_` |
++| L2c | `'n' [_ $] -> raw c ; skip 1 ; goto L1` | `'n' . -> raw d ; skip 2 ; goto L1` | `_n_` |
++| L2c | `'r' [_ $] -> raw c ; skip 1 ; goto L1` | `'r' . -> raw d ; skip 2 ; goto L1` | `_r_` |
++| L2c | `'j' [_ $] -> raw c ; skip 1 ; goto L1` | `'j' . -> raw d ; skip 2 ; goto L1` | `_j_` |
++| M | `'e' [_ $] -> raw c ; skip 1 ; goto L1` | `'e' -> emit '^ee' ; skip 2 ; goto L1` | `je__` |
++| M | `'_' [_ $] -> goto L1` | `'_' -> emit '^_ri' ; skip 3 ; goto L1` | `^__a` |
++| M | `'_' . [_ $] -> goto L1` | `'_' -> emit '^_ri' ; skip 3 ; goto L1` | `^_^__` |
++| M | `'o' [_ $] -> raw c ; skip 1 ; goto L1` | `'o' . -> raw d ; skip 2 ; goto L1` | `jo_` |
++
++<!-- END GENERATED guards -->
++
++The last two guards test the two characters that the old rule for `_ri` jumps over; the explicit `^` that led to state M is dropped, as the rule `.` of M already drops it for other characters, and the underscore is read again in L1. A guard that sends the underscore to L1 never keeps it as text: a literal underscore comes only from a pair. The guard of L2b is the one that does not write its letter as text: the stem keeps its `a`, and L2a and M read the `v` again as the plain letter that it is.
++
++**In the C code.** Each guard is a test in front of an existing branch of `rmn2acii.c`: in `level1` for the letter `c`; in `level2b` for `v`; in `level2c` for `e`, `y`, `o`, `n`, `r`, `j`; in `matra` for `e`, `o` and for the `_` that follows an explicit `^`. The test is a one-line helper, `no_partner (char next)`, which is true for `_` and for the NUL byte. The action of a guard is the one that the function already has for "any other character", so no new function and no new state is needed: the parser has the same five control states, the same lookahead and the same recursive-descent shape (section 14.4). The edits are in `patches/0002-apply-underscore-guards.patch`; `tools/apply_guards.py` makes the same edits to the `rmn2acii.c` of patch 0001, each with an assertion that its anchor occurs exactly once.
++
++**What changes for the user.** The guards change what a small set of invalid inputs mean, and nothing else. A letter that needs a partner (`c` without an `h`, `_e` without a second `e`, and so on) that is followed by an underscore or by the end of the string is now the plain letter, where patch 0001 alone swallowed the underscore or read the bytes that lay beyond the end. `c_` is the letter `c` and a halant (the `_` at the end of a text is a halant), not CHA with its `h` missing; `c` alone is the letter `c`; `lv` is LA and the letter `v`; `ke` is KA and the letter `e`; `_o_` is the letter `o` and a halant. Text that the decoder writes for well-formed ACII does not contain any of them (section 14.3), so for it nothing changes: all 331,621 sequences of up to three bytes that belong to `W` (section 9.2) read the same on the mid and on the new build, and the new build returns every one of them exactly (`tests/rt_filters.py`, part 5). Among the 394,419 sequences of up to three bytes over the old repertoire the guards change 2,482, none of them in `W`, none that was a round trip before and none that becomes one (for example `A1 DF`, a modifier followed by a sign: the decoder writes `_n_ri`, patch 0001 alone turns that into `5F CF DB` and the new build into `6E AA`, the letter `n` and the vowel RI). Patch 0002 is a patch of its own so that a project that does not want the change can leave it out, or take it off again with `patch -R`, without touching the Sanskrit characters of patch 0001.
+ 
+ **What the guards establish** (all of them are checked, U7):
+ 
+-1. No rule of the repaired grammar can consume an underscore, or step over the terminator, unseen (the same static analysis that finds the eleven rules finds none).
++1. No rule of the grammar can consume an underscore, or step over the terminator, unseen (the static analysis that finds the eleven rules in the grammar without the `!` rules finds none in the whole grammar).
+ 2. Law 3 holds without exception: for every string that the parser reads, in the ranges of the next paragraph, the output has one `5F` for every pair of underscores.
+ 3. The parser never reads past the end of the input. Together with a complete table this makes it a **total function**: every rule consumes at least one character or moves to a state that does, every state ends in a catch-all rule, no rule steps over the terminator, and every row that a rule asks for exists, so the parse of any string ends with an output. The first three conditions hold for the grammar with the guards; the last holds if the fifteen rows of section 11.3 are filled in.
+ 4. Each guard is needed: with the rule left out, the string in the last column of the block breaks the law, and with it the law holds.
+-5. No guard fires on what the decoder writes for well-formed ACII: the parse of any two table keys written one after the other is unchanged, except where the shipped parser reads past the end (the key `^` followed by an underscore key: a halant at the start of a stretch, which is not well-formed ACII), and the round trips of section 14.5 are exact with and without the guards.
+-6. The guards change the output only of strings that contain a letter that needs a partner (`c`, `_e`, `_o` ...) directly before an underscore or the end of the input, where the shipped parser jumps over the underscore.
++5. No guard fires on what the decoder writes for well-formed ACII: the parse of any two table keys written one after the other is unchanged, except where the parser of patch 0001 alone reads past the end (the key `^` followed by an underscore key: a halant at the start of a stretch, which is not well-formed ACII), and the round trips of section 14.5 are exact with and without the guards.
++6. The guards change the output only of strings that contain a letter that needs a partner (`c`, `_e`, `_o` ...) directly before an underscore or the end of the input, where the parser of patch 0001 alone jumps over the underscore.
++7. The C parser agrees with the grammar: on the twelve witnesses it writes what the grammar writes, one `5F` for every pair; and on 90,345 strings (the default run) its output is the same whatever follows the terminator (an underscore, a letter, what an earlier string left), where the C parser of patch 0001 alone differs on 11,000 of them.
+ 
+-The ranges of the option `--full`: all 551,881 strings of at most four letters over `a-z` and `_`, and all 1,118,481 strings of at most five letters over `acehjklnortvyz_^` (the letters that the rules test): no violation, no read past the end. The option `--deep` extends the second range to the 17.9 million strings of at most six letters. The table counts the strings of at most three letters over `a-z` and `_` (20,440) for the shipped grammar and the repaired grammar, with the table as it is and with the fifteen missing rows filled in with a dummy byte:
++The ranges of the option `--full`: all 551,881 strings of at most four letters over `a-z` and `_`, and all 1,118,481 strings of at most five letters over `acehjklnortvyz_^` (the letters that the rules test): no violation, no read past the end. The option `--deep` extends the second range to the 17.9 million strings of at most six letters. The table counts the strings of at most three letters over `a-z` and `_` (20,440) for the grammar without the guards (patch 0001 alone) and for the grammar with them, with the table as it is and with the fifteen missing rows filled in with a dummy byte:
+ 
+ <!-- BEGIN GENERATED underscore-counts -->
+ 
+ | grammar | table | defined | read past the end | missing row | of the defined: break the pairing law |
+ |---|---|--:|--:|--:|--:|
+-| of section 5.3 | as it is | 18208 | 1726 | 506 | 20 |
+-| of section 5.3 | 15 rows filled in | 18474 | 1966 | 0 | 20 |
+-| with the guards of section 14.7 | as it is | 20179 | 0 | 261 | 0 |
+-| with the guards of section 14.7 | 15 rows filled in | 20440 | 0 | 0 | 0 |
++| without the guards (patch 0001 alone) | as it is | 18208 | 1726 | 506 | 20 |
++| without the guards (patch 0001 alone) | 15 rows filled in | 18474 | 1966 | 0 | 20 |
++| with the guards of section 14.7 (this package) | as it is | 20179 | 0 | 261 | 0 |
++| with the guards of section 14.7 (this package) | 15 rows filled in | 20440 | 0 | 0 | 0 |
+ 
+-Of the 18208 strings that both grammars read (the table as it is), the guards change the output of 86; on 66 of those the shipped grammar kept the law, the others are the strings on which it did not.
++Of the 18208 strings that both versions read (the table as it is), the guards change the output of 86; on 66 of those the version without the guards kept the law, the others are the strings on which it did not.
+ 
+ <!-- END GENERATED underscore-counts -->
+ 
+-**To apply them to the C code.** Each guard is a test in front of an existing branch: in `level1` for the letter `c`; in `level2b` for `v`; in `level2c` for `e`, `y`, `o`, `n`, `r`, `j`; in `matra` for `e`, `o` and for the `_` that follows an explicit `^`. A guard's action is the one the function already has for "any other character", so no new function and no new state is needed. This is not done in the package: the guards change what a handful of invalid inputs mean (`c_` is the letter `c` followed by a marker, not the letter CHA with its `h` missing), and the author of the project should decide that. A C patch would be checked against the repaired grammar by `tests/diff_parser.py`, which compares the grammar with the C parser on more than a million strings.
+-
+ ### 14.8 Case folding, and arbitrary changes to the text (Q2)
+ 
+ **What the code has.** The parser tests only lower-case letters, `_`, `^` and `|` in its guards; a capital letter is not a key letter and is passed through as text, with one exception, the wildcards, which keep any character. The lexers pass `[A-Za-z_]` runs to the parser, so capitals do arrive. The only place that folds is `Hindawi/hindrv/std2hin.awk`, which runs `tr 'A-Z' 'a-z'` on the program text for two of its language styles (`praa_tha`, `praa_thamika`), before the translation to Romenagri and before the escape `E` of section 14.5.
+@@ -1355,26 +1404,25 @@ Of the 18208 strings that both grammars read (the table as it is), the guards ch
+ - `phi` is a monoid homomorphism of strings, `phi(uv) = phi(u) phi(v)`, it is idempotent, it fixes `_`, digits and punctuation, and it is not injective (`A` and `a` go to `a`). It keeps every run of underscores: the number and lengths of the runs are the same before and after (U8).
+ - Capital letters are inert in the parser: if every capital of `s` is replaced by `Q`, the output is the same up to that replacement (U8). So the restriction to lower case removes only letters that the parser would pass through anyway; it does not change the transducer on the strings that remain, and the laws of section 14.2 hold on both sides of the restriction.
+ - The parser is not a homomorphism, with or without the restriction (`P(uv) != P(u) P(v)` in general: the halant, `vocalic`). It is closed under composition with `phi`: `P` after `phi` is again a sequential function.
+-- `phi` does not commute with `P`, and it can create a breaker. The escaped text `C__f` parses to `C 5F f`. Its fold `c__f` parses to `B8 E8 66`: the letter `c` now swallows the first underscore (section 14.6) and the escaped underscore is lost (U8). With the guards, both keep the underscore.
++- `phi` does not commute with `P`, and it could create a breaker. The escaped text `C__f` parses to `C 5F f` (`43 5F 66`). Its fold `c__f` parses, in patch 0001 alone, to `B8 E8 66`: the letter `c` swallows the first underscore (section 14.6) and the escaped underscore is lost (U8). With the guards `c__f` is `63 5F 66`: the fold turns a capital into a lower-case letter and the underscore stays.
+ 
+-**Crash-resilience.** "Arbitrary string mutations by the host" include a case change, truncation at any point, insertion or deletion of any character, doubling or halving of underscores, and concatenation. For the grammar with the guards and a complete table, the parser is a total function (section 14.7, item 3), so none of them can make it fail: the claim is proved by the induction on the rules that item 3 states, and checked on all strings in the ranges of section 14.7. The checks include fifteen thousand random mutations of valid spellings in the default run, with the parser defined on every one (U8).
++**Crash-resilience.** "Arbitrary string mutations by the host" include a case change, truncation at any point, insertion or deletion of any character, doubling or halving of underscores, and concatenation. For the grammar with the guards and a complete table, the parser is a total function (section 14.7, item 3), so none of them can make it fail: the claim is proved by the induction on the rules that item 3 states, and checked on all strings in the ranges of section 14.7. The checks include 14,762 random mutations of valid spellings in the default run, with the parser defined on every one once the table is complete (U8).
+ 
+-For the shipped C code it is false, for four reasons:
++The C code of this package is as resilient as that grammar, except for three things, none of which involves the underscore:
+ 
+-1. fifteen rows that the grammar asks for are missing (section 11.3), so a mutation that produces `kv`, `tv` and the other consonants before `v`, or `lh`, or `_rrh`, crashes the parser;
+-2. eleven rules read an underscore or the terminator unseen (section 14.6), so a truncation after `c` or `_n` reads past the end of the input;
+-3. the buffers have fixed sizes (section 11.4), so a long enough run overflows them;
+-4. the decoder pops an empty stack on a stray halant or nukta (section 11.4).
++1. fifteen rows that the grammar asks for are missing (section 11.3), so a mutation that puts a letter after the `v` that follows a consonant stem (`kva`, `tvx`), or that produces `lh` or `_rrh`, crashes the parser;
++2. the buffers have fixed sizes (section 11.4), so a long enough run overflows them;
++3. the decoder pops an empty stack on a stray halant or nukta (section 11.4).
+ 
+-On those mutations (14,762 in the default run), the shipped grammar reads past the end of the input on 2.4% and asks for a missing row on 0.3%, and the shipped C parser crashes on 43 (U8). So the answer to "can it be formally verified as crash-resilient" is: *not as shipped*, and *yes, by the argument above, for the grammar of section 14.7 once the table is complete*. The proof is an induction and a finite exhaustive check, not a machine-checked proof; the connection between the grammar and the C code is the agreement test of `tests/diff_parser.py`, not a proof either.
++Patch 0001 alone had a fourth: eleven rules read an underscore or the terminator unseen (section 14.6), so a truncation after `c` or `_n` read past the end of the input. On the 14,762 mutations of the default run, the grammar without the guards reads past the end of the input on 360 (2.4%) and asks for a missing row on 40 (0.3%), and the C parser of patch 0001 alone crashes on 43. With the guards the grammar never reads past the end and asks for a missing row on 35, and the C parser of this package crashes on exactly those 35 and on no other (U8). So the answer to "can it be formally verified as crash-resilient" is: *yes, by the argument above, for the grammar of section 14.7 once the table is complete*, and *for the C code of this package up to the three reasons above*; for patch 0001 alone it was *not*. The proof is an induction and a finite exhaustive check, not a machine-checked proof; the connection between the grammar and the C code is the agreement test of `tests/diff_parser.py`, not a proof either.
+ 
+ ### 14.9 Joiners and operators (Q3)
+ 
+-**Where the two alphabets meet.** Through the lexers, the parser sees only runs of `[A-Za-z_]`; the rest of the text, host operators and escapes included, is copied by the lexer (section 11.1). The parser changes 17 of the 95 printable ASCII bytes when each is given alone: the sixteen letters `bcdgjklmnprstwxy` and `_`. `acii2cf` and `acii2pcf` change none of the 95; `acii2rmn` wraps all 52 letters and `_` in `"e_x"` and leaves the other 31 punctuation marks, among them every operator of C, C++, Java and Python. So the script and the host languages share *one* character, the underscore, and the only context that has to be kept is the one of section 14.4: two states (U9).
++**Where the two alphabets meet.** Through the lexers, the parser sees only runs of `[A-Za-z_]`; the rest of the text, host operators and escapes included, is copied by the lexer (section 11.1). The parser changes 16 of the 95 printable ASCII bytes when each is given alone: the fifteen letters `bdgjklmnprstwxy` and `_`. (Patch 0001 alone changed 17: a lone `c` read past the end of the string and came out as CHA; the guard of section 14.7 leaves it the letter `c`.) `acii2cf` and `acii2pcf` change none of the 95; `acii2rmn` wraps all 52 letters and `_` in `"e_x"` and leaves the other 31 punctuation marks, among them every operator of C, C++, Java and Python. So the script and the host languages share *one* character, the underscore, and the only context that has to be kept is the one of section 14.4: two states (U9).
+ 
+ **The joiners that the converters cannot carry.** ZWJ (U+200D) and ZWNJ (U+200C) have no row in any table. `uni2acii` writes their low bytes, `0D` and `0C`, a carriage return and a form feed (section 11.6). ISCII encodes the same two things as the byte pairs halant-halant (explicit halant) and halant-nukta (soft halant); `acii2rmn` does not read them: `B3 E8 E8` comes out empty (the consonant is lost), `B3 E8 E9` crashes it. By accident the parser *writes* the first pair: `k_` is `B3 E8 E8`, because a `_` at the end is a halant and the consonant has one already. So the spelling exists in one direction and cannot be read back.
+ 
+-**What a joiner costs.** The grammar is open to joiners at one place. A joiner key with an underscore in front is a family letter. Adding `_zwj` and `_zwn` takes two rules in state L2c and two rows in `acii.h`, and nothing else in the grammar (U9): the states, the longest guard and the list of rules of section 14.6 are unchanged, the marker rule holds, and the run law holds with them (`k___zwj` is KA, halant, a literal underscore and the joiner; `k__zwj` the same with the ordinary reading of `zwj`). The cost is in the other direction: the decoder has to know that a halant follows a halant, which is a look at the byte before, as it already does for the attribute prefix `EF`; and a byte has to be found (section 10.3), because the ISCII pairs are already the encoding of the halant.
++**What a joiner costs.** The grammar is open to joiners at one place. A joiner key with an underscore in front is a family letter. Adding `_zwj` and `_zwn` takes two rules in state L2c and two rows in `acii.h`, and nothing else in the grammar (U9): the states, the longest guard and the list of unguarded rules of section 14.6 are unchanged (the two joiner rules test every character that they skip, so they need no guard rule), the marker rule holds, and the run law holds with them (`k___zwj` is KA, halant, a literal underscore and the joiner; `k__zwj` the same with the ordinary reading of `zwj`). The cost is in the other direction: the decoder has to know that a halant follows a halant, which is a look at the byte before, as it already does for the attribute prefix `EF`; and a byte has to be found (section 10.3), because the ISCII pairs are already the encoding of the halant.
+ 
+ **The collisions that remain.** The projection of `acii2cf` is not injective: the Devanagari letter KA and the Latin word `ka` both come out as `ka` (U9). That is a design choice of the C-friendly filters, not an artefact of the underscore, and it is where the script and the host language cannot be told apart again after the fact. The underscore at the junction of a Latin word and Devanagari text (`trace_` followed by KA) is written `trace__ka` by `acii2cf` and `trace_ka` by `acii2pcf` (section 11.1): the first lets the decoder double it, the second does not.
+ 
+@@ -1389,15 +1437,15 @@ On those mutations (14,762 in the default run), the shipped grammar reads past t
+ | two states are necessary and sufficient for runs | argued in section 14.4; tested (U3) |
+ | the bijection of section 14.5 | tested on random well-formed texts, models and C (U4); argued from Law 2 |
+ | the escape law | argued from Law 1; tested on models and C (U5) |
+-| eleven rules read an underscore unseen | static analysis, and C against the grammar on the witnesses (U6) |
++| eleven rules read an underscore unseen (patch 0001 alone) | static analysis, and C against the grammar on the witnesses (U6) |
+ | the twelve guards: Law 3, no read past the end, totality with a complete table | argued by induction on the rules; checked exhaustively in the ranges of section 14.7 (U7) |
+-| the guards in the C code | **not implemented**; the argument is about the grammar |
+-| crash-resilience of the shipped C code | **false**, with the four reasons of section 14.8 (U8) |
++| the guards in the C code | **implemented** (patch 0002); the C parser agrees with the grammar on every string of the differential test, fixes the twelve witnesses, and does not depend on what follows the terminator (U7) |
++| crash-resilience of the C code of this package | **true except for three reasons** that do not involve the underscore (missing rows, fixed buffers, the decoder's empty stack); false for patch 0001 alone, for a fourth (U8) |
+ | a machine-checked proof (Coq, Lean) of any of this | **open**; the models are small enough that it could be done |
+ 
+ ## Appendix A: the complete table
+ 
+-Every row of `acii.h`, in table order: row number, Romenagri key, ACII bytes, Unicode code points, meaning, the spelling in `aciihin.h` ("saral"), and which translator uses the row (section 11.2). Rows added by the Sanskrit patch are marked **new**. This block is generated.
++Every row of `acii.h`, in table order: row number, Romenagri key, ACII bytes, Unicode code points, meaning, the spelling in `aciihin.h` ("saral"), and which translator uses the row (section 11.2). Rows added by patch 0001, the Sanskrit characters, are marked **new**. This block is generated.
+ 
+ <!-- BEGIN GENERATED table-all -->
+ 
+diff --git a/Romenagri/rmn2acii.c b/Romenagri/rmn2acii.c
+index ce2a8ab..8b94dd9 100644
+--- a/Romenagri/rmn2acii.c
++++ b/Romenagri/rmn2acii.c
+@@ -27,6 +27,12 @@ Modifications: (Please maintain reverse chronological order)
+                         Name of modifier <alias>,
+ 			email adress of modifier
+ 
++	26-Oct-2026, Guards: a letter that needs a partner is plain text when an underscore or the end follows
++	              (level1 c, level2b v, level2c e y o n r j, matra e o _), new helper no_partner(),
++	              see TRANSLITERATION.md, section 14.7,
++                        Abhishek Choudhary <obonac> (prepared with Claude),
++                        a.choudhary@ieee.org
++
+ 	19-Oct-2026, Parser branches for _li _lee _ree _om _vd _vua _vna _vga _vca,
+ 	              new helper vocalic(), see TRANSLITERATION.md,
+                         Abhishek Choudhary <obonac> (prepared with Claude),
+@@ -79,6 +85,16 @@ vocalic (char *indep, char *dep)
+     strcat (msg, lookup (indep));
+ }
+ 
++/* The guards of TRANSLITERATION.md, section 14.7.  The branches below that jump over, or keep as plain text, the character after
++   their letter without looking at it (the 'h' of "ch", the 'r' of "vra", the second 'e' of "_ee", the 'n' of "_yna", the two
++   letters of "_ri" ...) must not take an underscore, which belongs to the next unit or to a "__" pair, nor step over the end of
++   the string.  no_partner() is true for those two characters; a letter that is followed by one of them has no partner. */
++static int
++no_partner (char next)
++{
++  return next == '_' || next == '\0';
++}
++
+ int
+ matra (char *tok)
+ {
+@@ -100,6 +116,12 @@ matra (char *tok)
+       level1 (tok);
+       break;
+     case 'e':
++      if (no_partner (tok[1]))	/* an 'e' with no second 'e' */
++        {
++          strcat (msg, c2s (tok[0]));
++          level1 (++tok);
++          break;
++        }
+       strcat (msg, lookup ("^ee"));
+       tok += 2;
+       level1 (tok);
+@@ -124,6 +146,9 @@ matra (char *tok)
+           strcat (msg, lookup ("^_ree"));
+           tok += 4;
+         }
++      else if (no_partner (tok[1]) || no_partner (tok[2]))	/* "_ri" with an underscore or the end where "ri" should be: */
++        {
++        }						/* the underscore is read again, as the start of the next unit */
+       else
+         {
+           strcat (msg, lookup ("^_ri"));
+@@ -132,6 +157,12 @@ matra (char *tok)
+       level1 (tok);
+       break;
+     case 'o':
++      if (no_partner (tok[1]))	/* an 'o' with nothing after it */
++        {
++          strcat (msg, c2s (tok[0]));
++          level1 (++tok);
++          break;
++        }
+       tok++;
+       switch (tok[0])
+ 	{
+@@ -254,7 +285,7 @@ int level2b (char *tok, char *lk)
+       strcat (msg, lookup (lup));
+       level2a (++tok);
+     }
+-  else if (tok[0] == 'v')	/*lvra-case */
++  else if (tok[0] == 'v' && !no_partner (tok[1]))	/*lvra-case */
+     {
+       strcat (lup, "vra");
+       strcat (msg, lookup (lup));
+@@ -300,11 +331,23 @@ int level2c (char *tok)
+       level1 (tok);
+       break;
+     case 'e':
++      if (no_partner (tok[1]))	/* '_e' with no second 'e' */
++        {
++          strcat (msg, c2s (tok[0]));
++          level1 (++tok);
++          break;
++        }
+       strcat (msg, lookup ("_ee"));
+       tok += 2;
+       level1 (tok);
+       break;
+     case 'y':
++      if (no_partner (tok[1]))	/* '_y' with no 'n' */
++        {
++          strcat (msg, c2s (tok[0]));
++          level1 (++tok);
++          break;
++        }
+       strcat (msg, lookup ("_yna"));
+       tok++;
+       level2a (++tok);
+@@ -329,6 +372,12 @@ int level2c (char *tok)
+ 	}
+       break;
+     case 'o':
++      if (no_partner (tok[1]))	/* '_o' with nothing after it */
++        {
++          strcat (msg, c2s (tok[0]));
++          level1 (++tok);
++          break;
++        }
+       tok++;
+       switch (tok[0])
+ 	{
+@@ -363,6 +412,12 @@ int level2c (char *tok)
+ 	};
+       break;
+     case 'n':
++      if (no_partner (tok[1]))	/* '_n' with nothing after it */
++        {
++          strcat (msg, c2s (tok[0]));
++          level1 (++tok);
++          break;
++        }
+       tok++;
+       switch (tok[0])
+ 	{
+@@ -389,6 +444,12 @@ int level2c (char *tok)
+ 	};
+       break;
+     case 'r':
++      if (no_partner (tok[1]))	/* '_r' with nothing after it */
++        {
++          strcat (msg, c2s (tok[0]));
++          level1 (++tok);
++          break;
++        }
+       tok++;
+       switch (tok[0])
+ 	{
+@@ -479,6 +540,12 @@ int level2c (char *tok)
+ 	  };
+       break;
+     case 'j':
++      if (no_partner (tok[1]))	/* '_j' with nothing after it */
++        {
++          strcat (msg, c2s (tok[0]));
++          level1 (++tok);
++          break;
++        }
+       tok++;
+       switch (tok[0])
+ 	{
+@@ -598,6 +665,12 @@ level1 (char *tok)
+       level2b (++tok, "g");
+       break;
+     case 'c':
++      if (no_partner (tok[1]))	/* a 'c' with no 'h' after it */
++        {
++          strcat (msg, c2s (tok[0]));
++          level1 (++tok);
++          break;
++        }
+       tok++;
+       level2b (++tok, "ch");
+       break;

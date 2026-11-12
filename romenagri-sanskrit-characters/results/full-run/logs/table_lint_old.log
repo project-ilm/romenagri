@@ -1,0 +1,29 @@
+acii.h: 84 rows, unicode.h: 73 rows, aciihin.h: 75 rows
+ERROR  T3 key '_3' uses characters outside [a-z_]
+       (no saral rendering in aciihin.h for: 80 AB AF C7 D0 E0 E4 EB)
+       (row '_rda' is shadowed in acii2rmn by 'da'; it is still the parser's output for that key)
+       (row '_rdha' is shadowed in acii2rmn by 'dha'; it is still the parser's output for that key)
+warn   T6 key '^ra' parses to 7261 but its row says e8cf
+       (row '^ra' is shadowed in acii2rmn by '^'; it is still the parser's output for that key)
+       (row 'r' is shadowed in acii2rmn by 'ra'; it is still the parser's output for that key)
+       (row 'kxa' is shadowed in acii2rmn by 'ka'; it is still the parser's output for that key)
+       (row '_tra' is shadowed in acii2rmn by '_ta'; it is still the parser's output for that key)
+       (row 'j_yna' is shadowed in acii2rmn by 'ja'; it is still the parser's output for that key)
+       (row 'shra' is shadowed in acii2rmn by 'sha'; it is still the parser's output for that key)
+ERROR  T6 key '_3' parses to 33 but its row says eb
+ERROR  T8 key '_3': the underscore at position 0 is not followed by a letter (marker rule, TRANSLITERATION.md section 14.3)
+T8: 35 keys contain a marker underscore, 1 violate the marker rule
+ERROR  T7 C+halant+X b3e8eb does not survive acii2rmn + rmn2acii:  -> 'k_3' -> b3e8e833
+ERROR  T7 X+C ebb3 does not survive acii2rmn + rmn2acii:  -> '_3ka' -> e833b3
+ERROR  T7 C+halant+X b4e8eb does not survive acii2rmn + rmn2acii:  -> 'kh_3' -> b4e8e833
+ERROR  T7 X+C ebb4 does not survive acii2rmn + rmn2acii:  -> '_3kha' -> e833b4
+ERROR  T7 C+halant+X b5e8eb does not survive acii2rmn + rmn2acii:  -> 'g_3' -> b5e8e833
+ERROR  T7 X+C ebb5 does not survive acii2rmn + rmn2acii:  -> '_3ga' -> e833b5
+ERROR  T7 C+halant+X b6e8eb does not survive acii2rmn + rmn2acii:  -> 'gh_3' -> b6e8e833
+ERROR  T7 X+C ebb6 does not survive acii2rmn + rmn2acii:  -> '_3gha' -> e833b6
+ERROR  T7 C+halant+X b7e8eb does not survive acii2rmn + rmn2acii:  -> '_ng_3' -> b7e8e833
+ERROR  T7 X+C ebb7 does not survive acii2rmn + rmn2acii:  -> '_3_nga' -> e833b7
+ERROR  T7 C+halant+X b8e8eb does not survive acii2rmn + rmn2acii:  -> 'ch_3' -> b8e8e833
+ERROR  T7 X+C ebb8 does not survive acii2rmn + rmn2acii:  -> '_3cha' -> e833b8
+T7: 37 consonants x 53 letters, both orders: 74 failures
+15 error(s)

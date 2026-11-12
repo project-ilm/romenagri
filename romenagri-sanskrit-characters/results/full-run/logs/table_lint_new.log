@@ -1,0 +1,59 @@
+acii.h: 96 rows, unicode.h: 85 rows, aciihin.h: 87 rows
+       (no saral rendering in aciihin.h for: 80 AB AF C7 D0 E0 E4 EB)
+       (row '_rda' is shadowed in acii2rmn by 'da'; it is still the parser's output for that key)
+       (row '_rdha' is shadowed in acii2rmn by 'dha'; it is still the parser's output for that key)
+warn   T6 key '^ra' parses to 7261 but its row says e8cf
+       (row '^ra' is shadowed in acii2rmn by '^'; it is still the parser's output for that key)
+       (row 'r' is shadowed in acii2rmn by 'ra'; it is still the parser's output for that key)
+       (row 'kxa' is shadowed in acii2rmn by 'ka'; it is still the parser's output for that key)
+       (row '_tra' is shadowed in acii2rmn by '_ta'; it is still the parser's output for that key)
+       (row 'j_yna' is shadowed in acii2rmn by 'ja'; it is still the parser's output for that key)
+       (row 'shra' is shadowed in acii2rmn by 'sha'; it is still the parser's output for that key)
+T8: 47 keys contain a marker underscore, 0 violate the marker rule
+T7: 37 consonants x 62 letters, both orders: 0 failures
+
+Free bytes in 0x80-0xFF, with the ISCII-91 meaning and the allocation class:
+   0x8D  C1 extension block (first choice for new characters) 
+   0x8E  C1 extension block (first choice for new characters) 
+   0x8F  C1 extension block (first choice for new characters) 
+   0x90  C1 extension block (first choice for new characters) 
+   0x91  C1 extension block (first choice for new characters) 
+   0x92  C1 extension block (first choice for new characters) 
+   0x93  C1 extension block (first choice for new characters) 
+   0x94  C1 extension block (first choice for new characters) 
+   0x95  C1 extension block (first choice for new characters) 
+   0x96  C1 extension block (first choice for new characters) 
+   0x97  C1 extension block (first choice for new characters) 
+   0x98  C1 extension block (first choice for new characters) 
+   0x99  C1 extension block (first choice for new characters) 
+   0x9A  C1 extension block (first choice for new characters) 
+   0x9B  C1 extension block (first choice for new characters) 
+   0x9C  C1 extension block (first choice for new characters) 
+   0x9D  C1 extension block (first choice for new characters) 
+   0x9E  C1 extension block (first choice for new characters) 
+   0x9F  C1 extension block (first choice for new characters) 
+   0xA0  avoided (no-break space)                       U+00A0 NO-BREAK SPACE reaches this byte through uni2acii's low-byte fallback (TRANSLITERATION.md, section 10.3)
+   0xCE  ISCII-assigned: use for that very character    Consonant JYA (Bengali, Assamese & Oriya)
+   0xD3  ISCII-assigned: use for that very character    Consonant ZHA (Tamil & Malayalam)
+   0xD9  ISCII-assigned: use for that very character    Consonant INVISIBLE
+   0xEC  ISCII-unassigned                               Unused
+   0xED  ISCII-unassigned                               Unused
+   0xEE  ISCII-unassigned                               Unused
+   0xF0  never                                          extension prefix (ISCII EXT)
+   0xF1  digits (reserved for Devanagari digits)        Digit 0
+   0xF2  digits (reserved for Devanagari digits)        Digit 1
+   0xF3  digits (reserved for Devanagari digits)        Digit 2
+   0xF4  digits (reserved for Devanagari digits)        Digit 3
+   0xF5  digits (reserved for Devanagari digits)        Digit 4
+   0xF6  digits (reserved for Devanagari digits)        Digit 5
+   0xF7  digits (reserved for Devanagari digits)        Digit 6
+   0xF8  digits (reserved for Devanagari digits)        Digit 7
+   0xF9  digits (reserved for Devanagari digits)        Digit 8
+   0xFA  digits (reserved for Devanagari digits)        Digit 9
+   0xFB  ISCII-unassigned                               Unused
+   0xFC  ISCII-unassigned                               Unused
+   0xFD  ISCII-unassigned                               Unused
+   0xFE  ISCII-unassigned                               Unused
+   0xFF  ISCII-unassigned                               Unused
+   total free: 42  (C1 extension block (first choice for new characters): 19; ISCII-assigned: use for that very character: 3; ISCII-unassigned: 8; avoided (no-break space): 1; digits (reserved for Devanagari digits): 10; never: 1)
+0 error(s)

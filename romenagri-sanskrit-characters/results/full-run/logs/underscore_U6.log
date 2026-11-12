@@ -1,0 +1,16 @@
+
+U6  eleven rules read an underscore unseen  (section 14.6): the parser without the guards (patch 0001 alone)
+  U6  static analysis finds 12 positions in 11 rules that consume an underscore other than as the first character of a unit ok
+  U6  the same rules, at the same positions, are the ones that can step over the terminator (a read past the end of the input) ok
+  U6  every one of the 11 rules has a string, at most 4 letters long, on which it breaks the pairing law               ok
+  U6  on those 11 strings the C parser of patch 0001 alone writes what the grammar writes (the grammar is undefined on 0 of them, where C reads past the end) ok
+  U6  and on 11 of them the output has the wrong number of literal underscores (the escaped underscore is lost, or one is made up) ok
+  U6  the filter of patch 0001 alone turns the escaped identifier `tc__flag` into bytes without any underscore: bd e8 b8 e8 66 d1 b5 e8 ok
+  U6  the filter of patch 0001 alone turns the escaped identifier `abc__x` into bytes without any underscore: 61 ca e8 b8 e8 78 ok
+  U6  the filter of patch 0001 alone crashes on `tv__set` (the stem t, then v: the row `tvra` does not exist, section 11.3) ok
+  U6  the filter of this package keeps the underscore of `tc__flag`: bd e8 63 5f 66 d1 b5 e8                           ok
+  U6  the filter of this package keeps the underscore of `abc__x`: 61 ca e8 63 5f d6 e8                                ok
+  U6  ... and does not crash on `tv__set`: the guard does not ask for the row `tvra`                                   ok
+      (0s)
+
+RESULT: PASS   (1 s)   [only U6]

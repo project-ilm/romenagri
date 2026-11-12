@@ -1,0 +1,43 @@
+<h1 class="page">Devanagari through programs</h1>
+<p class="lead">Romenagri carries Hindi and Sanskrit text through three layers: Unicode Devanagari, an 8-bit encoding called ACII, and plain ASCII letters, which programs, shell tools and <code>sed</code> scripts can handle. It is the transliteration system under Hindawi, whose language styles are built on it. Its sources are the <code>Romenagri/</code> directory of the <a href="https://github.com/hindawiai/chintamani">hindawiai/chintamani</a> repository.</p>
+
+<pre aria-label="The chain"><code>Unicode &mdash;uni2acii&rarr; ACII &mdash;acii2rmn&rarr; Romenagri &mdash;rmn2acii&rarr; ACII &mdash;acii2uni&rarr; Unicode</code></pre>
+
+<section class="demo" aria-labelledby="demo-h">
+<h2 id="demo-h">Try it</h2>
+<p class="note">The box runs <code>romenagri.js</code>, a port of the four converters whose tables are generated from the headers of <code>Romenagri/</code>. It is not the production C code: <code>build_site.py --check</code> compares it with the compiled C programs and with the Python models of the tests. Every stage of the chain is shown, so that each can be inspected.</p>
+<label for="demo-ex">An example</label>
+<select id="demo-ex" aria-label="Examples"></select>
+<label for="demo-in">Text</label>
+<textarea id="demo-in" rows="3" spellcheck="false" lang="hi"></textarea>
+<fieldset>
+<legend>Direction</legend>
+<label class="inline"><input type="radio" name="demo-dir" value="fwd" checked> Unicode &rarr; ACII &rarr; Romenagri &rarr; ACII &rarr; Unicode</label>
+<label class="inline"><input type="radio" name="demo-dir" value="rev"> Romenagri &rarr; ACII &rarr; Unicode</label>
+</fieldset>
+<fieldset>
+<legend>Form of the nukta letters at the Unicode end (<a href="explainer.html#nukta">what this is</a>)</legend>
+<label class="inline"><input type="radio" name="demo-form" value="asis" checked> asis (the default)</label>
+<label class="inline"><input type="radio" name="demo-form" value="nfc"> nfc</label>
+<label class="inline"><input type="radio" name="demo-form" value="nfd"> nfd</label>
+</fieldset>
+<p><label class="inline"><input type="checkbox" id="demo-warn"> Warning layer (<code>uni2acii -w</code>): report characters that have no ACII byte</label></p>
+<noscript><p class="crash">The demonstration needs JavaScript. The tables on the other pages do not.</p></noscript>
+<div class="steps" id="demo-out" aria-live="polite"></div>
+</section>
+
+<h2>What is here</h2>
+<ul>
+<li><a href="explainer.html">Explainer</a>: the three layers, the tables, the decoder, the parser, the round-trip contract and the nukta layer.</li>
+<li><a href="characters.html">Characters</a>: the twelve characters that were added to ACII, and the eleven letters with a nukta, with every byte they are written as.</li>
+<li><a href="challenges.html">Challenges</a>: the eight cases of the nukta layer and the decision on each, the danda, and what is still open.</li>
+<li><a href="documents.html">Documents</a>: the specification, the patches, the tests and the notebook, and how to publish this site.</li>
+</ul>
+
+<h2>The nukta layer in a paragraph</h2>
+<p>Unicode has eleven letters with a nukta that are one code point each: {{u:0929,0931,0934,0958,0959,095A,095B,095C,095D,095E,095F}}. ACII writes every one of them as two bytes, the consonant and the nukta (<code>E9</code>). Only two of the eleven had a byte of their own in the table; for the other nine <code>uni2acii</code> wrote the low byte of the code point, so that the cluster {{u:095C,094D,0935}}, typed with the single code point U+095C, came back as {{u:0935}} alone. The layer that the third patch adds has three parts, which are kept apart: a <strong>rule</strong> (a letter with a nukta is a consonant and a nukta, always), a <strong>form</strong> (whether the Unicode end writes such a letter as one code point or as two: <code>asis</code>, the default, <code>nfc</code> or <code>nfd</code>, the user's choice) and a <strong>warning</strong> (off unless asked for) for the characters that have no ACII byte.</p>
+
+{{author_note}}
+
+<h2>How the pages were made</h2>
+<p>The tables on these pages are read from <code>unicode.h</code>, <code>acii.h</code>, <code>aciihin.h</code> and <code>nukta.h</code>, and every output shown (the bytes, the Romenagri, the crashes, the warning) was written by the compiled C programs when <code>romenagri-site/build_site.py</code> built the site. Nothing in a table was typed in. <a href="documents.html#site">Documents</a> says how to rebuild and check it.</p>
