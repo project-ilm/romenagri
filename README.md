@@ -1,5 +1,6 @@
 # Romenagri — Reversible Transliteration Library (Perso-Arabic seed)
 
+DOI (6.0.1): [10.5281/zenodo.24174023](https://doi.org/10.5281/zenodo.24174023)
 DOI (6.0.0): [10.5281/zenodo.24170925](https://doi.org/10.5281/zenodo.24170925)
 
 Deterministic, reversible transliteration engine underlying the Hindawi

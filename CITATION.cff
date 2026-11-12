@@ -12,6 +12,6 @@ abstract: >
   underlying the Hindawi Programming System (2004) and Project ILM. This seed
   packages the core with Perso-Arabic data for the 41 Perso-Arabic-family
   languages demonstrated at ilm.codes/map.html.
-doi: 10.5281/zenodo.24170925
+doi: 10.5281/zenodo.24174023
 version: "6.0.1"
 date-released: "2026-11-12"
