@@ -1,5 +1,7 @@
 # Romenagri — Reversible Transliteration Library (Perso-Arabic seed)
 
+DOI (6.0.0): [10.5281/zenodo.24170925](https://doi.org/10.5281/zenodo.24170925)
+
 Deterministic, reversible transliteration engine underlying the Hindawi
 Programming System (first public release 15 August 2004) and Project ILM.
 Original Romenagri release: 2003 (GPL).

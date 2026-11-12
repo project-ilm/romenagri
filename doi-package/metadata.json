@@ -1,0 +1,31 @@
+{
+  "title": "Romenagri: reversible transliteration, the Sanskrit characters, mapping layers for Indic and Perso-Arabic scripts, and AInagri",
+  "version": "6.0.0",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "GPL-2.0-or-later",
+  "language": "eng",
+  "creators": [
+    {
+      "name": "Choudhary, Abhishek",
+      "affiliation": "AyeAI",
+      "orcid": "0009-0002-0684-8320"
+    }
+  ],
+  "keywords": [
+    "Romenagri",
+    "transliteration",
+    "reversible transliteration",
+    "Devanagari",
+    "Sanskrit",
+    "Brahmic scripts",
+    "Perso-Arabic",
+    "Unicode",
+    "AInagri",
+    "Hindawi",
+    "Project ILM"
+  ],
+  "description": "Romenagri (2003, GPL) is the deterministic, reversible transliteration engine under the Hindawi Programming System (2004) and Project ILM. This release adds zip no. 5, the core with the Sanskrit characters (patches 0001 to 0003) and its tests; v6, sed mapping layers for 18 Indic scripts with Devanagari as the pivot (character reversibility from 0.9 % for Sinhala to 97.56 % for Tirhuta, through the core from 0.9 % to 87.67 %), Perso-Arabic mapped Unicode to Unicode, one page per script and a navigator for linguists; and v7: the plan for every other Unicode script (Hebrew to Egyptian Hieroglyphs, the rest of the Brahmic scripts, Cyrillic and the alphabets, the other abugidas), an inventory of the 161 scripts of Unicode 15.0, and AInagri, a script for the Devanagari languages in characters readers worldwide already know, reversible to the byte (1,610 of 1,610 synthetic strings and 202 of 202 corpus lines).",
+  "repository": "https://github.com/project-ilm/romenagri",
+  "author_verified": true
+}

@@ -1,0 +1,32 @@
+{
+  "title": "Romenagri: reversible transliteration, the Sanskrit characters, mapping layers for Indic and Perso-Arabic scripts, and AInagri",
+  "version": "6.0.0",
+  "doi": null,
+  "license": "GPL-2.0-or-later",
+  "artifacts": [
+    {
+      "name": "romenagri-6.0.0.tar.gz",
+      "size": 2627791,
+      "sha256": "ddd0c5c4bc31f75862f2ce8a445300af736ad7c6b6d51552c5b9c9587f33fedf"
+    },
+    {
+      "name": "CITATION.cff",
+      "size": 652,
+      "sha256": "70899e0662f796c3d0bea9f5cc7a390e65551e0e6d94cfbc9cf14b4ddc9a65be"
+    }
+  ],
+  "metadata_files": [
+    "metadata.json",
+    "zenodo.json",
+    "datacite.json",
+    "codemeta.json",
+    "CITATION.cff"
+  ],
+  "reproducibility": {
+    "checksums": {
+      "romenagri-6.0.0.tar.gz": "ddd0c5c4bc31f75862f2ce8a445300af736ad7c6b6d51552c5b9c9587f33fedf",
+      "CITATION.cff": "70899e0662f796c3d0bea9f5cc7a390e65551e0e6d94cfbc9cf14b4ddc9a65be"
+    },
+    "tool": "misty-doi"
+  }
+}
