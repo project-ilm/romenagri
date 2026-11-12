@@ -43,6 +43,13 @@ licences in this repository grant copyright permissions only and no right in any
 © 1993–2026 Abhishek Choudhary. All rights reserved. AyeAI.
 <!-- trademarks:end -->
 
-## The Sanskrit characters, the v6 mapping layers and v7
+## Layout since 6.0.1 (12 Nov 2026)
 
-`romenagri-sanskrit-characters/` holds zip no. 5 (the Romenagri core with the Sanskrit characters, patches 0001 to 0003, its tests and results), the v6 delta over it (sed mapping layers for 18 Indic scripts with Devanagari as the pivot, Perso-Arabic Unicode to Unicode, one page per script and a navigator for linguists) and v7: `V7-TASKS.md` (every other Unicode script, Hebrew to Egyptian Hieroglyphs, the rest of the Brahmic scripts, Cyrillic and the alphabets, the other abugidas), `v7/inventory/` and AInagri (`v7/ainagri/`). Start with its `README.md`, `V6-README.md` and `V7-TASKS.md`.
+Version 5 (zip no. 5, the Romenagri core with the missing Sanskrit characters) is the face: the site opens on its front page,
+and every page of the earlier site is kept (`docs/results.html`, and whole in `docs/versions/6.0.0/`). zip 5 sits at the root as
+its `SHA256SUMS` lists it: `Romenagri/` (the kernel with patches 0001 to 0003), `patches/`, `tests/` (`tests/run_all.sh`),
+`tools/`, `results/`, `romenagri-site/` (the site's sources), with its README as `README-SANSKRIT-CHARACTERS.md` and its LICENSE
+as `legal/LICENSE-SANSKRIT-CHARACTERS`. The v6 delta lies over it as designed: `v6/` (sed mapping layers for 18 scripts onto the
+Devanagari hub) and its pages; its pairs also fill 17 script tables in `tables/`. `v7/` holds AInagri and the Unicode inventory,
+`V7-TASKS.md` the next work. `src/`, `data/` and `corpora/` (the extraction of 2026.07) stay until the author rules on them.
+How work proceeds: `AGENTS.md`; where it stands: `CONTEXT.md`.

@@ -1,8 +1,8 @@
 /* Romenagri — reversible transliteration service worker — © 1993–2026 Abhishek Choudhary · AyeAI
    Cache-first for the shell so the portal opens offline, installed outside any store. */
 /* PWA-MOD */ const START = './index.html';
-/* PWA-MOD */ const CACHE = 'romenagri-v1';
-/* PWA-MOD */ const SHELL = [
+/* PWA-MOD */ const CACHE = 'romenagri-v2';
+/* PWA-MOD */ const SHELL = ['./index.html', './explainer.html', './characters.html', './challenges.html', './documents.html', './navigator.html', './open-issues.html', './ainagri.html', './results.html', './versions/index.html', './style.css', './demo.js', './romenagri.js', './examples.js', 
   './index.html',
   './manifest.webmanifest',
   './icon-192.png',
